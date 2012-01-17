@@ -1,0 +1,38 @@
+Gerador e Verificador de Apostas da Loteria
+===========================================
+
+Histórico do Documento
+----------------------
+v1.0 - Definições iniciais
+
+Escopo
+------
+A função principal do sistema GVAL é de conferir as apostas feitas nas
+Casas Lotéricas do Brasil.
+
+A forma de uso do sistema é o seguinte: o usuário insere qual o jogo
+(Lotofácil, Lotomania, Quina, Mega Sena, etc), número do concurso e os
+números apostados. Então o sistema retornará quais os números acertados,
+a quantidade de acertos e o valor a receber, se atingiu a quantidade de
+acertos mínima.
+
+Outros dados também podem ser exibidos, a pedido do usuário, como o local
+e dia do sorteio, a quantidade de ganhadores ou se acumulou. Mais dados
+poderão vir a ser adicionados futuramente, conforme necessário.
+
+O sistema irá registrar o histórico das conferências realizadas e dará a
+opção de limpar esse histórico.
+
+Os resultados dos jogos que já foram consultados serão gravados em cache,
+de maneira que uma futura consulta ao mesmo jogo será muito mais rápida,
+pois vai dispensar nova consulta ao site do resultado (atualmente da
+Caixa Econômica Federal).
+
+O sistema vai permitir que o usuário grave apostas feitas para conferir
+depois, para casos em que não haja uma conexão à Internet ou um jogo que
+ainda não tenha resultado e o usuário já quer deixar registrado na base.
+
+Nos casos em que o usuário tentar conferir um jogo e não obtiver resultado,
+seja por falha no acesso à Internet, site fora do ar ou resultado ainda
+não disponível, o sistema deverá perguntar ao usuário se quer deixar a(s)
+aposta(s) registrada(s) para serem consultadas num momento futuro.
