@@ -1,1 +1,4 @@
 *.pyc
+
+# arquivos vim swap
+*.swp
