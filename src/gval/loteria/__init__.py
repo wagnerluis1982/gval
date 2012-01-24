@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import cookielib
+import re
 import urllib2
+
+from gval.loteria.parser import LoteriaParser
 
 def download_pagina(url):
     cj = cookielib.CookieJar()
@@ -23,16 +26,14 @@ class Lotofacil(Loteria):
         url = url or self._url_consulta('lotofacil', concurso)
         html = download_pagina(url)
         
-        resultado = dict()
-        resultado['concurso'] = concurso
-        resultado['numeros'] = self._extrair_numeros(html)
+        return self._extrair_resultado(html)
 
-        return resultado
+    def _extrair_resultado(self, html):
+        dados = LoteriaParser().feed(html)
 
-    def _extrair_numeros(self, html):
-        import re
-        pattern = r'^(.*?\|){3}(.{%s}).*' % (15*3-1)
-        m = re.match(pattern, html)
-        resultado_bruto = m.group(2)
+        pattern = (r"(\d+)\|+"           # concurso
+                   r"((?:\d{2}\|){15})") # numeros sorteados
+        matched = re.match(pattern, dados).groups()
 
-        return map(int, resultado_bruto.split('|'))
+        return {'concurso': matched[0],
+                'numeros': [int(num) for num in matched[1].split('|') if num]}
