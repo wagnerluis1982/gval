@@ -1,39 +1,20 @@
 # -*- coding: utf-8 -*-
-import cookielib
-import re
-import urllib2
 
-from gval.loteria.parser import LoteriaParser
-
-def download_pagina(url):
-    cj = cookielib.CookieJar()
-    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-    page = opener.open(url)
-
-    return page.read()
-
+# abstract class
 class Loteria(object):
+    def __init__(self):
+        if not issubclass(self.__class__, Loteria):
+            raise NotImplementedError, ("Essa classe não pode ser instanciada "
+                                        "diretamente")
+
     URL_BASE = "http://www1.caixa.gov.br/loterias/loterias/"
-    URL_CONSULTA = ("{jogo}/{jogo}_pesquisa_new.asp?submeteu=sim&opcao="
+    URL_CONSULTA = ("{loteria}/{loteria}_pesquisa_new.asp?submeteu=sim&opcao="
                     "concurso&txtConcurso={concurso}")
 
-    def _url_consulta(self, jogo, concurso):
-        dados_aposta = {'jogo':jogo, 'concurso':concurso}
-        return self.URL_BASE + self.URL_CONSULTA.format(**dados_aposta)
-
-class Lotofacil(Loteria):
+    # abstract method
     def consultar(self, concurso, url=None):
-        url = url or self._url_consulta('lotofacil', concurso)
-        html = download_pagina(url)
-        
-        return self._extrair_resultado(html)
+        raise NotImplementedError, "Você deve sobrescrever esse método"
 
-    def _extrair_resultado(self, html):
-        dados = LoteriaParser().feed(html)
-
-        pattern = (r"(\d+)\|+"           # concurso
-                   r"((?:\d{2}\|){15})") # numeros sorteados
-        matched = re.match(pattern, dados).groups()
-
-        return {'concurso': matched[0],
-                'numeros': [int(num) for num in matched[1].split('|') if num]}
+    def _url_consulta(self, loteria, concurso):
+        dados_aposta = {'loteria':loteria, 'concurso':concurso}
+        return self.URL_BASE + self.URL_CONSULTA.format(**dados_aposta)

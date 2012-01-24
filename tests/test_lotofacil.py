@@ -1,7 +1,7 @@
 import test_stuff.urls
 
 from should_dsl import should, should_not
-from lib.gval.loteria import *
+from lib.gval.loteria.lotofacil import *
 
 class TestLotofacil:
     URL = test_stuff.urls.URLS['lotofacil']
