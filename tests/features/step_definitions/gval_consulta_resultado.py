@@ -19,10 +19,10 @@ def quando_consulta_resultado(step):
     classes_loteria = {
         'lotofacil': Lotofacil
     }
-    instancia = classes_loteria[world.jogo]()
     url = test_stuff.urls.URLS[world.jogo] % world.concurso
+    instancia = classes_loteria[world.jogo](world.concurso, url)
 
-    world.resultado = instancia.consultar(world.concurso, url)['numeros']
+    world.resultado = instancia.consultar()['numeros']
 
 @Then(u'^Então eu devo obter os números "([^"]*)"$')
 def entao_obter_numeros(step, resultado):

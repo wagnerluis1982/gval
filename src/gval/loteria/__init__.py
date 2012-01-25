@@ -2,10 +2,9 @@
 
 # abstract class
 class Loteria(object):
-    def __init__(self):
-        if not issubclass(self.__class__, Loteria):
-            raise NotImplementedError, ("Essa classe não pode ser instanciada "
-                                        "diretamente")
+    def __init__(self, concurso, url=None):
+        self.url = url or self._url_consulta(self._loteria, concurso)
+        self.html = None
 
     URL_BASE = "http://www1.caixa.gov.br/loterias/loterias/"
     URL_CONSULTA = ("{loteria}/{loteria}_pesquisa_new.asp?submeteu=sim&opcao="

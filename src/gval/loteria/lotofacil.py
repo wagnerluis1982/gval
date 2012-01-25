@@ -6,11 +6,12 @@ from gval.loteria import Loteria
 from gval.loteria.parser import LoteriaParser
 
 class Lotofacil(Loteria):
-    def consultar(self, concurso, url=None):
-        url = url or self._url_consulta('lotofacil', concurso)
-        html = download_pagina(url)
+    _loteria = 'lotofacil'
+
+    def consultar(self):
+        self.html = self.html or download_pagina(self.url)
         
-        return self._extrair_resultado(html)
+        return self._extrair_resultado(self.html)
 
     def _extrair_resultado(self, html):
         dados = LoteriaParser().feed(html)
