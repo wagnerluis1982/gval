@@ -20,7 +20,7 @@ class Lotofacil(Loteria):
                    r"((?:\d{2}\|){15})") # numeros sorteados
         matched = re.match(pattern, dados).groups()
 
-        return {'concurso': matched[0],
+        return {'concurso': int(matched[0]),
                 'numeros': self._numeros(matched[1])}
 
     def _numeros(self, match):
