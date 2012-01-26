@@ -8,7 +8,7 @@ class Lotofacil(Loteria):
 
     def consultar(self):
         self.html = self.html or download_pagina(self.url)
-        
+
         return self._extrair_resultado(self.html)
 
     def _extrair_resultado(self, html):

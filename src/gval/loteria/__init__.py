@@ -2,6 +2,8 @@
 
 # abstract class
 class Loteria(object):
+    _loteria = None
+
     def __init__(self, concurso, url=None):
         self.url = url or self._url_consulta(self._loteria, concurso)
         self.html = None
@@ -12,7 +14,7 @@ class Loteria(object):
 
     # abstract method
     def consultar(self):
-        raise NotImplementedError, "Você deve sobrescrever esse método"
+        raise NotImplementedError("Você deve sobrescrever esse método")
 
     def _url_consulta(self, loteria, concurso):
         dados_aposta = {'loteria':loteria, 'concurso':concurso}
