@@ -7,7 +7,6 @@ class TestLotofacil:
     URL = test_stuff.urls.URLS['lotofacil']
 
     def test_consultar(self):
-        "Lotofacil #consultar"
         consultar = lambda n: Lotofacil(concurso=n,
                                     url=self.URL % n).consultar()
 

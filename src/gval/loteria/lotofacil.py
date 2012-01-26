@@ -14,11 +14,12 @@ class Lotofacil(Loteria):
         return self._extrair_resultado(self.html)
 
     def _extrair_resultado(self, html):
-        dados = LoteriaParser().feed(html)
+        parser = LoteriaParser()
+        parser.feed(html)
 
         pattern = (r"(\d+)\|+"           # concurso
                    r"((?:\d{2}\|){15})") # numeros sorteados
-        matched = re.match(pattern, dados).groups()
+        matched = re.match(pattern, parser.dados).groups()
 
         return {'concurso': int(matched[0]),
                 'numeros': self._numeros(matched[1])}
