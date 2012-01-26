@@ -11,7 +11,7 @@ class Loteria(object):
                     "concurso&txtConcurso={concurso}")
 
     # abstract method
-    def consultar(self, concurso, url=None):
+    def consultar(self):
         raise NotImplementedError, "Você deve sobrescrever esse método"
 
     def _url_consulta(self, loteria, concurso):

@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import re
-
 from gval import download_pagina
 from gval.loteria import Loteria
 from gval.loteria.parser import LoteriaParser
@@ -17,13 +15,12 @@ class Lotofacil(Loteria):
         parser = LoteriaParser()
         parser.feed(html)
 
-        pattern = (r"(\d+)\|+"           # concurso
-                   r"((?:\d{2}\|){15})") # numeros sorteados
-        matched = re.match(pattern, parser.dados).groups()
+        POSICAO = dict(
+            concurso=0,
+            numeros=range(3, 18)
+        )
 
-        return {'concurso': int(matched[0]),
-                'numeros': self._numeros(matched[1])}
+        resultado = parser.dados.split('|')
 
-    def _numeros(self, match):
-        # quebra match por '|', retornando uma lista numérica
-        return [int(num) for num in match.split('|') if num]
+        return {'concurso': int(resultado[POSICAO['concurso']]),
+                'numeros': [int(resultado[n]) for n in POSICAO['numeros']]}
