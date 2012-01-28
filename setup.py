@@ -1,5 +1,8 @@
 from distutils.core import setup
 
+def find_packages():
+    return ['gval', 'gval.loteria']
+
 setup(
     name = "GVAL",
     version = "0.0.1",
@@ -9,7 +12,7 @@ setup(
     license = "GPL",
     url = "https://github.com/wagnerluis1982/gval",
     package_dir={'': 'src'},
-    packages=['gval', 'gval.loteria'],
+    packages=find_packages(),
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Environment :: Console",
