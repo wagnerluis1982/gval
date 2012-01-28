@@ -1,7 +1,18 @@
+import os
 from distutils.core import setup
 
+PACKAGE_DIR = 'src'
+
 def find_packages():
-    return ['gval', 'gval.loteria']
+    packages = []
+
+    os.chdir(PACKAGE_DIR)
+    for root, dirs, files in os.walk('gval'):
+        if '__init__.py' in files:
+            packages.append(root.replace(os.sep, '.'))
+    os.chdir('..')
+
+    return packages
 
 setup(
     name = "GVAL",
@@ -11,7 +22,7 @@ setup(
     description = "Gerador e Verificador de Apostas da Loteria (do Brasil)",
     license = "GPL",
     url = "https://github.com/wagnerluis1982/gval",
-    package_dir={'': 'src'},
+    package_dir={'': PACKAGE_DIR},
     packages=find_packages(),
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
