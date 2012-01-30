@@ -26,3 +26,27 @@ Para instalar, basta baixar o projeto e executar, no diretório raiz
 Ou, você pode executar diretamente
 
     pip install git+https://github.com/wagnerluis1982/gval
+
+Uso
+---
+
+Por enquanto só está implementada a consulta de resultados. Para consultar um
+resultado, a partir de um terminal, use o comando 'gval-consultar', que tem a
+seguinte sintaxe:
+
+    gval-consultar <loteria> <concurso>
+
+Por exemplo, se quiser consultar o concurso 708 da Lotofácil, você irá digitar
+
+    gval-consultar lotofacil 708
+
+que será retornado:
+
+    Consulta de Resultado
+    ---------------------
+    * Loteria: Lotofacil
+    * Concurso: 708
+    * Números: 01 02 03 04 05 06 09 11 14 16 19 21 22 24 25
+
+Futuramente, mais informações serão exibidas, como a premiação e os ganhadores
+por estado/município.
