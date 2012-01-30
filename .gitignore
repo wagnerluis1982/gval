@@ -1,4 +1,9 @@
 *.pyc
 
-# arquivos vim swap
+# usados pelo vim
 *.swp
+
+# usados pelo eclipse
+.project
+.pydevproject
+.settings/

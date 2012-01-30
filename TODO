@@ -2,7 +2,8 @@ A fazer
 -------
 
 - Conferência dos números da Lotofácil
+- Migrar lógica do Script para um módulo do sistema, afim de ser testável
 - Implementar Mega Sena
 - Implementar Quina
 - Implementar Lotomania
-- Decorator para classes e métodos abstratos
+- Decorator para classes e métodos abstratos (NÃO PRIORITÁRIO)
