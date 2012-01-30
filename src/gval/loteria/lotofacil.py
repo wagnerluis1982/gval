@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from gval import download_pagina
-from gval.loteria.base import Loteria
+from gval.loteria import Loteria
 from gval.loteria.parser import LoteriaParser
 
 class Lotofacil(Loteria):

@@ -3,7 +3,7 @@ import test_stuff.urls
 
 from lettuce import *
 from should_dsl import should, should_not
-from lib.gval.loteria.lotofacil import *
+from lib.gval.loteria import *
 Given = When = Then = step
 
 @Given(u'^Dado que eu apostei no jogo da "([^"]*)"$')
