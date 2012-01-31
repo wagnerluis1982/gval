@@ -3,8 +3,6 @@ from gval.loteria import Loteria
 from gval.loteria.parser import LoteriaParser
 
 class Lotofacil(Loteria):
-    _loteria = 'lotofacil'
-
     def _extrair_resultado(self, html):
         parser = LoteriaParser()
         parser.feed(html)

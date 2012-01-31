@@ -3,7 +3,6 @@ from gval.loteria import Loteria
 from gval.loteria.parser import LoteriaParser
 
 class Lotomania(Loteria):
-    _loteria = 'lotomania'
     _url_loteria = ("{loteria}/_{loteria}_pesquisa.asp?submeteu=sim&opcao="
                     "concurso&txtConcurso={concurso}")
 
