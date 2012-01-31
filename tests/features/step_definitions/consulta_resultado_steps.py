@@ -6,9 +6,13 @@ from should_dsl import should, should_not
 from lib.gval.loteria import *
 Given = When = Then = step
 
-@Given(u'^Dado que eu apostei no jogo da "([^"]*)"$')
-def dado_jogo(step, jogo):
-    world.jogo = jogo
+@Given(u'^Dado que eu apostei no jogo da Lotofácil$')
+def dado_jogo(step):
+    world.jogo = "lotofacil"
+
+@Given(u'^Dado que eu apostei no jogo da Lotomania$')
+def dado_jogo(step):
+    world.jogo = "lotomania"
 
 @Given(u'^E que eu apostei no concurso (\d+)$')
 def dado_concurso(step, concurso):
@@ -17,7 +21,8 @@ def dado_concurso(step, concurso):
 @When(u'^Quando eu consulto o resultado dessa aposta$')
 def quando_consulta_resultado(step):
     classes_loteria = {
-        'lotofacil': Lotofacil
+        'lotofacil': Lotofacil,
+        'lotomania': Lotomania,
     }
     url = test_stuff.urls.URLS[world.jogo] % world.concurso
     instancia = classes_loteria[world.jogo](world.concurso, url)

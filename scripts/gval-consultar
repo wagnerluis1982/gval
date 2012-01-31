@@ -12,6 +12,7 @@ def main(args):
     
     classes = {
        'lotofacil': gval.loteria.Lotofacil,
+       'lotomania': gval.loteria.Lotomania,
     }
     
     loteria = args[0]
