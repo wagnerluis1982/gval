@@ -4,7 +4,7 @@ A fazer
 - Os testes de consulta a resultado se valem do atributo 'url' da classe Loteria
   para escapar de fazer uma consulta real ao servidor da caixa. Esse método deve
   ser mudado para aproveitar a estrutura, recém introduzida, de cache.
-- Nomear os métodos para usar uma linguagem mais "BDD"
+- Nomear os métodos de teste para usar uma linguagem mais "BDD"
 - Implementar testes para a função download_pagina e outras correlatas
 - Implementar a conferência dos números
 - Migrar lógica do Script para um módulo do sistema, afim de ser testável
