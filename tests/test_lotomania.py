@@ -5,6 +5,8 @@ from lib.gval.loteria import Lotomania
 
 class TestLotomania:
     def test_consultar(self):
+        "#consultar retorna dict(<resultado_lotomania>)"
+
         consultar = lambda n: Lotomania(concurso=n,
                                     cache_dir=test_stuff.CACHE_DIR).consultar()
 

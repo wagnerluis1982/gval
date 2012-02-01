@@ -1,7 +1,6 @@
 A fazer
 -------
 
-- Nomear os métodos de teste (nível de código) para usar uma linguagem mais "BDD"
 - Implementar testes para a função download_pagina e outras correlatas
 - Implementar a conferência dos números
 - Migrar lógica do Script para um módulo do sistema, afim de ser testável
