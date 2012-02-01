@@ -13,7 +13,7 @@ def home_cachedir():
         env_home = os.environ.get('HOME')
 
         if env_home:
-            subdirs = ('.gval-cache', 'paginas')
+            subdirs = ('.gval', 'cache', 'paginas')
             cachedir = os.path.join(env_home, os.sep.join(subdirs))
 
             try:
