@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import codecs
 import cookielib
 import errno
 import os
@@ -38,12 +39,15 @@ def download_pagina(url, charset=None, cache_dir=home_cachedir()):
 
         # Obtém os dados do cache, se houver
         try:
-            f = open(cache_file, 'r')
+            f = codecs.open(cache_file, 'r', encoding='utf-8')
         except IOError:
             pass
         else:
             page_data = f.read()
             f.close()
+
+            # Se já obteve o cache, não é preciso gravar de novo em cache
+            cache = False
 
     if not page_data:
         cj = cookielib.CookieJar()
@@ -58,7 +62,7 @@ def download_pagina(url, charset=None, cache_dir=home_cachedir()):
         pass
 
     if cache:
-        f = open(cache_file, 'w')
+        f = codecs.open(cache_file, 'w', encoding='utf-8')
         f.write(page_data)
         f.close()
 
