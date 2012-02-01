@@ -13,14 +13,16 @@ class Loteria(object):
     _url_loteria = ("{loteria}/{loteria}_pesquisa_new.asp?submeteu=sim&opcao="
                     "concurso&txtConcurso={concurso}")
 
-    def __init__(self, concurso, url=None):
+    def __init__(self, concurso, cache_dir=None):
         self._loteria = self._loteria or self.__class__.__name__.lower()
         self.__concurso = concurso
-        self.url = url or self.__url_consulta()
+        self.url = self.__url_consulta()
+        self.cache_dir = cache_dir or gval.home_cachedir()
         self.html = None
 
     def consultar(self):
-        self.html = self.html or gval.download_pagina(self.url)
+        self.html = self.html or gval.download_pagina(self.url,
+                                                      cache_dir=self.cache_dir)
 
         return self._extrair_resultado(self.html)
 

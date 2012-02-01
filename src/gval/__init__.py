@@ -28,7 +28,7 @@ def home_cachedir():
 def cache_filename(string):
     return re.sub('[:/]', '_', string)
 
-def download_pagina(url, charset=None, cache_dir=home_cachedir()):
+def download_pagina(url, charset=None, cache_dir=None):
     page_data = None
     cache = not url.startswith('file:') and bool(cache_dir)
 

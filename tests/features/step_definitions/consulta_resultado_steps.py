@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import test_stuff.urls
+import test_stuff
 
 from lettuce import *
 from should_dsl import should, should_not
@@ -24,8 +24,8 @@ def quando_consulta_resultado(step):
         'lotofacil': Lotofacil,
         'lotomania': Lotomania,
     }
-    url = test_stuff.urls.URLS[world.jogo] % world.concurso
-    instancia = classes_loteria[world.jogo](world.concurso, url)
+    instancia = classes_loteria[world.jogo](world.concurso,
+                                            cache_dir=test_stuff.CACHE_DIR)
 
     world.resultado = instancia.consultar()['numeros']
 

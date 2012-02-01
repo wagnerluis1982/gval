@@ -1,14 +1,12 @@
-import test_stuff.urls
+import test_stuff
 
 from should_dsl import should, should_not
 from lib.gval.loteria import Lotomania
 
 class TestLotomania:
-    URL = test_stuff.urls.URLS['lotomania']
-
     def test_consultar(self):
         consultar = lambda n: Lotomania(concurso=n,
-                                    url=self.URL % n).consultar()
+                                    cache_dir=test_stuff.CACHE_DIR).consultar()
 
         consultar(914) |should| equal_to(dict(
             concurso=914,
