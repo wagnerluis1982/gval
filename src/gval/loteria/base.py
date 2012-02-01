@@ -19,8 +19,8 @@ class Loteria(object):
         self.url = url or self.__url_consulta()
         self.html = None
 
-    def consultar(self, cache=True):
-        self.html = self.html or gval.download_pagina(self.url, cache=cache)
+    def consultar(self):
+        self.html = self.html or gval.download_pagina(self.url)
 
         return self._extrair_resultado(self.html)
 

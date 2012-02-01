@@ -27,12 +27,9 @@ def home_cachedir():
 def cache_filename(string):
     return re.sub('[:/]', '_', string)
 
-def download_pagina(url, charset=None, cache=True, cache_dir=None):
+def download_pagina(url, charset=None, cache_dir=home_cachedir()):
     page_data = None
-
-    if cache:
-        cache_dir = cache_dir or home_cachedir()
-        cache = bool(cache_dir)
+    cache = not url.startswith('file:') and bool(cache_dir)
 
     if cache:
         # Substitue as barras da url por um valor permitido para nomes de
@@ -47,9 +44,6 @@ def download_pagina(url, charset=None, cache=True, cache_dir=None):
         else:
             page_data = f.read()
             f.close()
-
-            # Não é preciso fazer cache de um dado que já está em cache
-            cache_dir = None
 
     if not page_data:
         cj = cookielib.CookieJar()
