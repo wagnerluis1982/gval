@@ -20,6 +20,3 @@ class LoteriaParser(HTMLParser):
     def handle_data(self, data):
         if self._capturar:
             self._dados.append(data)
-
-    def feed(self, data):
-        HTMLParser.feed(self, data)
