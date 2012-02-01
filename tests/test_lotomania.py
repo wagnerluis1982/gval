@@ -8,7 +8,7 @@ class TestLotomania:
 
     def test_consultar(self):
         consultar = lambda n: Lotomania(concurso=n,
-                                    url=self.URL % n).consultar()
+                                    url=self.URL % n).consultar(cache=False)
 
         consultar(914) |should| equal_to(dict(
             concurso=914,
