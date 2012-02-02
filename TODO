@@ -1,9 +1,8 @@
 A fazer
 -------
 
-- Implementar testes para a função download_pagina e outras correlatas
+- Escrever testes para a função download_pagina e outras do mesmo módulo
 - Implementar a conferência dos números
 - Migrar lógica do Script para um módulo do sistema, afim de ser testável
 - Implementar Mega Sena
-- Implementar Quina
 - Decorator para classes e métodos abstratos (NÃO PRIORITÁRIO)

@@ -28,7 +28,7 @@ def home_cachedir():
 def cache_filename(string):
     return re.sub('[:/]', '_', string)
 
-def download_pagina(url, charset=None, cache_dir=None):
+def download_pagina(url, cache_dir=None):
     page_data = None
     cache = not url.startswith('file:') and bool(cache_dir)
 
@@ -49,17 +49,19 @@ def download_pagina(url, charset=None, cache_dir=None):
             # Se já obteve o cache, não é preciso gravar de novo em cache
             cache = False
 
+    # Acessa a Internet, caso o arquivo não esteja em cache
     if not page_data:
         cj = cookielib.CookieJar()
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
         page = opener.open(url)
         page_data = page.read()
-        charset = charset or page.headers.getparam('charset')
+        charset = page.headers.getparam('charset')
 
-    try:
-        page_data = unicode(page_data, charset)
-    except (UnicodeDecodeError, TypeError, LookupError):
-        pass
+        if charset:
+            try:
+                page_data = unicode(page_data, charset)
+            except (UnicodeDecodeError, LookupError):
+                pass
 
     if cache:
         f = codecs.open(cache_file, 'w', encoding='utf-8')
