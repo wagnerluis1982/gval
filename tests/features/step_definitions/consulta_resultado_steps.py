@@ -14,6 +14,10 @@ def dado_jogo(step):
 def dado_jogo(step):
     world.jogo = "lotomania"
 
+@Given(u'^Dado que eu apostei no jogo da Quina$')
+def dado_jogo(step):
+    world.jogo = "quina"
+
 @Given(u'^E que eu apostei no concurso (\d+)$')
 def dado_concurso(step, concurso):
     world.concurso = int(concurso)
@@ -23,6 +27,7 @@ def quando_consulta_resultado(step):
     classes_loteria = {
         'lotofacil': Lotofacil,
         'lotomania': Lotomania,
+        'quina': Quina,
     }
     instancia = classes_loteria[world.jogo](world.concurso,
                                             cache_dir=test_stuff.CACHE_DIR)

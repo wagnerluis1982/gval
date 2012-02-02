@@ -28,3 +28,15 @@ Funcionalidade: Apostador consulta resultado
       | 914  | 01 02 09 11 15 16 27 32 39 52 57 59 63 64 69 73 75 76 78 93 |
       | 1112 | 01 03 05 19 24 25 28 33 41 47 54 56 70 75 78 87 91 92 95 96 |
       | 1208 | 07 08 09 11 32 45 46 49 51 58 60 71 73 77 89 92 93 95 96 99 |
+
+  Esquema do Cenário: resultados da Quina
+    Dado que eu apostei no jogo da Quina
+    E que eu apostei no concurso <n>
+    Quando eu consulto o resultado dessa aposta
+    Então eu devo obter os números "<resultado>"
+
+    Exemplos:
+      | n    | resultado      |
+      | 805  | 13 22 41 42 71 |
+      | 1763 | 03 09 24 33 60 |
+      | 2811 | 16 19 59 62 69 |

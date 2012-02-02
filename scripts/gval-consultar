@@ -9,15 +9,16 @@ def main(args):
         print "ERRO: Número de argumentos inválido"
         print "Modo de uso: gval-consultar <loteria> <concurso>"
         exit(1)
-    
+
     classes = {
        'lotofacil': gval.loteria.Lotofacil,
        'lotomania': gval.loteria.Lotomania,
+       'quina': gval.loteria.Quina,
     }
-    
+
     loteria = args[0]
     concurso = int(args[1])
-    
+
     try:
         klass = classes[loteria]
     except KeyError:
@@ -26,7 +27,7 @@ def main(args):
     else:
         try:
             resultado = klass(concurso).consultar()
-            
+
             print "Consulta de Resultado"
             print "---------------------"
             print "* Loteria: %s" % klass.__name__
