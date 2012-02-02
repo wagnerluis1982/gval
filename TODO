@@ -1,6 +1,8 @@
 A fazer
 -------
 
+- Verificar se a velocidade do download diminui mais ainda, persistindo os
+  cookies recebidos.
 - Escrever testes para a função download_pagina e outras do mesmo módulo
 - Implementar a conferência dos números
 - Migrar lógica do Script para um módulo do sistema, afim de ser testável

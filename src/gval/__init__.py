@@ -53,6 +53,8 @@ def download_pagina(url, cache_dir=None):
     if not page_data:
         cj = cookielib.CookieJar()
         opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+        opener.addheaders.append(("Cookie", "security=true"))
+
         page = opener.open(url)
         page_data = page.read()
         charset = page.headers.getparam('charset')
