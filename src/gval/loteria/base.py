@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import gval
+import gval.util
 
 # abstract class
 class Loteria(object):
@@ -17,11 +17,11 @@ class Loteria(object):
         self._loteria = self._loteria or self.__class__.__name__.lower()
         self.__concurso = concurso
         self.url = self.__url_consulta()
-        self.cache_dir = cache_dir or gval.home_cachedir()
+        self.cache_dir = cache_dir or gval.util.home_cachedir()
         self.html = None
 
     def consultar(self):
-        self.html = self.html or gval.download_pagina(self.url,
+        self.html = self.html or gval.util.download_pagina(self.url,
                                                       cache_dir=self.cache_dir)
 
         return self._extrair_resultado(self.html)
