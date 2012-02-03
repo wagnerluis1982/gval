@@ -4,4 +4,4 @@ features_test:
 	@lettuce
 
 spec_test:
-	@specloud
+	@nosetests
