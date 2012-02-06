@@ -71,3 +71,25 @@ def download_pagina(url, cache_dir=None):
         f.close()
 
     return page_data
+
+# Novas implementações #
+
+class Downloader(object):
+    def download(self, url):
+        # As páginas de resultado das Loterias exigem cookies
+        cj = cookielib.CookieJar()
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+        # Foi percebido que a adição desse cookie dobrou o tempo de resposta
+        opener.addheaders.append(("Cookie", "security=true"))
+
+        page = opener.open(url)
+        page_data = page.read()
+        charset = page.headers.getparam('charset')
+
+        if charset is not None:
+            try:
+                page_data = unicode(page_data, charset)
+            except (UnicodeDecodeError, LookupError):
+                pass
+
+        return page_data

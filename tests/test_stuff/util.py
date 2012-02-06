@@ -7,14 +7,16 @@ import threading
 # Pasta em que se encontram os arquivos que devem ser servidos pelo servidor
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'util_data')
 
-# As strings abaixo são para serem usadas nos testes da função download_pagina
-
+# Nome das páginas armazenadas
 PAGINAS = {
     "UNKNOWN": "pagina_unknown.html",
     "ASCII": "pagina_ascii.html",
     "ISO-8859-1": "pagina_iso_8859_1.html",
     "UTF-8": "pagina_utf8.html",
 }
+
+
+# As strings abaixo são para serem usadas nos testes da função download
 
 CONTEUDO_ASCII = """<!DOCTYPE html>
 <html>
@@ -31,10 +33,10 @@ CONTEUDO_ASCII = """<!DOCTYPE html>
 </html>
 """
 
-CONTEUDO_UNICODE = u"""<!DOCTYPE html>
+CONTEUDO_ENCODING = u"""<!DOCTYPE html>
 <html>
     <head>
-        <meta charset="ISO-8859-1" />
+        <meta charset="%s" />
         <title>Teste de gval.util</title>
     </head>
     <body>
@@ -46,7 +48,7 @@ CONTEUDO_UNICODE = u"""<!DOCTYPE html>
 </html>
 """
 
-class ServidorDownloadPagina:
+class ServidorDownload:
     # Implementação de servidor http simples, que retorna o charset correto para
     # os arquivos de testes da função download_pagina.
     endereco = ('127.0.0.1', 15707)
@@ -56,7 +58,7 @@ class ServidorDownloadPagina:
         # Essa subclasse é quem verdadeiramente realiza o serviço
         def log_message(self, *args, **kwargs):
             # Sobrescrevendo esse método para que não seja exibida mensagens de
-            # acesso no terminal.
+            # log no terminal.
             pass
 
         def guess_type(self, path):

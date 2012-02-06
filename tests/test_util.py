@@ -1,39 +1,42 @@
 # -*- coding: utf-8 -*-
-import test_stuff.util
+from test_stuff.util import (ServidorDownload, PAGINAS, CONTEUDO_ASCII,
+                             CONTEUDO_ENCODING)
 
 from should_dsl import should, should_not
-from lib.gval.util import *
-from nose import SkipTest
+from lib.gval.util import Downloader
 
-class TestUtil_download_pagina:
-    "Util #download_pagina"
-
+class TestDownloader:
     @classmethod
     def setUpClass(cls):
-        cls.servidor = test_stuff.util.ServidorDownloadPagina()
+        cls.servidor = ServidorDownload()
         cls.servidor.iniciar()
 
     @classmethod
     def tearDownClass(cls):
         cls.servidor.finalizar()
 
-    def test_download_pagina_conteudo(self):
-        "retorna o '<conteúdo>' da url"
-        url = '/'.join((self.servidor.url, test_stuff.util.PAGINAS['ASCII']))
+    def test_download_conteudo(self):
+        "#download deve retornar o '<conteúdo>' da url"
+        download = Downloader().download
+        url = self.servidor.url + PAGINAS['ASCII']
 
-        download_pagina(url) |should| equal_to(test_stuff.util.CONTEUDO_ASCII)
+        download(url) |should| equal_to(CONTEUDO_ASCII)
 
-    def test_download_pagina_encoding(self):
-        "retorna u'<unicode>' quando servidor envia encoding"
-        url = '/'.join((self.servidor.url, test_stuff.util.PAGINAS['ISO-8859-1']))
-        pagina = download_pagina(url)
+    def test_download_encoding(self):
+        "#download deve retornar u'<unicode>' quando servidor envia encoding"
+        download = Downloader().download
+        pagina_iso = download(self.servidor.url + PAGINAS['ISO-8859-1'])
+        pagina_utf = download(self.servidor.url + PAGINAS['UTF-8'])
 
-        pagina |should| be_instance_of(unicode)
-        pagina |should| equal_to(test_stuff.util.CONTEUDO_UNICODE)
+        pagina_iso |should| be_instance_of(unicode)
+        pagina_iso |should| equal_to(CONTEUDO_ENCODING % 'ISO-8859-1')
 
-    def test_download_pagina_raw_string(self):
-        "retorna '<string>' se encoding é desconhecido"
-        url = '/'.join((self.servidor.url, test_stuff.util.PAGINAS['UNKNOWN']))
-        pagina = download_pagina(url)
+        pagina_utf |should| be_instance_of(unicode)
+        pagina_utf |should| equal_to(CONTEUDO_ENCODING % 'UTF-8')
 
-        pagina |should| be_instance_of(str)
+    def test_download_raw_string(self):
+        "#download deve retornar '<str>' se encoding é desconhecido"
+        download = Downloader().download
+        url = self.servidor.url + PAGINAS['UNKNOWN']
+
+        download(url) |should| be_instance_of(str)
