@@ -74,6 +74,34 @@ def download_pagina(url, cache_dir=None):
 
 # Novas implementações #
 
+class Cacher(object):
+    def __init__(self, cachedir):
+        self.cachedir = cachedir
+
+    def _secure_path(self, name):
+        return os.path.join(self.cachedir, re.sub('[:/]', '_', name))
+
+    def guardar(self, filename, content):
+        # Grava os dados no arquivo
+        f = codecs.open(self._secure_path(filename), 'w', encoding='utf-8')
+        f.write(content)
+        f.close()
+
+    def obter(self, filename):
+        # Caminho com nome seguro
+        caminho = self._secure_path(filename)
+
+        content = None
+        try:
+            f = codecs.open(caminho, 'r', encoding='utf-8')
+        except IOError:
+            pass
+        else:
+            content = f.read()
+            f.close()
+
+        return content
+
 class Downloader(object):
     def download(self, url):
         # As páginas de resultado das Loterias exigem cookies

@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 from BaseHTTPServer import HTTPServer
 from SimpleHTTPServer import SimpleHTTPRequestHandler
+import UserString
 import os.path
+import shutil
+import tempfile
 import threading
 
 # Pasta em que se encontram os arquivos que devem ser servidos pelo servidor
@@ -14,7 +17,6 @@ PAGINAS = {
     "ISO-8859-1": "pagina_iso_8859_1.html",
     "UTF-8": "pagina_utf8.html",
 }
-
 
 # As strings abaixo são para serem usadas nos testes da função download
 
@@ -81,3 +83,13 @@ class ServidorDownload:
     def finalizar(self):
         self.servidor.shutdown()
         self.servidor.server_close()
+
+class DiretorioTemporario(UserString.UserString):
+    # Classe para criar um diretório temporário
+    # A própria instância dessa classe retorna o caminho do diretório temporário.
+    # O destrutor da classe trata de remover o diretório, recursivamente.
+    def __init__(self):
+        UserString.UserString.__init__(self, tempfile.mkdtemp(prefix='cache'))
+
+    def __del__(self):
+        shutil.rmtree(str(self))

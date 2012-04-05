@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
-from test_stuff.util import (ServidorDownload, PAGINAS, CONTEUDO_ASCII,
+from test_stuff.util import (ServidorDownload,
+                             DiretorioTemporario,
+                             PAGINAS,
+                             CONTEUDO_ASCII,
                              CONTEUDO_ENCODING)
 
 from should_dsl import should, should_not
-from lib.gval.util import Downloader
+from lib.gval.util import Downloader, Cacher
+import os
 
 class TestDownloader:
     @classmethod
@@ -40,3 +44,36 @@ class TestDownloader:
         url = self.servidor.url + PAGINAS['UNKNOWN']
 
         download(url) |should| be_instance_of(str)
+
+class TestCacher:
+    @classmethod
+    def setUpClass(cls):
+        cls._dirtemp = DiretorioTemporario()
+        cls.dirtemp = str(cls._dirtemp)
+        cls.cacher = Cacher(cls.dirtemp)
+
+        cls.arquivo = "arquivo_em_cache"
+        cls.caminho = os.path.join(cls.dirtemp, cls.arquivo)
+        cls.conteudo = 100 * "Um texto repetido 100 vezes "
+
+    @classmethod
+    def tearDownClass(cls):
+        del cls._dirtemp
+
+    def test_guardar_em_cache(self):
+        "#guardar deve armazenar um arquivo em cache"
+        guardar = self.cacher.guardar
+
+        guardar(self.arquivo, self.conteudo)
+        os.path.exists(self.caminho) |should| be(True)
+
+        # A função também pode ser chamada com os nomes dos argumentos
+        guardar(filename=self.arquivo+'1', content=self.conteudo)
+        os.path.exists(self.caminho+'1') |should| be(True)
+
+    def test_obter_do_cache(self):
+        "#obter deve retornar o conteúdo de um arquivo em cache"
+        self.cacher.obter(self.arquivo) |should| equal_to(self.conteudo)
+
+        # Um arquivo que não esteja em cache retorna None
+        self.cacher.obter(self.arquivo+'9') |should| be(None)
