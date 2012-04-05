@@ -18,11 +18,18 @@ class Loteria(object):
         self.__concurso = concurso
         self.url = self.__url_consulta()
         self.cache_dir = cache_dir or gval.util.home_cachedir()
+        self.cacher = gval.util.Cacher(self.cache_dir)
+        self.downloader = gval.util.Downloader()
         self.html = None
 
     def consultar(self):
-        self.html = self.html or gval.util.download_pagina(self.url,
-                                                      cache_dir=self.cache_dir)
+        if self.html is None:
+            content = self.cacher.obter(self.url)
+            if content is None:
+                content = self.downloader.download(self.url)
+                self.cacher.guardar(self.url, content)
+
+            self.html = content
 
         return self._extrair_resultado(self.html)
 

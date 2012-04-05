@@ -75,5 +75,6 @@ class TestCacher:
         "#obter deve retornar o conteúdo de um arquivo em cache"
         self.cacher.obter(self.arquivo) |should| equal_to(self.conteudo)
 
-        # Um arquivo que não esteja em cache retorna None
+    def test_obter_nao_cache(self):
+        "#obter deve retornar None para arquivos que não estejam em cache"
         self.cacher.obter(self.arquivo+'9') |should| be(None)

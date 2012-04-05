@@ -76,10 +76,10 @@ def download_pagina(url, cache_dir=None):
 
 class Cacher(object):
     def __init__(self, cachedir):
-        self.cachedir = cachedir
+        self._cachedir = cachedir
 
     def _secure_path(self, name):
-        return os.path.join(self.cachedir, re.sub('[:/]', '_', name))
+        return os.path.join(self._cachedir, re.sub('[:/]', '_', name))
 
     def guardar(self, filename, content):
         # Grava os dados no arquivo
