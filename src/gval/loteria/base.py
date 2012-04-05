@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import gval.util
 
-# abstract class
 class Loteria(object):
+    # abstract class
     URL_BASE = "http://www1.caixa.gov.br/loterias/loterias/"
 
-    # Atributo que serve como parâmetro para criar a url e outras coisas. Caso
-    # não seja atribuído, utiliza o nome da classe, com a caixa reduzida.
+    # Atributo do tipo string que serve como parâmetro para criar a url e
+    # outras coisas nas subclasses. Caso não seja atribuído, utiliza o nome da
+    # classe, com a caixa reduzida.
     _loteria = None
 
     # Parte final da url de consulta. Pode variar de acordo com o jogo.
@@ -14,12 +15,19 @@ class Loteria(object):
                     "concurso&txtConcurso={concurso}")
 
     def __init__(self, concurso, cache_dir=None):
+        # Valores usados ao consultar() o resultado de um concurso
         self._loteria = self._loteria or self.__class__.__name__.lower()
         self.__concurso = concurso
         self.url = self.__url_consulta()
-        self.cache_dir = cache_dir or gval.util.home_cachedir()
-        self.cacher = gval.util.Cacher(self.cache_dir)
+
+        # Objeto responsável pelos downloads
         self.downloader = gval.util.Downloader()
+
+        # Objeto responsável por gravar em cache
+        cache_dir = cache_dir or gval.util.home_cachedir()
+        self.cacher = gval.util.Cacher(cache_dir)
+
+        # Atributo de instância para guardar a página html da consulta
         self.html = None
 
     def consultar(self):
@@ -33,8 +41,8 @@ class Loteria(object):
 
         return self._extrair_resultado(self.html)
 
-    # abstract method
     def _extrair_resultado(self, html):
+        # abstract method
         raise NotImplementedError("Você deve sobrescrever esse método")
 
     def __url_consulta(self):
