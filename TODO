@@ -1,7 +1,7 @@
 A fazer
 -------
 
-- Escrever testes para a função download_pagina e outras do mesmo módulo
+- Projetar um arquivo de configurações
 - Implementar a conferência dos números
 - Migrar lógica do Script para um módulo do sistema, afim de ser testável
 - Implementar Mega Sena

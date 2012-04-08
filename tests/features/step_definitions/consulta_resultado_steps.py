@@ -29,10 +29,9 @@ def quando_consulta_resultado(step):
         'lotomania': Lotomania,
         'quina': Quina,
     }
-    instancia = classes_loteria[world.jogo](world.concurso,
-                                            cache_dir=test_stuff.CACHE_DIR)
+    instancia = classes_loteria[world.jogo](cache_dir=test_stuff.CACHE_DIR)
 
-    world.resultado = instancia.consultar()['numeros']
+    world.resultado = instancia.consultar(world.concurso)['numeros']
 
 @Then(u'^Então eu devo obter os números "([^"]*)"$')
 def entao_obter_numeros(step, resultado):

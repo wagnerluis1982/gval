@@ -7,10 +7,9 @@ class TestQuina:
     def test_consultar(self):
         "#consultar retorna dict(<resultado_quina>)"
 
-        consultar = lambda n: Quina(concurso=n,
-                                    cache_dir=test_stuff.CACHE_DIR).consultar()
+        quina = Quina(cache_dir=test_stuff.CACHE_DIR)
 
-        consultar(805) |should| equal_to(dict(
+        quina.consultar(805) |should| equal_to(dict(
             concurso=805,
             numeros=[13, 22, 41, 42, 71]
           ))

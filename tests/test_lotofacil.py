@@ -7,14 +7,13 @@ class TestLotofacil:
     def test_consultar(self):
         "#consultar retorna dict(<resultado_lotofacil>)"
 
-        consultar = lambda n: Lotofacil(concurso=n,
-                                    cache_dir=test_stuff.CACHE_DIR).consultar()
+        lotofacil = Lotofacil(cache_dir=test_stuff.CACHE_DIR)
 
-        consultar(600) |should| equal_to(dict(
+        lotofacil.consultar(600) |should| equal_to(dict(
             concurso=600,
             numeros=[1,3,5,6,8,9,10,11,16,17,18,19,22,23,25]
           ))
-        consultar(659) |should| equal_to(dict(
+        lotofacil.consultar(659) |should| equal_to(dict(
             concurso=659,
             numeros=[1,3,4,5,6,8,9,10,11,12,15,19,20,23,24]
           ))
