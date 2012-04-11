@@ -14,7 +14,7 @@ class Loteria(object):
     _url_loteria = ("{loteria}/{loteria}_pesquisa_new.asp?submeteu=sim&opcao="
                     "concurso&txtConcurso={concurso}")
 
-    def __init__(self, cache_dir=None):
+    def __init__(self, cfg=None):
         # Valores usados ao consultar() o resultado de um concurso
         self._loteria = self._loteria or self.__class__.__name__.lower()
 
@@ -22,8 +22,8 @@ class Loteria(object):
         self.downloader = gval.util.Downloader()
 
         # Objeto responsável por gravar em cache
-        cache_dir = cache_dir or gval.util.home_cachedir()
-        self.cacher = gval.util.Cacher(cache_dir)
+        cfg = cfg or gval.util.Config()
+        self.cacher = gval.util.Cacher(cfg)
 
     def consultar(self, concurso):
         url = self.__url_consulta(concurso)

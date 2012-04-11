@@ -89,7 +89,7 @@ class DiretorioTemporario(UserString.UserString):
     # A própria instância dessa classe retorna o caminho do diretório temporário.
     # O destrutor da classe trata de remover o diretório, recursivamente.
     def __init__(self):
-        UserString.UserString.__init__(self, tempfile.mkdtemp(prefix='cache'))
+        UserString.UserString.__init__(self, tempfile.mkdtemp(prefix='gval'))
 
     def __del__(self):
         shutil.rmtree(str(self))

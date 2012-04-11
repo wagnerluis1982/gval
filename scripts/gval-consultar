@@ -26,7 +26,7 @@ def main(args):
         print "IMPLEMENTADAS: %s" % ', '.join(classes.keys())
     else:
         try:
-            resultado = klass(concurso).consultar()
+            resultado = klass().consultar(concurso)
 
             print "Consulta de Resultado"
             print "---------------------"

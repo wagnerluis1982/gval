@@ -4,30 +4,65 @@ import cookielib
 import errno
 import os
 import re
-import sys
 import urllib2
 
-# TODO: tornar portável
-def home_cachedir():
-    if sys.platform.startswith('linux'):
-        env_home = os.environ.get('HOME')
+class ConfigException(Exception):
+    pass
 
-        if env_home:
-            subdirs = ('.gval', 'cache', 'paginas')
-            cachedir = os.path.join(env_home, os.sep.join(subdirs))
+class Config(object):
+    def __init__(self, config_dir=None):
+        # Atributo de instância
+        self._cache_dir = None
 
-            try:
-                os.makedirs(cachedir)
-            except OSError, e:
-                EXISTE = e.errno == errno.EEXIST
-                if not EXISTE or (EXISTE and not os.access(cachedir, os.W_OK)):
-                    return None
+        # Usa o diretório passado se não nulo
+        if config_dir is not None:
+            self._config_dir = config_dir
 
-            return cachedir
+        # Define o diretório de configuração de acordo com o SO
+        # Por enquanto é suportado os sistemas Posix e Windows (NT)
+        else:
+            if os.name == 'posix':
+                prefixo = '.'
+                profile_dir = os.environ.get("HOME")
+
+            elif os.name == 'nt':
+                prefixo = '_'
+                profile_dir = os.environ.get("APPDATA")
+
+            # Se nenhum SO for detectado, lança uma exceção
+            else:
+                raise ConfigException("Impossível de detectar local do "
+                                      "diretório de configuração.")
+
+            self._config_dir = os.path.join(profile_dir,
+                                            "{0}gval".format(prefixo))
+
+    def get_config_dir(self, *subdirs):
+        cfg_dir = os.path.join(self._config_dir, *subdirs)
+        self.makedirs(cfg_dir)
+        return cfg_dir
+    config_dir = property(fget=get_config_dir)
+
+    def get_cache_dir(self, *subdirs):
+        self._cache_dir = self._cache_dir or os.path.join(self._config_dir,
+                                                          'cache')
+        return self.get_config_dir(self._cache_dir, *subdirs)
+    cache_dir = property(fget=get_cache_dir)
+
+    def makedirs(self, caminho):
+        """Versão própria do makedirs()
+
+        Essa versão não lança exceção se o caminho já existir
+        """
+        try:
+            os.makedirs(caminho)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
 
 class Cacher(object):
-    def __init__(self, cachedir):
-        self._cachedir = cachedir
+    def __init__(self, cfg):
+        self._cachedir = cfg.get_cache_dir('paginas')
 
     def _secure_path(self, name):
         return os.path.join(self._cachedir, re.sub('[:/]', '_', name))

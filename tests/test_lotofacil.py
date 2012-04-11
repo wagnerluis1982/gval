@@ -2,12 +2,14 @@ import test_stuff
 
 from should_dsl import should, should_not
 from lib.gval.loteria import Lotofacil
+from lib.gval.util import Config
 
 class TestLotofacil:
     def test_consultar(self):
         "#consultar retorna dict(<resultado_lotofacil>)"
 
-        lotofacil = Lotofacil(cache_dir=test_stuff.CACHE_DIR)
+        cfg = Config(test_stuff.CONFIG_DIR)
+        lotofacil = Lotofacil(cfg)
 
         lotofacil.consultar(600) |should| equal_to(dict(
             concurso=600,

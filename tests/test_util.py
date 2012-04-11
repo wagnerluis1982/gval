@@ -6,8 +6,24 @@ from test_stuff.util import (ServidorDownload,
                              CONTEUDO_ENCODING)
 
 from should_dsl import should, should_not
-from lib.gval.util import Downloader, Cacher
+from lib.gval.util import Config, Downloader, Cacher
 import os
+
+class TestConfig:
+    def setUp(self):
+        self._dirtemp = DiretorioTemporario()
+        self.cfg = Config(str(self._dirtemp))
+
+    def tearDown(self):
+        del self._dirtemp
+
+    def test_get_config_dir(self):
+        "#get_config_dir"
+        os.path.exists(self.cfg.config_dir) |should| be(True)
+
+    def test_get_cache_dir(self):
+        "#get_cache_dir"
+        os.path.exists(self.cfg.cache_dir) |should| be(True)
 
 class TestDownloader:
     @classmethod
@@ -49,11 +65,11 @@ class TestCacher:
     @classmethod
     def setUpClass(cls):
         cls._dirtemp = DiretorioTemporario()
-        cls.dirtemp = str(cls._dirtemp)
-        cls.cacher = Cacher(cls.dirtemp)
+        cfg = Config(str(cls._dirtemp))
+        cls.cacher = Cacher(cfg)
 
         cls.arquivo = "arquivo_em_cache"
-        cls.caminho = os.path.join(cls.dirtemp, cls.arquivo)
+        cls.caminho = os.path.join(cfg.get_cache_dir('paginas'), cls.arquivo)
         cls.conteudo = 100 * "Um texto repetido 100 vezes "
 
     @classmethod
