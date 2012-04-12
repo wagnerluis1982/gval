@@ -3,6 +3,5 @@ A fazer
 
 - Projetar um arquivo de configurações
 - Implementar a conferência dos números
-- Migrar lógica do Script para um módulo do sistema, afim de ser testável
 - Implementar Mega Sena
 - Decorator para classes e métodos abstratos (NÃO PRIORITÁRIO)

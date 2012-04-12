@@ -1,41 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import gval.script
 import sys
-import gval.loteria
-
-def main(args):
-    if len(args) < 2:
-        print "ERRO: Número de argumentos inválido"
-        print "Modo de uso: gval-consultar <loteria> <concurso>"
-        exit(1)
-
-    classes = {
-       'lotofacil': gval.loteria.Lotofacil,
-       'lotomania': gval.loteria.Lotomania,
-       'quina': gval.loteria.Quina,
-    }
-
-    loteria = args[0]
-    concurso = int(args[1])
-
-    try:
-        klass = classes[loteria]
-    except KeyError:
-        print "ERRO: a loteria '%s' não existe ou ainda não foi implementada" % loteria
-        print "IMPLEMENTADAS: %s" % ', '.join(classes.keys())
-    else:
-        try:
-            resultado = klass().consultar(concurso)
-
-            print "Consulta de Resultado"
-            print "---------------------"
-            print "* Loteria: %s" % klass.__name__
-            print "* Concurso: %d" % resultado['concurso']
-            print "* Números: %s" % ' '.join(["%02d" % n for n in resultado['numeros']])
-        except ValueError:
-            print "ERRO: Concurso n. %d da %s não encontrado" % (concurso, klass.__name__)
-
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    gval.script.Script().consultar(*sys.argv[1:])
