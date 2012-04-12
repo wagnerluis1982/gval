@@ -10,7 +10,7 @@ class Quina(Loteria):
 
         POSICAO = dict(
             concurso=0,
-            numeros=range(14, 19)
+            numeros=range(21, 26)
         )
 
         return {'concurso': int(resultado[POSICAO['concurso']]),

@@ -25,36 +25,31 @@ class LoteriaParser(HTMLParser):
             self._dados.append(data)
 
 class QuinaParser(LoteriaParser):
-    def obter_dados(self):
-        dados = LoteriaParser.obter_dados(self)
-
-        return dados.format(sorteados='|'.join(self._numeros))
-
     def reset(self):
         LoteriaParser.reset(self)
 
-        self._span_id2 = False
+        self._capturar_lista = False
         self._capturar_numero = False
         self._numeros = []
 
     def handle_starttag(self, tag, attrs):
         LoteriaParser.handle_starttag(self, tag, attrs)
 
-        if self._span_id2 and tag == "li":
+        if tag == "li":
             self._capturar_numero = True
 
-        if tag == "span" and ("id", "sorteio2") in attrs:
-            self._span_id2 = True
-            self._dados.append("{sorteados}")
+        if tag == "ul":
+            self._capturar_lista = True
 
     def handle_endtag(self, tag):
         LoteriaParser.handle_endtag(self, tag)
 
-        if self._span_id2 and tag == "li":
+        if tag == "li":
             self._capturar_numero = False
 
-        if self._span_id2 and tag == "span":
-            self._span_id2 = False
+        if tag == "ul" and self._capturar_lista and len(self._numeros) > 0:
+            self._dados.append('|' + '|'.join(self._numeros) + '|')
+            self._numeros = []
 
     def handle_data(self, data):
         LoteriaParser.handle_data(self, data)
