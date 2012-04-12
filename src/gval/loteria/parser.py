@@ -62,3 +62,6 @@ class QuinaParser(LoteriaParser):
 
         if self._capturar_numero:
             self._numeros.append(data)
+
+class MegaSenaParser(QuinaParser):
+    pass

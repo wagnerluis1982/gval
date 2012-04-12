@@ -11,6 +11,7 @@ CLASSES = {
    'lotofacil': gval.loteria.Lotofacil,
    'lotomania': gval.loteria.Lotomania,
    'quina': gval.loteria.Quina,
+   'megasena': gval.loteria.MegaSena
 }
 
 class Script(object):

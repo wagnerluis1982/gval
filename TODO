@@ -1,7 +1,7 @@
 A fazer
 -------
 
-- Projetar um arquivo de configurações
+- Fazer a chamada de consultar() sem argumentos retornar o último resultado
 - Implementar a conferência dos números
-- Implementar Mega Sena
+- Projetar um arquivo de configurações
 - Decorator para classes e métodos abstratos (NÃO PRIORITÁRIO)
