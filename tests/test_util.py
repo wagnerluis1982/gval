@@ -18,11 +18,11 @@ class TestConfig:
         del self._dirtemp
 
     def test_get_config_dir(self):
-        "#get_config_dir"
+        "#get_config_dir deve retornar um caminho válido"
         os.path.exists(self.cfg.config_dir) |should| be(True)
 
     def test_get_cache_dir(self):
-        "#get_cache_dir"
+        "#get_cache_dir deve retornar um caminho válido"
         os.path.exists(self.cfg.cache_dir) |should| be(True)
 
 class TestDownloader:
