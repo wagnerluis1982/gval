@@ -24,6 +24,12 @@ class LoteriaParser(HTMLParser):
         if self._capturar:
             self._dados.append(data)
 
+class LotofacilParser(LoteriaParser):
+    pass
+
+class LotomaniaParser(LoteriaParser):
+    pass
+
 class QuinaParser(LoteriaParser):
     def reset(self):
         LoteriaParser.reset(self)

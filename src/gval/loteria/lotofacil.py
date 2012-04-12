@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from gval.loteria import Loteria
-from gval.loteria.parser import LoteriaParser
+from gval.loteria.parser import LotofacilParser
 
 class Lotofacil(Loteria):
     def _extrair_resultado(self, html):
-        parser = LoteriaParser()
+        parser = LotofacilParser()
         parser.feed(html)
         resultado = parser.dados.split('|')
 

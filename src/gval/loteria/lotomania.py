@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from gval.loteria import Loteria
-from gval.loteria.parser import LoteriaParser
+from gval.loteria.parser import LotomaniaParser
 
 class Lotomania(Loteria):
     _url_loteria = ("{loteria}/_{loteria}_pesquisa.asp?submeteu=sim&opcao="
                     "concurso&txtConcurso={concurso}")
 
     def _extrair_resultado(self, html):
-        parser = LoteriaParser()
+        parser = LotomaniaParser()
         parser.feed(html)
         resultado = parser.dados.split('|')
 
