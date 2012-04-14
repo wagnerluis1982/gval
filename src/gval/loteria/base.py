@@ -2,13 +2,18 @@
 import gval.util
 import os.path
 
+
+class LoteriaException(Exception):
+    pass
+
 class Loteria(object):
     # abstract class
 
-    # Os atributos dessa classe servem para construir a url de acesso aos
-    # resultados de cada loteria. Os valores inseridos aqui são os valores mais
-    # comuns. Cada subclasse deve sobrescrever os valores dos atributos (exceto
-    # da constante) para se adequar à url que deve ser usada
+    # A constante URL_BASE e os atributos _url_script, _url_params e _loteria
+    # servem para construir a url de acesso aos resultados de cada loteria. 
+    # Os valores dessa classe são os mais comuns. Cada subclasse deve
+    # sobrescrever os valores dos atributos para se adequar à url que deva ser
+    # usada.
 
     # Url comum a todas as loterias conhecidas
     URL_BASE = "http://www1.caixa.gov.br/loterias/loterias/{loteria}"
@@ -23,6 +28,13 @@ class Loteria(object):
     # com caixa reduzida
     _loteria = None
 
+    # Os dois primeiros atributos abaixo devem ser sobrescritos nas classes
+    # filhas, sob pena de exceção na hora de construir a instância.
+    # Eles servem como parâmetros para o método _extrair_resultado
+    _parser_class = None
+    _posicao_numeros = None # list ou generator (ex: xrange) de posições
+    _posicao_concurso = 0
+
     def __init__(self, cfg=None):
         # Valores usados ao consultar() o resultado de um concurso
         self._loteria = self._loteria or self.__class__.__name__.lower()
@@ -33,6 +45,10 @@ class Loteria(object):
         # Objeto responsável por gravar em cache
         cfg = cfg or gval.util.Config()
         self.cacher = gval.util.Cacher(cfg)
+
+        # Verifica se os atributos essenciais estão valorados
+        if None in (self._parser_class, self._posicao_numeros):
+            raise LoteriaException("Atributos essenciais não valorados")
 
     def consultar(self, concurso):
         url = self.__url_consulta(concurso)
@@ -45,8 +61,17 @@ class Loteria(object):
         return self._extrair_resultado(content)
 
     def _extrair_resultado(self, html):
-        # abstract method
-        raise NotImplementedError("Você deve sobrescrever esse método")
+        parser = self._parser_class()
+        parser.feed(html)
+        resultado = parser.dados.split('|')
+
+        POSICAO = dict(
+            concurso=self._posicao_concurso,
+            numeros=self._posicao_numeros,
+        )
+
+        return {'concurso': int(resultado[POSICAO['concurso']]),
+                'numeros': [int(resultado[n]) for n in POSICAO['numeros']]}
 
     def __url_consulta(self, concurso):
         return os.path.join(
