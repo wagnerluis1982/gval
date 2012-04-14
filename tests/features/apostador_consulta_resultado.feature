@@ -40,3 +40,13 @@ Funcionalidade: Apostador consulta resultado
       | 805  | 13 22 41 42 71 |
       | 1763 | 03 09 24 33 60 |
       | 2811 | 16 19 59 62 69 |
+
+  Esquema do Cenário: resultados da Mega Sena
+    Dado que eu apostei no jogo da Mega Sena
+    E que eu apostei no concurso <n>
+    Quando eu consulto o resultado dessa aposta
+    Então eu devo obter os números "<resultado>"
+
+    Exemplos:
+      | n    | resultado         |
+      | 1379 | 05 12 36 45 50 58 |

@@ -33,6 +33,7 @@ def quando_consulta_resultado(step):
         'lotofacil': Lotofacil,
         'lotomania': Lotomania,
         'quina': Quina,
+        'megasena': MegaSena
     }
     cfg = Config(config_dir=test_stuff.CONFIG_DIR)
     instancia = classes_loteria[world.jogo](cfg)
