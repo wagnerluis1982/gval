@@ -1,7 +1,12 @@
 A fazer
 -------
 
-- Fazer a chamada de consultar() sem argumentos retornar o último resultado
+- Definir testes para consulta sem argumentos (que retorna o último resultado)
+- Fazer o último resultado ser cacheável
+  * Acredito que para isso, consultar() deve armazenar a data da última
+    consulta, de forma que o cache seja apenas temporário.
+- Fazer o script de consulta notificar ao usuário o fato, quando for feita
+  consulta ao último resultado.
 - Implementar a conferência dos números
 - Projetar um arquivo de configurações
 - Decorator para classes e métodos abstratos (NÃO PRIORITÁRIO)

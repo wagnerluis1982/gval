@@ -22,13 +22,13 @@ class Script(object):
     def consultar(self, *args):
         saida = self.saida
 
-        if len(args) < 2:
+        if len(args) < 1:
             saida.write("ERRO: Número de argumentos inválido\n")
-            saida.write("Modo de uso: gval-consultar <loteria> <concurso>\n")
+            saida.write("Modo de uso: gval-consultar <loteria> [concurso]\n")
             return ERRO_NOARGS
 
         loteria = args[0]
-        concurso = int(args[1])
+        concurso = len(args) > 1 and int(args[1]) or None
 
         try:
             klass = CLASSES[loteria]

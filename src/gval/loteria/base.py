@@ -2,7 +2,6 @@
 import gval.util
 import os.path
 
-
 class LoteriaException(Exception):
     pass
 
@@ -50,13 +49,16 @@ class Loteria(object):
         if None in (self._parser_class, self._posicao_numeros):
             raise LoteriaException("Atributos essenciais não valorados")
 
-    def consultar(self, concurso):
+    def consultar(self, concurso=None):
         url = self.__url_consulta(concurso)
 
-        content = self.cacher.obter(url)
-        if content is None:
+        if concurso is not None:
+            content = self.cacher.obter(url)
+            if content is None:
+                content = self.downloader.download(url)
+                self.cacher.guardar(url, content)
+        else:
             content = self.downloader.download(url)
-            self.cacher.guardar(url, content)
 
         return self._extrair_resultado(content)
 
@@ -73,7 +75,10 @@ class Loteria(object):
         return {'concurso': int(resultado[POSICAO['concurso']]),
                 'numeros': [int(resultado[n]) for n in POSICAO['numeros']]}
 
-    def __url_consulta(self, concurso):
-        return os.path.join(
-                    self.URL_BASE, self._url_script + self._url_params).format(
-                        **{'loteria': self._loteria, 'concurso': concurso})
+    def __url_consulta(self, concurso=None):
+        fmt_url = os.path.join(self.URL_BASE, self._url_script)
+        if concurso is not None:
+            fmt_url += self._url_params
+
+        return fmt_url.format(**{'loteria': self._loteria,
+                                 'concurso': concurso})
