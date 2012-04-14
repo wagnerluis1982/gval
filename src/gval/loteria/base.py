@@ -1,18 +1,27 @@
 # -*- coding: utf-8 -*-
 import gval.util
+import os.path
 
 class Loteria(object):
     # abstract class
-    URL_BASE = "http://www1.caixa.gov.br/loterias/loterias/"
 
-    # Atributo do tipo string que serve como parâmetro para criar a url e
-    # outras coisas nas subclasses. Caso não seja atribuído, utiliza o nome da
-    # classe, com a caixa reduzida.
+    # Os atributos dessa classe servem para construir a url de acesso aos
+    # resultados de cada loteria. Os valores inseridos aqui são os valores mais
+    # comuns. Cada subclasse deve sobrescrever os valores dos atributos (exceto
+    # da constante) para se adequar à url que deve ser usada
+
+    # Url comum a todas as loterias conhecidas
+    URL_BASE = "http://www1.caixa.gov.br/loterias/loterias/{loteria}"
+
+    # Nome do script de acesso
+    _url_script = "{loteria}_pesquisa_new.asp"
+
+    # Parâmetros do script. Raramente muda
+    _url_params = "?submeteu=sim&opcao=concurso&txtConcurso={concurso}"
+
+    # String usada na marca {loteria}. Caso seja None, utiliza o nome da classe
+    # com caixa reduzida
     _loteria = None
-
-    # Parte final da url de consulta. Pode variar de acordo com o jogo.
-    _url_loteria = ("{loteria}/{loteria}_pesquisa_new.asp?submeteu=sim&opcao="
-                    "concurso&txtConcurso={concurso}")
 
     def __init__(self, cfg=None):
         # Valores usados ao consultar() o resultado de um concurso
@@ -40,6 +49,6 @@ class Loteria(object):
         raise NotImplementedError("Você deve sobrescrever esse método")
 
     def __url_consulta(self, concurso):
-        return (self.URL_BASE +
-                self._url_loteria.format(**{'loteria': self._loteria,
-                                            'concurso': concurso}))
+        return os.path.join(
+                    self.URL_BASE, self._url_script + self._url_params).format(
+                        **{'loteria': self._loteria, 'concurso': concurso})
