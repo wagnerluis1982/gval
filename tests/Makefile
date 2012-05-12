@@ -1,4 +1,4 @@
-default: spec_test
+default: spec_test features_test
 
 features_test:
 	@lettuce

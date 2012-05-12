@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
+from collections import namedtuple
 import gval.util
 import os.path
+
+Resultado = namedtuple("Resultado", ["concurso", "numeros"])
 
 class LoteriaException(Exception):
     pass
@@ -72,8 +75,8 @@ class Loteria(object):
             numeros=self._posicao_numeros,
         )
 
-        return {'concurso': int(resultado[POSICAO['concurso']]),
-                'numeros': [int(resultado[n]) for n in POSICAO['numeros']]}
+        return Resultado(concurso=int(resultado[POSICAO['concurso']]),
+                    numeros=[int(resultado[n]) for n in POSICAO['numeros']])
 
     def __url_consulta(self, concurso=None):
         fmt_url = os.path.join(self.URL_BASE, self._url_script)

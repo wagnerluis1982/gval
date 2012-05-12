@@ -2,8 +2,7 @@
 import test_stuff
 
 from should_dsl import should, should_not
-from gval.loteria.lotofacil import Lotofacil
-from gval.util import Config
+from lib.gval.util import Config
 from lib.gval.script import Script
 
 class Saida(file):

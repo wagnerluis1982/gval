@@ -44,9 +44,9 @@ class Script(object):
                 saida.write("Consulta de Resultado\n")
                 saida.write("---------------------\n")
                 saida.write("* Loteria: %s\n" % klass.__name__)
-                saida.write("* Concurso: %d\n" % resultado['concurso'])
+                saida.write("* Concurso: %d\n" % resultado.concurso)
                 saida.write("* Números: %s\n" % ' '.join(["%02d" % n for n in
-                                                        resultado['numeros']]))
+                                                        resultado.numeros]))
             except ValueError:
                 saida.write("ERRO: Concurso n. %d da %s não encontrado\n" %
                                                     (concurso, klass.__name__))
