@@ -12,11 +12,14 @@ def quando_confiro_aposta(step):
 @Then(u'^Então eu devo saber que acertei (\d+) acertos$')
 def devo_saber_quantidade_acertos(step, quantidade):
     quantidade = int(quantidade)
+    world.conferencia.quantidade |should| equal_to(quantidade)
 
 @Then(u'^E eu devo saber que acertei os números "([^"]*)"$')
 def devo_saber_numeros_acertados(step, acertados):
     acertados = map(int, acertados.split())
+    world.conferencia.acertados |should| equal_to(acertados)
 
 @Then(u'^E eu devo saber que eu ganhei (\d+\.\d+)$')
 def devo_saber_ganhei(step, premio):
     premio = float(premio)
+    world.conferencia.premio |should| equal_to(premio)
