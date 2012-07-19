@@ -22,6 +22,9 @@ class Conferencia(object):
                                "antes de atribuir a aposta e o resultado" %
                                self.__class__.__name__)
 
+        if self.resultado.concurso != self.aposta.concurso:
+            raise RuntimeError("O concurso do resultado é diferente da aposta")
+
         self.acertados = Util.intersecao(self.resultado.numeros,
                                          self.aposta.numeros)
         self.quantidade = len(self.acertados)

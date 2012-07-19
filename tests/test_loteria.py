@@ -37,3 +37,12 @@ class TestConferencia:
         c.aposta = None
         c.resultado = None
         c.calcula_acertos |should| throw(RuntimeError)
+
+    def test_calcula_acertos_erro_concurso(self):
+        "#calcula_acertos lança RuntimeError se os concursos são diferentes"
+
+        c = self.conferencia
+
+        c.aposta = Aposta(805, [13, 23, 45, 47, 78])
+        c.resultado = Resultado(900, [13, 22, 41, 42, 71])
+        c.calcula_acertos |should| throw(RuntimeError)
