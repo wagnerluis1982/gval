@@ -2,7 +2,7 @@
 import test_stuff
 
 from should_dsl import should, should_not
-from lib.gval.loteria import Lotofacil, Resultado, Conferencia
+from lib.gval.loteria import Lotofacil, Resultado, Conferencia, Aposta
 from lib.gval.util import Config
 
 class TestLotofacil:
@@ -29,8 +29,10 @@ class TestLotofacil:
 
         lotofacil = self.lotofacil
 
-        conferido = lotofacil.conferir(600, [2,4,5,6,7,9,10,11,15,17,18,19,20,21,24])
-        esperado = Conferencia(resultado=lotofacil.consultar(600), # chamando função com teste próprio
+        aposta = Aposta(600, [2,4,5,6,7,9,10,11,15,17,18,19,20,21,24])
+        conferido = lotofacil.conferir(aposta)
+        esperado = Conferencia(aposta,
+                               resultado=lotofacil.consultar(600), # chamando função com teste próprio
                                quantidade=8,
                                acertados=[5, 6, 9, 10, 11, 17, 18, 19],
                                premio=0.00)

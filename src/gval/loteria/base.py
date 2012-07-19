@@ -5,7 +5,8 @@ import os.path
 from gval.util import Util
 
 Resultado = namedtuple("Resultado", ["concurso", "numeros"])
-Conferencia = namedtuple("Conferencia", ["resultado", "quantidade",
+Aposta = namedtuple("Aposta", ["concurso", "numeros"])
+Conferencia = namedtuple("Conferencia", ["aposta", "resultado", "quantidade",
                                          "acertados", "premio"])
 
 class LoteriaException(Exception):
@@ -68,12 +69,11 @@ class Loteria(object):
 
         return self._extrair_resultado(content)
 
-    def conferir(self, concurso, numeros):
-        resultado = self.consultar(concurso)
-        acertados = Util.intersecao(resultado.numeros, numeros)
+    def conferir(self, aposta):
+        resultado = self.consultar(aposta.concurso)
+        acertados = Util.intersecao(resultado.numeros, aposta.numeros)
 
-        return Conferencia(resultado=resultado, quantidade=len(acertados),
-                           acertados=acertados, premio=0.00)
+        return Conferencia(aposta, resultado, len(acertados), acertados, 0.00)
 
     def _extrair_resultado(self, html):
         parser = self._parser_class()
