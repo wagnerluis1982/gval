@@ -2,6 +2,7 @@
 from collections import namedtuple
 import gval.util
 import os.path
+from gval.util import Util
 
 Resultado = namedtuple("Resultado", ["concurso", "numeros"])
 Conferencia = namedtuple("Conferencia", ["resultado", "quantidade",
@@ -69,7 +70,7 @@ class Loteria(object):
 
     def conferir(self, concurso, numeros):
         resultado = self.consultar(concurso)
-        acertados = [num for num in numeros if num in resultado.numeros]
+        acertados = Util.intersecao(resultado.numeros, numeros)
 
         return Conferencia(resultado=resultado, quantidade=len(acertados),
                            acertados=acertados, premio=0.00)
