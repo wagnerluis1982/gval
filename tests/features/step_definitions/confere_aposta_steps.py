@@ -7,7 +7,8 @@ def dado_numeros(step, numeros):
 
 @When(u'^Quando eu confiro essa aposta$')
 def quando_confiro_aposta(step):
-    world.conferencia = world.instancia().conferir(world.concurso, world.numeros)
+    aposta = Aposta(world.concurso, world.numeros)
+    world.conferencia = world.instancia().conferir(aposta)
 
 @Then(u'^Então eu devo saber que acertei (\d+) acertos$')
 def devo_saber_quantidade_acertos(step, quantidade):
