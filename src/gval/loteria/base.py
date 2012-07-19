@@ -6,8 +6,28 @@ from gval.util import Util
 
 Resultado = namedtuple("Resultado", ["concurso", "numeros"])
 Aposta = namedtuple("Aposta", ["concurso", "numeros"])
-Conferencia = namedtuple("Conferencia", ["aposta", "resultado", "quantidade",
-                                         "acertados", "premio"])
+
+class Conferencia(object):
+    def __init__(self, aposta=None, resultado=None, quantidade=None,
+                        acertados=None, premio=None):
+        assert aposta is None or isinstance(aposta, Aposta)
+        self.aposta = aposta
+
+        assert resultado is None or isinstance(resultado, Resultado)
+        self.resultado = resultado
+
+        assert quantidade is None or isinstance(quantidade, int)
+        self.quantidade = quantidade
+
+        assert acertados is None or isinstance(acertados, (list, tuple, set))
+        self.acertados = list(acertados)
+
+        assert premio is None or isinstance(premio, (int, long, float))
+        self.premio = premio
+
+    def __eq__(self, other):
+        assert isinstance(other, Conferencia)
+        return self.__dict__ == other.__dict__
 
 class LoteriaException(Exception):
     pass
