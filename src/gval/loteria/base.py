@@ -152,7 +152,7 @@ class Loteria(object):
         else:
             content = self.downloader.download(url)
 
-        return self._extrair_resultado(content)
+        return Resultado(**self._extrair_resultado(content))
 
     def conferir(self, aposta):
         conferencia = Conferencia()
@@ -174,8 +174,8 @@ class Loteria(object):
             numeros=self._posicao_numeros,
         )
 
-        return Resultado(concurso=int(resultado[POSICAO['concurso']]),
-                    numeros=[int(resultado[n]) for n in POSICAO['numeros']])
+        return {"concurso": int(resultado[POSICAO['concurso']]),
+                "numeros": [int(resultado[n]) for n in POSICAO['numeros']]}
 
     def __url_consulta(self, concurso=None):
         fmt_url = os.path.join(self.URL_BASE, self._url_script)
