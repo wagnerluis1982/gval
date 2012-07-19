@@ -20,3 +20,20 @@ class TestConferencia:
 
         c.acertados |should| equal_to([13])
         c.quantidade |should| equal_to(1)
+
+    def test_calcula_acertos_erro_None(self):
+        "#calcula_acertos lança RuntimeError se o resultado ou aposta é nulo"
+
+        c = self.conferencia
+
+        c.aposta = None
+        c.resultado = Resultado(805, [13, 22, 41, 42, 71])
+        c.calcula_acertos |should| throw(RuntimeError)
+
+        c.aposta = Aposta(805, [13, 23, 45, 47, 78])
+        c.resultado = None
+        c.calcula_acertos |should| throw(RuntimeError)
+
+        c.aposta = None
+        c.resultado = None
+        c.calcula_acertos |should| throw(RuntimeError)
