@@ -6,6 +6,14 @@ import os
 import re
 import urllib2
 
+class Util(object):
+    @staticmethod
+    def intersecao(a, b):
+        assert isinstance(a, (list, tuple, set))
+        assert isinstance(b, (list, tuple, set))
+
+        return list( set(a).intersection(b) )
+
 class ConfigException(Exception):
     pass
 

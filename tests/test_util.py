@@ -6,7 +6,7 @@ from test_stuff.util import (ServidorDownload,
                              CONTEUDO_ENCODING)
 
 from should_dsl import should, should_not
-from lib.gval.util import Config, Downloader, Cacher
+from lib.gval.util import Config, Downloader, Cacher, Util
 import os
 
 class TestConfig:
@@ -94,3 +94,15 @@ class TestCacher:
     def test_obter_nao_cache(self):
         "#obter deve retornar None para arquivos que não estejam em cache"
         self.cacher.obter(self.arquivo+'9') |should| be(None)
+
+class TestUtil:
+    def test_intersecao(self):
+        "#intersecao retorna list(<itens em comum>)"
+
+        Util.intersecao([1,2,3,4,5], [4,5,6,7,8]) |should| equal_to([4,5])
+
+        # teste com parâmetro tuple
+        Util.intersecao((1,2,3,4,5), [4,5,6,7,8]) |should| equal_to([4,5])
+
+        # teste com parâmetro set
+        Util.intersecao([1,2,3,4,5], set([4,5,6,7,8])) |should| equal_to([4,5])
