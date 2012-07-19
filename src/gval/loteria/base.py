@@ -4,6 +4,8 @@ import gval.util
 import os.path
 
 Resultado = namedtuple("Resultado", ["concurso", "numeros"])
+Conferencia = namedtuple("Conferencia", ["resultado", "quantidade",
+                                         "acertados", "premio"])
 
 class LoteriaException(Exception):
     pass
@@ -64,6 +66,13 @@ class Loteria(object):
             content = self.downloader.download(url)
 
         return self._extrair_resultado(content)
+
+    def conferir(self, concurso, numeros):
+        resultado = self.consultar(concurso)
+        acertados = [num for num in numeros if num in resultado.numeros]
+
+        return Conferencia(resultado=resultado, quantidade=len(acertados),
+                           acertados=acertados, premio=0.00)
 
     def _extrair_resultado(self, html):
         parser = self._parser_class()
