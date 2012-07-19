@@ -10,24 +10,84 @@ Aposta = namedtuple("Aposta", ["concurso", "numeros"])
 class Conferencia(object):
     def __init__(self, aposta=None, resultado=None, quantidade=None,
                         acertados=None, premio=None):
-        assert aposta is None or isinstance(aposta, Aposta)
         self.aposta = aposta
-
-        assert resultado is None or isinstance(resultado, Resultado)
         self.resultado = resultado
-
-        assert quantidade is None or isinstance(quantidade, int)
         self.quantidade = quantidade
-
-        assert acertados is None or isinstance(acertados, (list, tuple, set))
-        self.acertados = list(acertados)
-
-        assert premio is None or isinstance(premio, (int, long, float))
+        self.acertados = acertados
         self.premio = premio
+
+    def calcula_acertos(self):
+        if self.resultado is None or self.aposta is None:
+            raise RuntimeError("%s.calcula_acertos() não pode ser chamado "
+                               "antes de atribuir a aposta e o resultado" %
+                               self.__class__.__name__)
+
+        self.acertados = Util.intersecao(self.resultado.numeros,
+                                         self.aposta.numeros)
+        self.quantidade = len(self.acertados)
+
+    def get_aposta(self):
+        return self.__aposta
+
+    def get_resultado(self):
+        return self.__resultado
+
+    def get_quantidade(self):
+        return self.__quantidade
+
+    def get_acertados(self):
+        return self.__acertados
+
+    def get_premio(self):
+        return self.__premio
+
+    def set_aposta(self, aposta):
+        assert aposta is None or isinstance(aposta, Aposta)
+        self.__aposta = aposta
+
+    def set_resultado(self, resultado):
+        assert resultado is None or isinstance(resultado, Resultado)
+        self.__resultado = resultado
+
+    def set_quantidade(self, quantidade):
+        assert quantidade is None or isinstance(quantidade, int)
+        self.__quantidade = quantidade
+
+    def set_acertados(self, acertados):
+        if acertados is not None:
+            assert isinstance(acertados, (list, tuple, set))
+            self.__acertados = list(acertados)
+        else:
+            self.__acertados = None
+
+    def set_premio(self, premio):
+        assert premio is None or isinstance(premio, (int, long, float))
+        self.__premio = premio
+
+    def del_aposta(self):
+        del self.__aposta
+
+    def del_resultado(self):
+        del self.__resultado
+
+    def del_quantidade(self):
+        del self.__quantidade
+
+    def del_acertados(self):
+        del self.__acertados
+
+    def del_premio(self):
+        del self.__premio
 
     def __eq__(self, other):
         assert isinstance(other, Conferencia)
         return self.__dict__ == other.__dict__
+
+    aposta = property(get_aposta, set_aposta, del_aposta)
+    resultado = property(get_resultado, set_resultado, del_resultado)
+    quantidade = property(get_quantidade, set_quantidade, del_quantidade)
+    acertados = property(get_acertados, set_acertados, del_acertados)
+    premio = property(get_premio, set_premio, del_premio)
 
 class LoteriaException(Exception):
     pass
@@ -90,10 +150,14 @@ class Loteria(object):
         return self._extrair_resultado(content)
 
     def conferir(self, aposta):
-        resultado = self.consultar(aposta.concurso)
-        acertados = Util.intersecao(resultado.numeros, aposta.numeros)
+        conferencia = Conferencia()
 
-        return Conferencia(aposta, resultado, len(acertados), acertados, 0.00)
+        conferencia.aposta = aposta
+        conferencia.resultado = self.consultar(aposta.concurso)
+        conferencia.calcula_acertos()
+        conferencia.premio = 0.00
+
+        return conferencia
 
     def _extrair_resultado(self, html):
         parser = self._parser_class()
