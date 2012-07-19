@@ -83,6 +83,11 @@ class Conferencia(object):
         assert isinstance(other, Conferencia)
         return self.__dict__ == other.__dict__
 
+    def __repr__(self):
+        return str({"aposta": self.aposta, "resultado": self.resultado,
+                    "quantidade": self.quantidade, "acertados": self.acertados,
+                    "premio": self.premio})
+
     aposta = property(get_aposta, set_aposta, del_aposta)
     resultado = property(get_resultado, set_resultado, del_resultado)
     quantidade = property(get_quantidade, set_quantidade, del_quantidade)
