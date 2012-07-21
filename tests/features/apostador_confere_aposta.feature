@@ -27,7 +27,7 @@ Funcionalidade: Apostador confere aposta
       | 659 | 01 02 04 05 07 08 09 10 11 13 15 19 20 22 24 | 11 | 01 04 05 08 09 10 11 15 19 20 24          | 2.50    |
       | 700 | 01 02 06 07 08 09 10 13 14 16 18 19 21 22 24 | 14 | 01 02 06 07 08 09 10 13 14 16 18 19 21 22 | 2543.83 |
 
-  Esquema do Cenário: resultados da Lotomania
+  Esquema do Cenário: conferência da Lotomania
     Dado que eu apostei no jogo da Lotomania
     E que eu apostei no concurso <n>
     E que eu apostei nos números "<numeros>"
@@ -41,7 +41,7 @@ Funcionalidade: Apostador confere aposta
       | 914  | 00 03 04 05 06 07 08 10 12 13 14 17 18 19 20 21 22 23 24 25 | 0 |           | 104985.56 |
       | 1112 | 01 02 04 06 07 08 09 10 11 12 13 14 15 16 17 18 20 21 22 23 | 1 | 01        | 0.00      |
 
-  Esquema do Cenário: resultados da Quina
+  Esquema do Cenário: conferência da Quina
     Dado que eu apostei no jogo da Quina
     E que eu apostei no concurso <n>
     E que eu apostei nos números "<numeros>"
@@ -56,7 +56,7 @@ Funcionalidade: Apostador confere aposta
       | 1763 | 03 09 24 33 60 | 5 | 03 09 24 33 60 | 143758.75 |
       | 2811 | 16 19 59 63 76 | 3 | 16 19 59       | 109.68    |
 
-  Esquema do Cenário: resultados da Mega Sena
+  Esquema do Cenário: conferência da Mega Sena
     Dado que eu apostei no jogo da Mega Sena
     E que eu apostei no concurso <n>
     E que eu apostei nos números "<numeros>"
