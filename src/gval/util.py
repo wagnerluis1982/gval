@@ -15,15 +15,29 @@ class Util(object):
         return list( set(a).intersection(b) )
 
     @staticmethod
+    def maketrans_unicode(frm, to, to_none=True):
+        assert isinstance(frm, basestring)
+        assert isinstance(to, basestring)
+
+        length = len(frm)
+        if len(to) != length:
+            raise ValueError("os argumentos devem ter o mesmo comprimento")
+
+        _ord = (lambda x: ord(x) if x != '\0' else None) if to_none else ord
+        table = {}
+        for i in xrange(length):
+            table[_ord(frm[i])] = _ord(to[i])
+
+        return table
+
+    @staticmethod
     def str_to_numeral(str_numero, xtype=float):
         if isinstance(str_numero, str):
             str_numero = str_numero.decode("utf8")
         elif not isinstance(str_numero, unicode):
             raise TypeError("str_numero deve ser str ou unicode")
 
-        __ord = lambda x: None if x is None else ord(x)
-        tabela = dict(map(lambda x,y: (ord(x), __ord(y)),
-                          (',','.'), ('.',None) ))
+        tabela = Util.maketrans_unicode(",.", ".\0")
 
         return xtype(str_numero.translate(tabela))
 
