@@ -13,7 +13,6 @@ class TestMegaSena:
         cfg = Config(test_stuff.CONFIG_DIR)
         sena = MegaSena(cfg)
 
-        sena.consultar(1379) |should| equal_to(Resultado(
-            concurso=1379,
-            numeros=[5, 12, 36, 45, 50, 58]
-          ))
+        r = sena.consultar(1379)
+        r.concurso |should| equal_to(1379)
+        r.numeros |should| equal_to([5, 12, 36, 45, 50, 58])

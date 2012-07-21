@@ -2,8 +2,9 @@ A fazer
 -------
 
 - Implementar a conferência dos números
-- Reimplementar parser para que retorne diretamente um array
-- Reimplementar a extração do resultado para ser mais configurável
+- Reimplementar a obtenção do resultado para ser mais bem configurável
+  * via um arquivo arquivo externo ini ou xml?
+  * via as próprias subclasses? (PREFERÍVEL)
 - Definir testes para consulta sem argumentos (que retorna o último resultado)
 - Fazer o último resultado ser cacheável
   * Acredito que para isso, consultar() deve armazenar a data da última

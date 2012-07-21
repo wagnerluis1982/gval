@@ -6,7 +6,7 @@ class LoteriaParser(HTMLParser):
         setattr(self.__class__, 'dados', property(self.__class__.obter_dados))
 
     def obter_dados(self):
-        return ''.join(self._dados)
+        return ''.join(self._dados).split('|')
 
     def reset(self):
         HTMLParser.reset(self)

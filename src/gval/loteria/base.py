@@ -4,8 +4,25 @@ import gval.util
 import os.path
 from gval.util import Util
 
-Resultado = namedtuple("Resultado", ["concurso", "numeros"])
 Aposta = namedtuple("Aposta", ["concurso", "numeros"])
+
+class Resultado(object):
+    concurso = None
+    numeros = None
+    premiacao = None
+    bruto = None
+
+    def __init__(self, concurso=None, numeros=None, premiacao=None):
+        self.concurso = concurso
+        self.numeros = numeros
+        self.premiacao = premiacao
+
+    def __eq__(self, other):
+        assert isinstance(other, Resultado)
+        return self.__dict__ == other.__dict__
+
+    def __repr__(self):
+        return str(self.__dict__)
 
 class Conferencia(object):
     def __init__(self, aposta=None, resultado=None, quantidade=None,
@@ -87,9 +104,7 @@ class Conferencia(object):
         return self.__dict__ == other.__dict__
 
     def __repr__(self):
-        return str({"aposta": self.aposta, "resultado": self.resultado,
-                    "quantidade": self.quantidade, "acertados": self.acertados,
-                    "premio": self.premio})
+        return str(self.__dict__)
 
     aposta = property(get_aposta, set_aposta, del_aposta)
     resultado = property(get_resultado, set_resultado, del_resultado)
@@ -124,7 +139,7 @@ class Loteria(object):
 
     # Os dois primeiros atributos abaixo devem ser sobrescritos nas classes
     # filhas, sob pena de exceção na hora de construir a instância.
-    # Eles servem como parâmetros para o método _extrair_resultado
+    # Eles servem como parâmetros para o método _obter_resultado
     _parser_class = None
     _posicao_numeros = None # list ou generator (ex: xrange) de posições
     _posicao_concurso = 0
@@ -155,7 +170,7 @@ class Loteria(object):
         else:
             content = self.downloader.download(url)
 
-        return Resultado(**self._extrair_resultado(content))
+        return self._obter_resultado(content)
 
     def conferir(self, aposta):
         conferencia = Conferencia()
@@ -163,22 +178,31 @@ class Loteria(object):
         conferencia.aposta = aposta
         conferencia.resultado = self.consultar(aposta.concurso)
         conferencia.calcula_acertos()
-        conferencia.premio = 0.00
+
+        # Verifica se há premiação
+        premiacao = conferencia.resultado.premiacao
+        try:
+            conferencia.premio = premiacao[conferencia.quantidade][1]
+        except KeyError:
+            conferencia.premio = 0.00
 
         return conferencia
 
-    def _extrair_resultado(self, html):
-        parser = self._parser_class()
-        parser.feed(html)
-        resultado = parser.dados.split('|')
-
+    def _obter_resultado(self, html):
         POSICAO = dict(
             concurso=self._posicao_concurso,
             numeros=self._posicao_numeros,
         )
 
-        return {"concurso": int(resultado[POSICAO['concurso']]),
-                "numeros": [int(resultado[n]) for n in POSICAO['numeros']]}
+        parser = self._parser_class()
+        parser.feed(html)
+
+        resultado = Resultado()
+        resultado.bruto = parser.dados
+        resultado.concurso = int(resultado.bruto[POSICAO["concurso"]])
+        resultado.numeros = [int(resultado.bruto[n]) for n in POSICAO['numeros']]
+
+        return resultado
 
     def __url_consulta(self, concurso=None):
         fmt_url = os.path.join(self.URL_BASE, self._url_script)

@@ -11,7 +11,6 @@ class TestQuina:
         cfg = Config(test_stuff.CONFIG_DIR)
         quina = Quina(cfg)
 
-        quina.consultar(805) |should| equal_to(Resultado(
-            concurso=805,
-            numeros=[13, 22, 41, 42, 71]
-          ))
+        r = quina.consultar(805)
+        r.concurso |should| equal_to(805)
+        r.numeros |should| equal_to([13, 22, 41, 42, 71])
