@@ -15,8 +15,8 @@ class Lotofacil(Loteria):
                      (13, 22, 23),
                      (12, 24, 25),
                      (11, 26, 27)):
-            quantidade = Util.obter_numeral(resultado.bruto[mapa[1]], int)
-            premio = Util.obter_numeral(resultado.bruto[mapa[2]])
+            quantidade = Util.str_to_numeral(resultado.bruto[mapa[1]], int)
+            premio = Util.str_to_numeral(resultado.bruto[mapa[2]])
 
             resultado.premiacao[mapa[0]] = (quantidade, premio)
 

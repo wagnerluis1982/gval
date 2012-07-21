@@ -108,6 +108,6 @@ class TestUtil:
         Util.intersecao([1,2,3,4,5], set([4,5,6,7,8])) |should| equal_to([4,5])
 
     def test_obter_numeral(self):
-        "#obter_numeral converte u'198.678,07' => float(198678.07)"
+        "#str_to_numeral converte u'198.678,07' => float(198678.07)"
 
-        Util.obter_numeral(u'198.678,07') |should| equal_to(198678.07)
+        Util.str_to_numeral(u'198.678,07') |should| equal_to(198678.07)

@@ -15,7 +15,7 @@ class Util(object):
         return list( set(a).intersection(b) )
 
     @staticmethod
-    def obter_numeral(str_numero, xtype=float):
+    def str_to_numeral(str_numero, xtype=float):
         if isinstance(str_numero, str):
             str_numero = str_numero.decode("utf8")
         elif not isinstance(str_numero, unicode):
