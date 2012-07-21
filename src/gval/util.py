@@ -14,6 +14,19 @@ class Util(object):
 
         return list( set(a).intersection(b) )
 
+    @staticmethod
+    def obter_numeral(str_numero, xtype=float):
+        if isinstance(str_numero, str):
+            str_numero = str_numero.decode("utf8")
+        elif not isinstance(str_numero, unicode):
+            raise TypeError("str_numero deve ser str ou unicode")
+
+        __ord = lambda x: None if x is None else ord(x)
+        tabela = dict(map(lambda x,y: (ord(x), __ord(y)),
+                          (',','.'), ('.',None) ))
+
+        return xtype(str_numero.translate(tabela))
+
 class ConfigException(Exception):
     pass
 
