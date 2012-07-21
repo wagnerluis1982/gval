@@ -107,7 +107,17 @@ class TestUtil:
         # teste com parâmetro set
         Util.intersecao([1,2,3,4,5], set([4,5,6,7,8])) |should| equal_to([4,5])
 
-    def test_obter_numeral(self):
+    def test_str_to_numeral__tfloat(self):
         "#str_to_numeral converte u'198.678,07' => float(198678.07)"
 
         Util.str_to_numeral(u'198.678,07') |should| equal_to(198678.07)
+
+    def test_str_to_numeral__tint(self):
+        "#str_to_numeral converte u'167.465' => int(167465)"
+
+        Util.str_to_numeral(u'167.465') |should| equal_to(167465)
+
+    def test_str_to_numeral__error(self):
+        "#str_to_numeral lança TypeError se o argumento não é string"
+
+        (lambda: Util.str_to_numeral(6578)) |should| throw(TypeError)
