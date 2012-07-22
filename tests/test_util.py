@@ -121,3 +121,18 @@ class TestUtil:
         "#str_to_numeral lança TypeError se o argumento não é string"
 
         (lambda: Util.str_to_numeral(6578)) |should| throw(TypeError)
+
+    def test_maketrans_unicode(self):
+        "#maketrans_unicode('ab', 'yz') retorna {97: 121, 98: 122}"
+
+        Util.maketrans_unicode('ab', 'yz') |should| equal_to({97: 121, 98: 122})
+
+    def test_maketrans_unicode__None(self):
+        "#maketrans_unicode('ab', 'y\\0') retorna {97: 121, 98: None}"
+
+        Util.maketrans_unicode('ab', 'y\0') |should| equal_to({97: 121, 98: None})
+
+    def test_maketrans_unicode__error(self):
+        "#maketrans_unicode(frm, to) lança ValueError se len(frm) != len(to)" 
+
+        Util.maketrans_unicode('ab', 'y\0') |should| equal_to({97: 121, 98: None})
