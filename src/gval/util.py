@@ -23,7 +23,11 @@ class Util(object):
         if len(to) != length:
             raise ValueError("os argumentos devem ter o mesmo comprimento")
 
-        _ord = (lambda x: ord(x) if x != '\0' else None) if to_none else ord
+        if to_none:
+            _ord = (lambda c: ord(c) if c != '\0' else None)
+        else:
+            _ord = ord
+
         table = {}
         for i in xrange(length):
             table[_ord(frm[i])] = _ord(to[i])
