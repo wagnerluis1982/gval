@@ -120,10 +120,9 @@ class Loteria(object):
     # abstract class
 
     # A constante URL_BASE e os atributos _url_script, _url_params e _url_loteria
-    # servem para construir a url de acesso aos resultados de cada loteria. 
+    # servem para construir a url de acesso aos resultados de cada loteria.
     # Os valores dessa classe são os mais comuns. Cada subclasse deve
-    # sobrescrever os valores dos atributos para se adequar à url que deva ser
-    # usada.
+    # sobrescrever os atributos para se adequar à url que deva ser usada.
 
     # Url comum a todas as loterias conhecidas
     URL_BASE = "http://www1.caixa.gov.br/loterias/loterias/{loteria}"
@@ -131,11 +130,10 @@ class Loteria(object):
     # Nome do script de acesso
     _url_script = "{loteria}_pesquisa_new.asp"
 
-    # Parâmetros do script. Raramente muda
+    # Parâmetros do script. Raramente muda.
     _url_params = "?submeteu=sim&opcao=concurso&txtConcurso={concurso}"
 
-    # String usada na marca {loteria}. Caso seja None, utiliza o nome da classe
-    # com caixa reduzida
+    # String usada em {loteria}. Se None, usa o nome da classe em caixa baixa.
     _url_loteria = None
 
     # Classe de parser, usada no método _obter_resultado. Normalmente é obtida
@@ -211,11 +209,11 @@ class Loteria(object):
         resultado.numeros = [int(resultado.bruto[n]) for n in POSICAO['numeros']]
 
         resultado.premiacao = {}
-        for mapa in self._posicao_premios:
-            quantidade = Util.str_to_numeral(resultado.bruto[mapa[1]], int)
-            premio = Util.str_to_numeral(resultado.bruto[mapa[2]])
+        for qnt, posicoes in self._posicao_premios.iteritems():
+            ganhadores = Util.str_to_numeral(resultado.bruto[posicoes[0]], int)
+            premio = Util.str_to_numeral(resultado.bruto[posicoes[1]])
 
-            resultado.premiacao[mapa[0]] = (quantidade, premio)
+            resultado.premiacao[qnt] = (ganhadores, premio)
 
         return resultado
 
