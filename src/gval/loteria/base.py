@@ -113,6 +113,14 @@ class Conferencia(object):
     acertados = property(get_acertados, set_acertados, del_acertados)
     premio = property(get_premio, set_premio, del_premio)
 
+class Posicao(object):
+    # Os atributos numeros e premios são mandatórios
+
+    def __init__(self, concurso=0, numeros=None, premios=None):
+        self.concurso = concurso # int
+        self.numeros = numeros   # list(<int>) ou generator(<int>)
+        self.premios = premios   # dict(<int>: (<int>, <int>))
+
 class LoteriaException(Exception):
     pass
 
@@ -140,16 +148,13 @@ class Loteria(object):
     # automaticamente de gval.loteria.parser.<subclassName>Parser.
     parser_class = None
 
-    # Os dois primeiros atributos abaixo devem ser sobrescritos nas classes
-    # filhas, sob pena de exceção na hora de construir a instância.
-    # Eles são usados no método _obter_resultado.
-    posicao_numeros = None # list ou generator (ex: xrange) de posições
-    posicao_premios = None # array de tuplas de 3 posições
-    posicao_concurso = 0
+    # O atributo posicao, uma instancia da classe Posicao, é necessária para o
+    # método _obter_resultado.
+    posicao = Posicao()
 
     def __init__(self, cfg=None):
         # Verifica se os atributos essenciais estão valorados
-        if None in (self.posicao_numeros, self.posicao_premios):
+        if None in (self.posicao.numeros, self.posicao.premios):
             raise LoteriaException("Atributos essenciais não valorados")
 
         # Objeto responsável por gravar em cache
@@ -195,21 +200,16 @@ class Loteria(object):
         return conferencia
 
     def _obter_resultado(self, html):
-        POSICAO = dict(
-            concurso=self.posicao_concurso,
-            numeros=self.posicao_numeros,
-        )
-
         parser = self.parser_class()
         parser.feed(html)
 
         resultado = Resultado()
         resultado.bruto = parser.dados
-        resultado.concurso = int(resultado.bruto[POSICAO["concurso"]])
-        resultado.numeros = [int(resultado.bruto[n]) for n in POSICAO['numeros']]
+        resultado.concurso = int(resultado.bruto[self.posicao.concurso])
+        resultado.numeros = [int(resultado.bruto[n]) for n in self.posicao.numeros]
 
         resultado.premiacao = {}
-        for qnt, posicoes in self.posicao_premios.iteritems():
+        for qnt, posicoes in self.posicao.premios.iteritems():
             ganhadores = Util.str_to_numeral(resultado.bruto[posicoes[0]], int)
             premio = Util.str_to_numeral(resultado.bruto[posicoes[1]])
 

@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from gval.loteria import Loteria
+from gval.loteria import Loteria, Posicao
 
 class Lotomania(Loteria):
-    posicao_numeros = xrange(6, 26)
-    posicao_premios = {}
+    posicao = Posicao(
+        numeros = xrange(6, 26),
+        premios = {},
+    )
 
     url_script = "_lotomania_pesquisa.asp"

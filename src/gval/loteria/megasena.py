@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-from gval.loteria import Loteria
+from gval.loteria import Loteria, Posicao
 
 class MegaSena(Loteria):
-    posicao_numeros = xrange(28, 34)
-    posicao_premios = {}
+    posicao = Posicao(
+        numeros = xrange(28, 34),
+        premios = {},
+    )
