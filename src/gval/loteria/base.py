@@ -146,11 +146,12 @@ class Loteria(object):
     # filhas, sob pena de exceção na hora de construir a instância.
     # Eles são usados no método _obter_resultado.
     _posicao_numeros = None # list ou generator (ex: xrange) de posições
+    _posicao_premios = None # array de tuplas de 3 posições
     _posicao_concurso = 0
 
     def __init__(self, cfg=None):
         # Verifica se os atributos essenciais estão valorados
-        if None in (self._posicao_numeros,):
+        if None in (self._posicao_numeros, self._posicao_premios):
             raise LoteriaException("Atributos essenciais não valorados")
 
         # Objeto responsável por gravar em cache
