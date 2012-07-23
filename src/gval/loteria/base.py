@@ -210,6 +210,13 @@ class Loteria(object):
         resultado.concurso = int(resultado.bruto[POSICAO["concurso"]])
         resultado.numeros = [int(resultado.bruto[n]) for n in POSICAO['numeros']]
 
+        resultado.premiacao = {}
+        for mapa in self._posicao_premios:
+            quantidade = Util.str_to_numeral(resultado.bruto[mapa[1]], int)
+            premio = Util.str_to_numeral(resultado.bruto[mapa[2]])
+
+            resultado.premiacao[mapa[0]] = (quantidade, premio)
+
         return resultado
 
     def __url_consulta(self, concurso=None):
