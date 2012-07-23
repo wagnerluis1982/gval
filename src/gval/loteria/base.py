@@ -118,7 +118,7 @@ class LoteriaException(Exception):
 class Loteria(object):
     # abstract class
 
-    # A constante URL_BASE e os atributos _url_script, _url_params e _loteria
+    # A constante URL_BASE e os atributos _url_script, _url_params e _url_loteria
     # servem para construir a url de acesso aos resultados de cada loteria. 
     # Os valores dessa classe são os mais comuns. Cada subclasse deve
     # sobrescrever os valores dos atributos para se adequar à url que deva ser
@@ -135,7 +135,7 @@ class Loteria(object):
 
     # String usada na marca {loteria}. Caso seja None, utiliza o nome da classe
     # com caixa reduzida
-    _loteria = None
+    _url_loteria = None
 
     # Os dois primeiros atributos abaixo devem ser sobrescritos nas classes
     # filhas, sob pena de exceção na hora de construir a instância.
@@ -146,7 +146,7 @@ class Loteria(object):
 
     def __init__(self, cfg=None):
         # Valores usados ao consultar() o resultado de um concurso
-        self._loteria = self._loteria or self.__class__.__name__.lower()
+        self._url_loteria = self._url_loteria or self.__class__.__name__.lower()
 
         # Objeto responsável pelos downloads
         self.downloader = gval.util.Downloader()
@@ -209,5 +209,5 @@ class Loteria(object):
         if concurso is not None:
             fmt_url += self._url_params
 
-        return fmt_url.format(**{'loteria': self._loteria,
+        return fmt_url.format(**{'loteria': self._url_loteria,
                                  'concurso': concurso})
