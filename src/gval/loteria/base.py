@@ -3,6 +3,7 @@ from collections import namedtuple
 import gval.util
 import os.path
 from gval.util import Util
+import gval.loteria.parser
 
 Aposta = namedtuple("Aposta", ["concurso", "numeros"])
 
@@ -137,27 +138,33 @@ class Loteria(object):
     # com caixa reduzida
     _url_loteria = None
 
+    # Classe de parser, usada no método _obter_resultado. Normalmente é obtida
+    # automaticamente de gval.loteria.parser.<subclassName>Parser.
+    _parser_class = None
+
     # Os dois primeiros atributos abaixo devem ser sobrescritos nas classes
     # filhas, sob pena de exceção na hora de construir a instância.
-    # Eles servem como parâmetros para o método _obter_resultado
-    _parser_class = None
+    # Eles são usados no método _obter_resultado.
     _posicao_numeros = None # list ou generator (ex: xrange) de posições
     _posicao_concurso = 0
 
     def __init__(self, cfg=None):
-        # Valores usados ao consultar() o resultado de um concurso
-        self._url_loteria = self._url_loteria or self.__class__.__name__.lower()
-
-        # Objeto responsável pelos downloads
-        self.downloader = gval.util.Downloader()
+        # Verifica se os atributos essenciais estão valorados
+        if None in (self._posicao_numeros,):
+            raise LoteriaException("Atributos essenciais não valorados")
 
         # Objeto responsável por gravar em cache
         cfg = cfg or gval.util.Config()
         self.cacher = gval.util.Cacher(cfg)
 
-        # Verifica se os atributos essenciais estão valorados
-        if None in (self._parser_class, self._posicao_numeros):
-            raise LoteriaException("Atributos essenciais não valorados")
+        # Objeto responsável pelos downloads
+        self.downloader = gval.util.Downloader()
+
+        # Valores usados ao consultar() o resultado de um concurso
+        self._url_loteria = self._url_loteria or self.__class__.__name__.lower()
+        self._parser_class = (self._parser_class or
+                              getattr(gval.loteria.parser,
+                                      "%sParser" % self.__class__.__name__))
 
     def consultar(self, concurso=None):
         url = self.__url_consulta(concurso)

@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 from gval.loteria import Loteria
-from gval.loteria.parser import LotofacilParser
 from gval.util import Util
 
 class Lotofacil(Loteria):
-    _parser_class = LotofacilParser
     _posicao_numeros = xrange(3, 18)
 
     def _obter_resultado(self, html):
