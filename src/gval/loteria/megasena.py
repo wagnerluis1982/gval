@@ -2,5 +2,5 @@
 from gval.loteria import Loteria
 
 class MegaSena(Loteria):
-    _posicao_numeros = xrange(28, 34)
-    _posicao_premios = {}
+    posicao_numeros = xrange(28, 34)
+    posicao_premios = {}

@@ -119,7 +119,7 @@ class LoteriaException(Exception):
 class Loteria(object):
     # abstract class
 
-    # A constante URL_BASE e os atributos _url_script, _url_params e _url_loteria
+    # A constante URL_BASE e os atributos url_script, url_params e url_loteria
     # servem para construir a url de acesso aos resultados de cada loteria.
     # Os valores dessa classe são os mais comuns. Cada subclasse deve
     # sobrescrever os atributos para se adequar à url que deva ser usada.
@@ -128,28 +128,28 @@ class Loteria(object):
     URL_BASE = "http://www1.caixa.gov.br/loterias/loterias/{loteria}"
 
     # Nome do script de acesso
-    _url_script = "{loteria}_pesquisa_new.asp"
+    url_script = "{loteria}_pesquisa_new.asp"
 
     # Parâmetros do script. Raramente muda.
-    _url_params = "?submeteu=sim&opcao=concurso&txtConcurso={concurso}"
+    url_params = "?submeteu=sim&opcao=concurso&txtConcurso={concurso}"
 
     # String usada em {loteria}. Se None, usa o nome da classe em caixa baixa.
-    _url_loteria = None
+    url_loteria = None
 
     # Classe de parser, usada no método _obter_resultado. Normalmente é obtida
     # automaticamente de gval.loteria.parser.<subclassName>Parser.
-    _parser_class = None
+    parser_class = None
 
     # Os dois primeiros atributos abaixo devem ser sobrescritos nas classes
     # filhas, sob pena de exceção na hora de construir a instância.
     # Eles são usados no método _obter_resultado.
-    _posicao_numeros = None # list ou generator (ex: xrange) de posições
-    _posicao_premios = None # array de tuplas de 3 posições
-    _posicao_concurso = 0
+    posicao_numeros = None # list ou generator (ex: xrange) de posições
+    posicao_premios = None # array de tuplas de 3 posições
+    posicao_concurso = 0
 
     def __init__(self, cfg=None):
         # Verifica se os atributos essenciais estão valorados
-        if None in (self._posicao_numeros, self._posicao_premios):
+        if None in (self.posicao_numeros, self.posicao_premios):
             raise LoteriaException("Atributos essenciais não valorados")
 
         # Objeto responsável por gravar em cache
@@ -160,8 +160,8 @@ class Loteria(object):
         self.downloader = gval.util.Downloader()
 
         # Valores usados ao consultar() o resultado de um concurso
-        self._url_loteria = self._url_loteria or self.__class__.__name__.lower()
-        self._parser_class = (self._parser_class or
+        self.url_loteria = self.url_loteria or self.__class__.__name__.lower()
+        self.parser_class = (self.parser_class or
                               getattr(gval.loteria.parser,
                                       "%sParser" % self.__class__.__name__))
 
@@ -196,11 +196,11 @@ class Loteria(object):
 
     def _obter_resultado(self, html):
         POSICAO = dict(
-            concurso=self._posicao_concurso,
-            numeros=self._posicao_numeros,
+            concurso=self.posicao_concurso,
+            numeros=self.posicao_numeros,
         )
 
-        parser = self._parser_class()
+        parser = self.parser_class()
         parser.feed(html)
 
         resultado = Resultado()
@@ -209,7 +209,7 @@ class Loteria(object):
         resultado.numeros = [int(resultado.bruto[n]) for n in POSICAO['numeros']]
 
         resultado.premiacao = {}
-        for qnt, posicoes in self._posicao_premios.iteritems():
+        for qnt, posicoes in self.posicao_premios.iteritems():
             ganhadores = Util.str_to_numeral(resultado.bruto[posicoes[0]], int)
             premio = Util.str_to_numeral(resultado.bruto[posicoes[1]])
 
@@ -218,9 +218,9 @@ class Loteria(object):
         return resultado
 
     def __url_consulta(self, concurso=None):
-        fmt_url = os.path.join(self.URL_BASE, self._url_script)
+        fmt_url = os.path.join(self.URL_BASE, self.url_script)
         if concurso is not None:
-            fmt_url += self._url_params
+            fmt_url += self.url_params
 
-        return fmt_url.format(**{'loteria': self._url_loteria,
+        return fmt_url.format(**{'loteria': self.url_loteria,
                                  'concurso': concurso})

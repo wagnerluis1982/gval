@@ -2,5 +2,5 @@
 from gval.loteria import Loteria
 
 class Quina(Loteria):
-    _posicao_numeros = xrange(21, 26)
-    _posicao_premios = {}
+    posicao_numeros = xrange(21, 26)
+    posicao_premios = {}
