@@ -146,7 +146,7 @@ class Loteria(object):
     # Instância da classe URL. É necessário para consultar().
     url = None
 
-    # Instância da classe Posicao. É necessário _obter_resultado().
+    # Instância da classe Posicao. É necessário para _obter_resultado().
     posicao = None
 
     # Classe do parser usada para _obter_resultado(). Normalmente é obtida de
