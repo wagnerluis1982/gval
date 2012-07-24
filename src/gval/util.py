@@ -12,7 +12,7 @@ class Util(object):
         assert isinstance(a, (list, tuple, set))
         assert isinstance(b, (list, tuple, set))
 
-        return list( set(a).intersection(b) )
+        return sorted( set(a).intersection(b) )
 
     @staticmethod
     def maketrans_unicode(frm, to, to_none=True):
