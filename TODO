@@ -1,15 +1,24 @@
 A fazer
 -------
 
-- Implementar a conferência dos números
-- Reimplementar a obtenção do resultado para ser mais bem configurável
-  * via um arquivo arquivo externo ini ou xml?
-  * via as próprias subclasses? (PREFERÍVEL)
+- Reprojetar script:
+  * Nome: gval.py
+  * Comandos:
+    - consultar
+      ├─ jogo:     --jogo       -j
+      └─ concurso: --concurso   -c
+    - conferir
+      ├─ jogo:     --jogo       -j
+      ├─ concurso: --concurso   -c
+      └─ aposta:   --aposta     -a
+         └─ lotomania: --espelho   -e
+    - gerar (futuramente)
+      └─ jogo:     --jogo       -j
+- Projetar um arquivo de configurações
 - Definir testes para consulta sem argumentos (que retorna o último resultado)
 - Fazer o último resultado ser cacheável
   * Acredito que para isso, consultar() deve armazenar a data da última
     consulta, de forma que o cache seja apenas temporário.
 - Fazer o script de consulta notificar ao usuário o fato, quando for feita
   consulta ao último resultado.
-- Projetar um arquivo de configurações
 - Decorator para classes e métodos abstratos (NÃO PRIORITÁRIO)
