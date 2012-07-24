@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from gval.loteria import Loteria, Posicao
+from gval.loteria import Loteria, Posicao, URL
 
 class Lotomania(Loteria):
     posicao = Posicao(
@@ -7,4 +7,6 @@ class Lotomania(Loteria):
         premios = {},
     )
 
-    url_script = "_lotomania_pesquisa.asp"
+    url = URL(
+        script = "_lotomania_pesquisa.asp",
+    )
