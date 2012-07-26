@@ -18,13 +18,22 @@ class Saida(file):
     def clear(self):
         self.mensagem = []
 
-class TestScript:
-    saida = Saida()
+class SaidaFormatter:
+    def __init__(self, formato):
+        self._formato = formato
 
-    @classmethod
-    def setUpClass(cls):
-        cls.script = Script(saida=cls.saida, cfg=Config(test_stuff.CONFIG_DIR))
-        cls.formato_saida = (
+    def gerar(self, *params):
+        return (self._formato % params).splitlines(True)
+
+class TestScript:
+    def setUp(self):
+        self.saida = Saida()
+        self.script = Script(saida=self.saida, cfg=Config(test_stuff.CONFIG_DIR))
+
+    def test_gval_consultar(self):
+        "#gval-consultar deve retornar o resultado da loteria solicitada"
+
+        fmt = SaidaFormatter(
             "Consulta de Resultado\n"
             "---------------------\n"
             "* Loteria: %s\n"
@@ -32,15 +41,8 @@ class TestScript:
             "* Números: %s\n"
         )
 
-    def setUp(self):
-        self.saida.clear()
-
-    def test_gval_consultar(self):
-        "#gval-consultar deve retornar o resultado da loteria solicitada"
-
         self.script.consultar('lotofacil', '600') |should| equal_to(0)
 
-        s = ('Lotofacil', 600, '01 03 05 06 08 09 10 11 16 17 18 19 22 23 25')
-        saida_esperada = (self.formato_saida % s).splitlines(True)
-
+        saida_esperada = fmt.gerar('Lotofacil', 600,
+                                '01 03 05 06 08 09 10 11 16 17 18 19 22 23 25')
         self.saida.readlines() |should| equal_to(saida_esperada)
