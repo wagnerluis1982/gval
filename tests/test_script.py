@@ -30,6 +30,23 @@ class TestScript:
         self.saida = Saida()
         self.script = Script(saida=self.saida, cfg=Config(test_stuff.CONFIG_DIR))
 
+    def test_preparar(self):
+        "#preparar lê os args do cmd e retorna o método e params a executar"
+
+        ### COMANDO: consultar ###
+
+        args = 'consultar', '--jogo', 'lotofacil', '--concurso', '600'
+        esperado = (self.script.consultar, ('lotofacil', 600))
+        self.script.preparar(args) |should| equal_to(esperado)
+
+        args = 'consultar', '--jogo=lotofacil', '--concurso', '605'
+        esperado = (self.script.consultar, ('lotofacil', 605))
+        self.script.preparar(args) |should| equal_to(esperado)
+
+        args = 'consultar', '--concurso=610', '--jogo', 'lotofacil'
+        esperado = (self.script.consultar, ('lotofacil', 610))
+        self.script.preparar(args) |should| equal_to(esperado)
+
     def test_gval_consultar(self):
         "#gval-consultar deve retornar o resultado da loteria solicitada"
 

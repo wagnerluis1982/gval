@@ -2,6 +2,7 @@
 import gval.loteria
 import gval.util
 import sys
+import getopt
 
 ERRO_NOARGS = 1
 ERRO_EXISTE = 2
@@ -53,3 +54,21 @@ class Script(object):
                 return ERRO_ENCONT
 
         return 0
+
+    def preparar(self, argv):
+        if argv[0] == "consultar":
+            opts, args = getopt.getopt(argv[1:],
+                # opções curtas
+                "j:c:",
+                # opções longas
+                ["jogo=", "concurso="])
+
+        jogo = None
+        concurso = None
+        for option, arg in opts:
+            if option in ('-j', "--jogo"):
+                jogo = arg
+            elif option in ('-c', "--concurso"):
+                concurso = int(arg)
+
+        return (self.consultar, (jogo, concurso))
