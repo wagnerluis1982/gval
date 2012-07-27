@@ -25,7 +25,7 @@ class Script(object):
         self.saida = saida or sys.stdout
         self.cfg = cfg or gval.util.Config()
 
-    def consultar(self, *args):
+    def cmd_consultar(self, *args):
         saida = self.saida
 
         if len(args) < 1:
@@ -60,7 +60,7 @@ class Script(object):
 
         return 0
 
-    def conferir(self):
+    def cmd_conferir(self):
         pass
 
     def preparar(self, *argv):
@@ -74,9 +74,9 @@ class Script(object):
         # Tenta achar o método do comando enviado. Caso o método não seja
         # encontrado, é lançada uma exceção.
         try:
-            ret_method = getattr(self, comando)
+            ret_method = getattr(self, "cmd_%s" % comando)
         except AttributeError:
-            raise ScriptException
+            raise ScriptException("Comando não encontrado")
 
         # Opções por comando
         if comando in ("consultar", "conferir"):
