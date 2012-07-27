@@ -35,19 +35,19 @@ class TestScript:
 
         args = 'consultar', '--jogo', 'lotofacil', '--concurso', '600'
         esperado = (self.script.consultar, ('lotofacil', 600))
-        self.script.preparar(args) |should| equal_to(esperado)
+        self.script.preparar(*args) |should| equal_to(esperado)
 
         args = 'consultar', '--jogo=megasena', '--concurso', '605'
         esperado = (self.script.consultar, ('megasena', 605))
-        self.script.preparar(args) |should| equal_to(esperado)
+        self.script.preparar(*args) |should| equal_to(esperado)
 
         args = 'consultar', '--concurso=610', '--jogo', 'quina'
         esperado = (self.script.consultar, ('quina', 610))
-        self.script.preparar(args) |should| equal_to(esperado)
+        self.script.preparar(*args) |should| equal_to(esperado)
 
         args = 'consultar', '-j', 'lotomania', '-c', '600' # opção curta
         esperado = (self.script.consultar, ('lotomania', 600))
-        self.script.preparar(args) |should| equal_to(esperado)
+        self.script.preparar(*args) |should| equal_to(esperado)
 
     def test_preparar__conferir(self):
         "#preparar cmd conferir retorna (<method>, ('<jogo>', <num>, <aposta>))"
@@ -56,7 +56,7 @@ class TestScript:
                     '--aposta', '01 02 03 04 05 06 07 08 09 10 11 12 13 14 15'
         esperado = (self.script.conferir, ('lotofacil', 600,
                     (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)))
-        self.script.preparar(args) |should| equal_to(esperado)
+        self.script.preparar(*args) |should| equal_to(esperado)
 
     def test_gval_consultar(self):
         "#gval-consultar deve retornar o resultado da loteria solicitada"

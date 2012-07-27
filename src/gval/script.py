@@ -12,7 +12,7 @@ CLASSES = {
    'lotofacil': gval.loteria.Lotofacil,
    'lotomania': gval.loteria.Lotomania,
    'quina': gval.loteria.Quina,
-   'megasena': gval.loteria.MegaSena
+   'megasena': gval.loteria.MegaSena,
 }
 
 class Script(object):
@@ -58,7 +58,7 @@ class Script(object):
     def conferir(self):
         pass
 
-    def preparar(self, argv):
+    def preparar(self, *argv):
         if argv[0] == "consultar":
             retmethod = self.consultar
             opts, args = getopt.getopt(argv[1:],
