@@ -55,20 +55,38 @@ class Script(object):
 
         return 0
 
+    def conferir(self):
+        pass
+
     def preparar(self, argv):
         if argv[0] == "consultar":
+            retmethod = self.consultar
             opts, args = getopt.getopt(argv[1:],
                 # opções curtas
                 "j:c:",
                 # opções longas
                 ["jogo=", "concurso="])
+        elif argv[0] == "conferir":
+            retmethod = self.conferir
+            opts, args = getopt.getopt(argv[1:],
+                # opções curtas
+                "j:c:a:",
+                # opções longas
+                ["jogo=", "concurso=", "aposta="])
 
         jogo = None
         concurso = None
+        aposta = None
         for option, arg in opts:
             if option in ('-j', "--jogo"):
                 jogo = arg
             elif option in ('-c', "--concurso"):
                 concurso = int(arg)
+            elif option in ('-a', "--aposta"):
+                aposta = tuple( map(int, arg.split()) )
 
-        return (self.consultar, (jogo, concurso))
+        retargs = (jogo, concurso)
+        if aposta is not None:
+            retargs += (aposta,)
+
+        return (retmethod, retargs)

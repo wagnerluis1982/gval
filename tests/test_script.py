@@ -47,6 +47,18 @@ class TestScript:
         esperado = (self.script.consultar, ('lotofacil', 610))
         self.script.preparar(args) |should| equal_to(esperado)
 
+        args = 'consultar', '-j', 'lotofacil', '-c', '600' # opção curta
+        esperado = (self.script.consultar, ('lotofacil', 600))
+        self.script.preparar(args) |should| equal_to(esperado)
+
+        ### COMANDO: conferir ###
+
+        args = 'conferir', '--jogo', 'lotofacil', '--concurso', '600',  \
+                    '--aposta', '01 02 03 04 05 06 07 08 09 10 11 12 13 14 15'
+        esperado = (self.script.conferir, ('lotofacil', 600,
+                    (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)))
+        self.script.preparar(args) |should| equal_to(esperado)
+
     def test_gval_consultar(self):
         "#gval-consultar deve retornar o resultado da loteria solicitada"
 
