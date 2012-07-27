@@ -15,6 +15,11 @@ CLASSES = {
    'megasena': gval.loteria.MegaSena,
 }
 
+
+class ScriptException(Exception):
+    pass
+
+
 class Script(object):
     def __init__(self, saida=None, cfg=None):
         self.saida = saida or sys.stdout
@@ -63,30 +68,42 @@ class Script(object):
         opcoes_curtas = ["j:"]
         opcoes_longas = ["jogo="]
 
-        if argv[0] in ("consultar", "conferir"):
+        # Comando para executar
+        comando = argv[0]
+
+        # Tenta achar o método do comando enviado. Caso o método não seja
+        # encontrado, é lançada uma exceção.
+        try:
+            ret_method = getattr(self, comando)
+        except AttributeError:
+            raise ScriptException
+
+        # Opções por comando
+        if comando in ("consultar", "conferir"):
             opcoes_curtas.append("c:")
             opcoes_longas.append("concurso=")
 
-            if argv[0] == "conferir":
+            if comando == "conferir":
                 opcoes_curtas.append("a:")
                 opcoes_longas.append("aposta=")
 
-        retmethod = getattr(self, argv[0])
+        # Processamento das opções
         opts, args = getopt.getopt(argv[1:], ''.join(opcoes_curtas), opcoes_longas)
 
         jogo = None
         concurso = None
         aposta = None
         for option, arg in opts:
-            if option in ('-j', "--jogo"):
+            if option in ("-j", "--jogo"):
                 jogo = arg
-            elif option in ('-c', "--concurso"):
+            elif option in ("-c", "--concurso"):
                 concurso = int(arg)
-            elif option in ('-a', "--aposta"):
+            elif option in ("-a", "--aposta"):
                 aposta = tuple( map(int, arg.split()) )
 
-        retargs = (jogo, concurso)
+        # Argumentos do método
+        ret_args = [jogo, concurso]
         if aposta is not None:
-            retargs += (aposta,)
+            ret_args.append(aposta)
 
-        return (retmethod, retargs)
+        return (ret_method, tuple(ret_args))
