@@ -59,20 +59,20 @@ class Script(object):
         pass
 
     def preparar(self, *argv):
-        if argv[0] == "consultar":
-            retmethod = self.consultar
-            opts, args = getopt.getopt(argv[1:],
-                # opções curtas
-                "j:c:",
-                # opções longas
-                ["jogo=", "concurso="])
-        elif argv[0] == "conferir":
-            retmethod = self.conferir
-            opts, args = getopt.getopt(argv[1:],
-                # opções curtas
-                "j:c:a:",
-                # opções longas
-                ["jogo=", "concurso=", "aposta="])
+        # Opções comuns
+        opcoes_curtas = ["j:"]
+        opcoes_longas = ["jogo="]
+
+        if argv[0] in ("consultar", "conferir"):
+            opcoes_curtas.append("c:")
+            opcoes_longas.append("concurso=")
+
+            if argv[0] == "conferir":
+                opcoes_curtas.append("a:")
+                opcoes_longas.append("aposta=")
+
+        retmethod = getattr(self, argv[0])
+        opts, args = getopt.getopt(argv[1:], ''.join(opcoes_curtas), opcoes_longas)
 
         jogo = None
         concurso = None
