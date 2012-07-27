@@ -30,28 +30,27 @@ class TestScript:
         self.saida = Saida()
         self.script = Script(saida=self.saida, cfg=Config(test_stuff.CONFIG_DIR))
 
-    def test_preparar(self):
-        "#preparar lê os args do cmd e retorna o método e params a executar"
-
-        ### COMANDO: consultar ###
+    def test_preparar__consultar(self):
+        "#preparar cmd consultar retorna (<method>, ('<jogo>', <num>))"
 
         args = 'consultar', '--jogo', 'lotofacil', '--concurso', '600'
         esperado = (self.script.consultar, ('lotofacil', 600))
         self.script.preparar(args) |should| equal_to(esperado)
 
-        args = 'consultar', '--jogo=lotofacil', '--concurso', '605'
-        esperado = (self.script.consultar, ('lotofacil', 605))
+        args = 'consultar', '--jogo=megasena', '--concurso', '605'
+        esperado = (self.script.consultar, ('megasena', 605))
         self.script.preparar(args) |should| equal_to(esperado)
 
-        args = 'consultar', '--concurso=610', '--jogo', 'lotofacil'
-        esperado = (self.script.consultar, ('lotofacil', 610))
+        args = 'consultar', '--concurso=610', '--jogo', 'quina'
+        esperado = (self.script.consultar, ('quina', 610))
         self.script.preparar(args) |should| equal_to(esperado)
 
-        args = 'consultar', '-j', 'lotofacil', '-c', '600' # opção curta
-        esperado = (self.script.consultar, ('lotofacil', 600))
+        args = 'consultar', '-j', 'lotomania', '-c', '600' # opção curta
+        esperado = (self.script.consultar, ('lotomania', 600))
         self.script.preparar(args) |should| equal_to(esperado)
 
-        ### COMANDO: conferir ###
+    def test_preparar__conferir(self):
+        "#preparar cmd conferir retorna (<method>, ('<jogo>', <num>, <aposta>))"
 
         args = 'conferir', '--jogo', 'lotofacil', '--concurso', '600',  \
                     '--aposta', '01 02 03 04 05 06 07 08 09 10 11 12 13 14 15'
