@@ -61,6 +61,10 @@ class Script(object):
     def cmd_conferir(self):
         pass
 
+    def executar(self, *argv):
+        avaliacao = self.avaliar(*argv)
+        avaliacao[0](*avaliacao)
+
     def avaliar(self, *argv):
         # Opções comuns
         opcoes_curtas = ["j:"]

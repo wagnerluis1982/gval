@@ -1,6 +1,9 @@
 A fazer
 -------
 
+- Script: #executar deve imprimir na tela erros retornados por #avaliar,
+  juntamente com um usage.
+- Script: migrar algumas checagens em #cmd_consultar para #avaliar
 - Reprojetar script:
   * Nome: gval.py
   * Comandos:
