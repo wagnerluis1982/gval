@@ -63,7 +63,7 @@ class Script(object):
     def cmd_conferir(self):
         pass
 
-    def preparar(self, *argv):
+    def avaliar(self, *argv):
         # Opções comuns
         opcoes_curtas = ["j:"]
         opcoes_longas = ["jogo="]
