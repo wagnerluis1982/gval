@@ -3,7 +3,7 @@ import test_stuff
 
 from should_dsl import should, should_not
 from lib.gval.util import Config
-from lib.gval.script import Script
+from lib.gval.script import Script, ScriptException
 
 class Saida(file):
     def __init__(self):
@@ -57,6 +57,13 @@ class TestScript:
         esperado = (self.script.cmd_conferir, ('lotofacil', 600,
                     (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)))
         self.script.preparar(*args) |should| equal_to(esperado)
+
+    def test_preparar__erro(self):
+        "#preparar comando desconhecido lança ScriptException"
+
+        (lambda: self.script.preparar('latir')) |should| throw(ScriptException)
+        (lambda: self.script.preparar('miar')) |should| throw(ScriptException)
+        (lambda: self.script.preparar('falar')) |should| throw(ScriptException)
 
     def test_gval_consultar(self):
         "#gval-consultar deve retornar o resultado da loteria solicitada"
