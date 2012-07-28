@@ -92,18 +92,18 @@ class Script(object):
 
         jogo = None
         concurso = None
-        aposta = None
+        apostas = []
         for option, arg in opts:
             if option in ("-j", "--jogo"):
                 jogo = arg
             elif option in ("-c", "--concurso"):
                 concurso = int(arg)
             elif option in ("-a", "--aposta"):
-                aposta = tuple( map(int, arg.split()) )
+                apostas.append( tuple( map(int, arg.split()) ) )
 
         # Argumentos do método
         ret_args = [jogo, concurso]
-        if aposta is not None:
-            ret_args.append(aposta)
+        if len(apostas) > 0:
+            ret_args.append(apostas)
 
         return (ret_method, tuple(ret_args))
