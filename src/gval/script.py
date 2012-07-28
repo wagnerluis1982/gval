@@ -67,7 +67,7 @@ class Script(object):
         opcoes_longas = ["jogo="]
 
         # Comando para executar
-        comando = argv[0]
+        comando = argv[1]
 
         # Tenta achar o método do comando enviado. Caso o método não seja
         # encontrado, é lançada uma exceção.
@@ -86,7 +86,7 @@ class Script(object):
                 opcoes_longas.append("aposta=")
 
         # Processamento das opções
-        opts, args = getopt.getopt(argv[1:], ''.join(opcoes_curtas), opcoes_longas)
+        opts, args = getopt.getopt(argv[2:], ''.join(opcoes_curtas), opcoes_longas)
 
         jogo = None
         concursos = []
