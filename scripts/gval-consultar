@@ -4,4 +4,8 @@ import gval.script
 import sys
 
 if __name__ == '__main__':
-    gval.script.Script().consultar(*sys.argv[1:])
+    script = gval.script.Script()
+    method, args = script.avaliar(sys.argv[0], "consultar",
+            "--jogo", sys.argv[1], "--concurso", sys.argv[2])
+
+    method(*args)
