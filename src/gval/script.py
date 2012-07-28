@@ -91,19 +91,21 @@ class Script(object):
         opts, args = getopt.getopt(argv[1:], ''.join(opcoes_curtas), opcoes_longas)
 
         jogo = None
-        concurso = None
+        concursos = []
         apostas = []
         for option, arg in opts:
             if option in ("-j", "--jogo"):
                 jogo = arg
             elif option in ("-c", "--concurso"):
-                concurso = int(arg)
+                concursos.append( int(arg) )
             elif option in ("-a", "--aposta"):
                 apostas.append( tuple( map(int, arg.split()) ) )
 
         # Argumentos do método
-        ret_args = [jogo, concurso]
-        if len(apostas) > 0:
-            ret_args.append(apostas)
+        ret_args = [jogo]
+        if comando == "consultar":
+            ret_args.append(concursos[-1]) # último concurso passado em argv
+        else: # comando conferir
+            ret_args.extend([concursos, apostas])
 
         return (ret_method, tuple(ret_args))

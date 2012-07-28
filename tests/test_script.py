@@ -55,14 +55,21 @@ class TestScript:
         # 1 concurso e 1 aposta
         args = 'conferir', '--jogo', 'lotofacil', '--concurso', '600',  \
                     '--aposta', '01 02 03 04 05 06 07 08 09 10 11 12 13 14 15'
-        esperado = (self.script.cmd_conferir, ('lotofacil', 600,
+        esperado = (self.script.cmd_conferir, ('lotofacil', [600],
                     [(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)]))
         self.script.preparar(*args) |should| equal_to(esperado)
 
         # 1 concurso e 2 apostas
         args = 'conferir', '--jogo', 'quina', '--concurso', '1345',  \
                     '--aposta', '02 09 14 19 28', '--aposta', '23 33 41 44 49'
-        esperado = (self.script.cmd_conferir, ('quina', 1345,
+        esperado = (self.script.cmd_conferir, ('quina', [1345],
+                    [(2, 9, 14, 19, 28), (23, 33, 41, 44, 49)]))
+        self.script.preparar(*args) |should| equal_to(esperado)
+
+        # 2 concursos e 2 apostas
+        args = 'conferir', '--jogo', 'quina', '-c', '1345', '-c', '1346',  \
+                    '-a', '02 09 14 19 28', '-a', '23 33 41 44 49'
+        esperado = (self.script.cmd_conferir, ('quina', [1345, 1346],
                     [(2, 9, 14, 19, 28), (23, 33, 41, 44, 49)]))
         self.script.preparar(*args) |should| equal_to(esperado)
 
