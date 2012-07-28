@@ -80,6 +80,22 @@ class TestScript:
         (lambda: self.script.avaliar('miar')) |should| throw(ScriptException)
         (lambda: self.script.avaliar('falar')) |should| throw(ScriptException)
 
+    def test_formatar_resultado(self):
+        "#formatar_resultado retorna o resultado formatado"
+
+        # O resultado formatado deve ficar +/- assim:
+
+        #########################################
+        ### Resultado da {loteria} {concurso} ###
+        ### --------------------------------- ###
+        ### Números: {resultado}              ###
+        #########################################
+
+        resultado = self.script.formatar_resultado("Quina", 805,
+                                                   [13, 22, 41, 42, 71])
+        resultado |should| contain("Resultado da Quina 805\n")
+        resultado |should| contain("Números: 13 22 41 42 71\n")
+
     def test_gval_consultar(self):
         "#gval-consultar deve retornar o resultado da loteria solicitada"
 

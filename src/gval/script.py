@@ -15,10 +15,8 @@ CLASSES = {
    'megasena': gval.loteria.MegaSena,
 }
 
-
 class ScriptException(Exception):
     pass
-
 
 class Script(object):
     def __init__(self, saida=None, cfg=None):
@@ -111,3 +109,10 @@ class Script(object):
             ret_args.extend([concursos, apostas])
 
         return (ret_method, tuple(ret_args))
+
+    def formatar_resultado(self, loteria, concurso, resultado):
+        cabecalho = "Resultado da %s %d\n" % (loteria, concurso)
+
+        return [cabecalho,
+                '-' * (len(cabecalho) - 1) + '\n',
+                "Números: %s\n" % ' '.join("%02d" % n for n in resultado)]
