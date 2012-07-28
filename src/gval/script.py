@@ -104,7 +104,9 @@ class Script(object):
         # Argumentos do método
         ret_args = [jogo]
         if comando == "consultar":
-            ret_args.append(concursos[-1]) # último concurso passado em argv
+            # Só se consulta um concurso, assim é escolhido usar o último
+            # --concurso <num>.
+            ret_args.append(concursos[-1])
         else: # comando conferir
             ret_args.extend([concursos, apostas])
 
