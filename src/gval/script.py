@@ -18,6 +18,17 @@ CLASSES = {
 class ScriptException(Exception):
     pass
 
+class T(object):
+    """Classe de tipos para serem usadas com argparse
+
+    Cada método representa um type para ArgParse.add_argument. Os métodos
+    escritos aqui são sempre staticmethod ou classmethod.
+    """
+    @staticmethod
+    def aposta(aposta):
+        numeros = tuple(map(int, aposta.split()))
+        return numeros
+
 class Script(object):
     def __init__(self, saida=None, cfg=None):
         self.saida = saida or sys.stdout
@@ -91,7 +102,7 @@ class Script(object):
         psr_conferir.add_argument("-a", "--aposta", required=True,
                                   help=("Aposta para conferir. "
                                         "Ex: 01 07 11 13 29"),
-                                  action="append")
+                                  action="append", type=T.aposta)
 
         # Análise das informações
         args = parser.parse_args(argv[1:])
@@ -100,8 +111,7 @@ class Script(object):
         ret_args = [args.jogo, args.concurso]
 
         if args.comando == "conferir":
-            apostas = [tuple(map(int, a.split())) for a in args.aposta]
-            ret_args.append(apostas)
+            ret_args.append(args.aposta)
 
         return (ret_method, tuple(ret_args))
 
