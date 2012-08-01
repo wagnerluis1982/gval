@@ -4,6 +4,7 @@ import test_stuff
 from should_dsl import should, should_not
 from lib.gval.util import Config
 from lib.gval.script import Script, ScriptException
+import unittest
 
 class Saida(file):
     def __init__(self):
@@ -80,6 +81,9 @@ class TestScript:
 
     def test_avaliar__erro(self):
         "#avaliar comando desconhecido lança ScriptException"
+
+        raise unittest.SkipTest("Teste provavelmente obsoleto")
+
         s = self.script
 
         (lambda: s.avaliar('gval.py', 'latir')) |should| throw(ScriptException)
@@ -104,6 +108,8 @@ class TestScript:
 
     def test_gval_consultar(self):
         "#gval-consultar deve retornar o resultado da loteria solicitada"
+
+        raise unittest.SkipTest("Interface em modificação")
 
         fmt = SaidaFormatter(
             "Consulta de Resultado\n"

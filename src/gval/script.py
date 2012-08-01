@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import gval.loteria
 import gval.util
+import argparse
 import sys
-import getopt
 
 ERRO_NOARGS = 1
 ERRO_EXISTE = 2
@@ -66,51 +66,42 @@ class Script(object):
         avaliacao[0](*avaliacao)
 
     def avaliar(self, *argv):
-        # Opções comuns
-        opcoes_curtas = ["j:"]
-        opcoes_longas = ["jogo="]
+        parser = argparse.ArgumentParser(prog=argv[0])
+        subparsers = parser.add_subparsers(dest="comando")
 
-        # Comando para executar
-        comando = argv[1]
+        # Argumentos comuns para "jogo"
+        args_jogo = ("-j", "--jogo")
+        kwargs_jogo = {"help": "Nome da loteria", "required": True}
 
-        # Tenta achar o método do comando enviado. Caso o método não seja
-        # encontrado, é lançada uma exceção.
-        try:
-            ret_method = getattr(self, "cmd_%s" % comando)
-        except AttributeError:
-            raise ScriptException("Comando não encontrado")
+        # Argumentos comuns para "concurso"
+        args_concurso = ("-c", "--concurso")
+        kwargs_concurso = {"help": "Número do concurso", "required": True,
+                           "type": int}
 
-        # Opções por comando
-        if comando in ("consultar", "conferir"):
-            opcoes_curtas.append("c:")
-            opcoes_longas.append("concurso=")
+        # Comando "consultar"
+        psr_consultar = subparsers.add_parser("consultar")
+        psr_consultar.add_argument(*args_jogo, **kwargs_jogo)
+        psr_consultar.add_argument(*args_concurso, **kwargs_concurso)
 
-            if comando == "conferir":
-                opcoes_curtas.append("a:")
-                opcoes_longas.append("aposta=")
+        # Comando "conferir"
+        psr_conferir = subparsers.add_parser("conferir")
+        psr_conferir.add_argument(*args_jogo, **kwargs_jogo)
+        psr_conferir.add_argument(*args_concurso, action="append",
+                                  **kwargs_concurso)
+        psr_conferir.add_argument("-a", "--aposta", required=True,
+                                  help=("Aposta para conferir. "
+                                        "Ex: 01 07 11 13 29"),
+                                  action="append")
 
-        # Processamento das opções
-        opts, args = getopt.getopt(argv[2:], ''.join(opcoes_curtas), opcoes_longas)
+        # Análise das informações
+        args = parser.parse_args(argv[1:])
 
-        jogo = None
-        concursos = []
-        apostas = []
-        for option, arg in opts:
-            if option in ("-j", "--jogo"):
-                jogo = arg
-            elif option in ("-c", "--concurso"):
-                concursos.append( int(arg) )
-            elif option in ("-a", "--aposta"):
-                apostas.append( tuple( map(int, arg.split()) ) )
+        ret_method = getattr(self, "cmd_%s" % args.comando)
+        ret_args = [args.jogo, args.concurso]
 
-        # Argumentos do método
-        ret_args = [jogo]
-        if comando == "consultar":
-            # Só se consulta um concurso, assim é escolhido usar o último
-            # --concurso <num>.
-            ret_args.append(concursos[-1])
-        else: # comando conferir
-            ret_args.extend([concursos, apostas])
+        if args.comando == "conferir":
+            apostas = [tuple(map(int, a.split())) for a in args.aposta]
+            ret_args.append(apostas)
 
         return (ret_method, tuple(ret_args))
 
