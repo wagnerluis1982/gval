@@ -24,7 +24,7 @@ setup(
     url = "https://github.com/wagnerluis1982/gval",
     package_dir={'': PACKAGE_DIR},
     packages=find_packages(),
-    scripts=["scripts/gval-consultar"],
+    scripts=["scripts/gval.py"],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Environment :: Console",

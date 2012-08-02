@@ -64,7 +64,7 @@ class Script(object):
 
     def executar(self, *argv):
         avaliacao = self.avaliar(*argv)
-        avaliacao[0](*avaliacao)
+        avaliacao[0](*avaliacao[1])
 
     def avaliar(self, *argv):
         parser = argparse.ArgumentParser(prog=argv[0])
