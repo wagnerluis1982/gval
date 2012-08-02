@@ -3,7 +3,7 @@ import test_stuff
 
 from should_dsl import should, should_not
 from lib.gval.util import Config
-from lib.gval.script import Script, ScriptException
+from lib.gval import script
 import unittest
 
 class Saida(file):
@@ -14,22 +14,17 @@ class Saida(file):
         return self.mensagem
 
     def write(self, msg):
-        self.mensagem.append(msg)
+        assert isinstance(msg, basestring)
+        self.mensagem.extend(msg.splitlines(True))
 
     def clear(self):
         self.mensagem = []
 
-class SaidaFormatter:
-    def __init__(self, formato):
-        self._formato = formato
-
-    def gerar(self, *params):
-        return (self._formato % params).splitlines(True)
-
 class TestScript:
     def setUp(self):
         self.saida = Saida()
-        self.script = Script(saida=self.saida, cfg=Config(test_stuff.CONFIG_DIR))
+        self.script = script.Script(saida=self.saida,
+                                    cfg=Config(test_stuff.CONFIG_DIR))
 
     def test_avaliar__consultar(self):
         "#avaliar comando consultar retorna (<method>, ('<jogo>', <num>))"
@@ -86,9 +81,9 @@ class TestScript:
 
         s = self.script
 
-        (lambda: s.avaliar('gval.py', 'latir')) |should| throw(ScriptException)
-        (lambda: s.avaliar('gval.py', 'miar')) |should| throw(ScriptException)
-        (lambda: s.avaliar('gval.py', 'falar')) |should| throw(ScriptException)
+        (lambda: s.avaliar('gval.py', 'latir')) |should| throw(script.ScriptException)
+        (lambda: s.avaliar('gval.py', 'miar')) |should| throw(script.ScriptException)
+        (lambda: s.avaliar('gval.py', 'falar')) |should| throw(script.ScriptException)
 
     def test_formatar_resultado(self):
         "#formatar_resultado retorna o resultado formatado"
@@ -106,21 +101,12 @@ class TestScript:
         resultado |should| contain("Resultado da Quina 805\n")
         resultado |should| contain("Números: 13 22 41 42 71\n")
 
-    def test_gval_consultar(self):
-        "#gval-consultar deve retornar o resultado da loteria solicitada"
+    def test_script__consultar(self):
+        "gval.py consultar -j <loteria> -c <num>"
 
-        raise unittest.SkipTest("Interface em modificação")
+        error_code = self.script.cmd_consultar('lotofacil', '600')
+        error_code |should| equal_to(script.SEM_ERROS)
 
-        fmt = SaidaFormatter(
-            "Consulta de Resultado\n"
-            "---------------------\n"
-            "* Loteria: %s\n"
-            "* Concurso: %d\n"
-            "* Números: %s\n"
-        )
-
-        self.script.cmd_consultar('lotofacil', '600') |should| equal_to(0)
-
-        saida_esperada = fmt.gerar('Lotofacil', 600,
-                                '01 03 05 06 08 09 10 11 16 17 18 19 22 23 25')
+        saida_esperada = self.script.formatar_resultado('Lotofacil', 600,
+                                    [1,3,5,6,8,9,10,11,16,17,18,19,22,23,25])
         self.saida.readlines() |should| equal_to(saida_esperada)

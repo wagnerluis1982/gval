@@ -4,9 +4,9 @@ import gval.util
 import argparse
 import sys
 
-ERRO_NOARGS = 1
-ERRO_EXISTE = 2
-ERRO_ENCONT = 3
+SEM_ERROS   = 0
+ERRO_NAOEXISTE = 1
+ERRO_NAOENCONT = 2
 
 CLASSES = {
    'lotofacil': gval.loteria.Lotofacil,
@@ -34,16 +34,8 @@ class Script(object):
         self.saida = saida or sys.stdout
         self.cfg = cfg or gval.util.Config()
 
-    def cmd_consultar(self, *args):
+    def cmd_consultar(self, loteria, concurso):
         saida = self.saida
-
-        if len(args) < 1:
-            saida.write("ERRO: Número de argumentos inválido\n")
-            saida.write("Modo de uso: gval-consultar <loteria> [concurso]\n")
-            return ERRO_NOARGS
-
-        loteria = args[0]
-        concurso = len(args) > 1 and int(args[1]) or None
 
         try:
             klass = CLASSES[loteria]
@@ -51,21 +43,19 @@ class Script(object):
             saida.write("ERRO: a loteria '%s' não existe ou ainda não foi "
                         "implementada\n" % loteria)
             saida.write("IMPLEMENTADAS: %s\n" % ', '.join(CLASSES.keys()))
-            return ERRO_EXISTE
+            return ERRO_NAOEXISTE
         else:
             try:
-                resultado = klass().consultar(concurso)
+                r = klass().consultar(concurso) # resultado
+                assert isinstance(r, gval.loteria.Resultado)
 
-                saida.write("Consulta de Resultado\n")
-                saida.write("---------------------\n")
-                saida.write("* Loteria: %s\n" % klass.__name__)
-                saida.write("* Concurso: %d\n" % resultado.concurso)
-                saida.write("* Números: %s\n" % ' '.join(["%02d" % n for n in
-                                                        resultado.numeros]))
+                saida.write(''.join(self.formatar_resultado(klass.__name__,
+                                                            r.concurso,
+                                                            r.numeros)))
             except ValueError:
                 saida.write("ERRO: Concurso n. %d da %s não encontrado\n" %
                                                     (concurso, klass.__name__))
-                return ERRO_ENCONT
+                return ERRO_NAOENCONT
 
         return 0
 
