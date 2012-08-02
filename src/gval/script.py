@@ -8,7 +8,7 @@ SEM_ERROS   = 0
 ERRO_NAOEXISTE = 1
 ERRO_NAOENCONT = 2
 
-CLASSES = {
+LOTERIAS = {
    'lotofacil': gval.loteria.Lotofacil,
    'lotomania': gval.loteria.Lotomania,
    'quina': gval.loteria.Quina,
@@ -25,9 +25,20 @@ class T(object):
     escritos aqui são sempre staticmethod ou classmethod.
     """
     @staticmethod
-    def aposta(aposta):
-        numeros = tuple(map(int, aposta.split()))
+    def aposta(valores):
+        numeros = tuple(map(int, valores.split()))
         return numeros
+
+    @staticmethod
+    def jogo(nome):
+        if LOTERIAS.has_key(nome):
+            return nome
+
+        msg = ("\n"
+               "    O jogo '%s' não existe ou ainda não foi implementado\n"
+               "    IMPLEMENTADOS: {%s}")
+        loterias = ", ".join(sorted(LOTERIAS.keys()))
+        raise argparse.ArgumentTypeError(msg % (nome, loterias))
 
 class Script(object):
     def __init__(self, saida=None, cfg=None):
@@ -37,25 +48,17 @@ class Script(object):
     def cmd_consultar(self, loteria, concurso):
         saida = self.saida
 
+        klass = LOTERIAS[loteria]
         try:
-            klass = CLASSES[loteria]
-        except KeyError:
-            saida.write("ERRO: a loteria '%s' não existe ou ainda não foi "
-                        "implementada\n" % loteria)
-            saida.write("IMPLEMENTADAS: %s\n" % ', '.join(CLASSES.keys()))
-            return ERRO_NAOEXISTE
-        else:
-            try:
-                r = klass().consultar(concurso) # resultado
-                assert isinstance(r, gval.loteria.Resultado)
+            result = klass().consultar(concurso)
+            assert isinstance(result, gval.loteria.Resultado)
 
-                saida.write(''.join(self.formatar_resultado(klass.__name__,
-                                                            r.concurso,
-                                                            r.numeros)))
-            except ValueError:
-                saida.write("ERRO: Concurso n. %d da %s não encontrado\n" %
-                                                    (concurso, klass.__name__))
-                return ERRO_NAOENCONT
+            saida.write(''.join(self.formatar_resultado(klass.__name__,
+                                                        result.concurso,
+                                                        result.numeros)))
+        except ValueError:
+            msg = "concurso %d da %s não encontrado"
+            psr_consultar.error(msg % (concurso, loteria))
 
         return 0
 
@@ -67,12 +70,14 @@ class Script(object):
         avaliacao[0](*avaliacao[1])
 
     def avaliar(self, *argv):
+        global parser
         parser = argparse.ArgumentParser(prog=argv[0])
         subparsers = parser.add_subparsers(dest="comando")
 
         # Argumentos comuns para "jogo"
         args_jogo = ("-j", "--jogo")
-        kwargs_jogo = {"help": "Nome da loteria", "required": True}
+        kwargs_jogo = {"help": "Nome da loteria", "required": True,
+                       "type": T.jogo}
 
         # Argumentos comuns para "concurso"
         args_concurso = ("-c", "--concurso")
@@ -80,11 +85,13 @@ class Script(object):
                            "type": int}
 
         # Comando "consultar"
+        global psr_consultar
         psr_consultar = subparsers.add_parser("consultar")
         psr_consultar.add_argument(*args_jogo, **kwargs_jogo)
         psr_consultar.add_argument(*args_concurso, **kwargs_concurso)
 
         # Comando "conferir"
+        global psr_conferir
         psr_conferir = subparsers.add_parser("conferir")
         psr_conferir.add_argument(*args_jogo, **kwargs_jogo)
         psr_conferir.add_argument(*args_concurso, action="append",
