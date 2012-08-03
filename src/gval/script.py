@@ -76,12 +76,12 @@ class Script(object):
 
         # Argumentos comuns para "jogo"
         args_jogo = ("-j", "--jogo")
-        kwargs_jogo = {"help": "Nome da loteria", "required": True,
+        kwargs_jogo = {"help": "nome da loteria", "required": True,
                        "type": T.jogo}
 
         # Argumentos comuns para "concurso"
         args_concurso = ("-c", "--concurso")
-        kwargs_concurso = {"help": "Número do concurso", "required": True,
+        kwargs_concurso = {"help": "número do concurso", "required": True,
                            "type": int}
 
         # Comando "consultar"
@@ -97,8 +97,8 @@ class Script(object):
         psr_conferir.add_argument(*args_concurso, action="append",
                                   **kwargs_concurso)
         psr_conferir.add_argument("-a", "--aposta", required=True,
-                                  help=("Aposta para conferir. "
-                                        "Ex: 01 07 11 13 29"),
+                                  help=("aposta para conferir "
+                                        "(ex: '01 07 11 13 29')"),
                                   action="append", type=T.aposta)
 
         # Análise das informações
