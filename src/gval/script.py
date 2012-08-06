@@ -4,10 +4,6 @@ import gval.util
 import argparse
 import sys
 
-SEM_ERROS   = 0
-ERRO_NAOEXISTE = 1
-ERRO_NAOENCONT = 2
-
 LOTERIAS = {
    'lotofacil': gval.loteria.Lotofacil,
    'lotomania': gval.loteria.Lotomania,

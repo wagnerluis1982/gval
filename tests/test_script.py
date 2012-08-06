@@ -104,8 +104,8 @@ class TestScript:
     def test_script__consultar(self):
         "gval.py consultar -j <loteria> -c <num>"
 
-        error_code = self.script.cmd_consultar('lotofacil', '600')
-        error_code |should| equal_to(script.SEM_ERROS)
+        error_code = self.script.cmd_consultar('lotofacil', 600)
+        error_code |should| equal_to(0)
 
         saida_esperada = self.script.formatar_resultado('Lotofacil', 600,
                                     [1,3,5,6,8,9,10,11,16,17,18,19,22,23,25])
