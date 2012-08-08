@@ -31,22 +31,23 @@ Uso
 ---
 
 Por enquanto só está implementada a consulta de resultados. Para consultar um
-resultado, a partir de um terminal, use o comando 'gval-consultar', que tem a
-seguinte sintaxe:
+resultado, utilize:
 
-    gval-consultar <loteria> <concurso>
+    gval.py consultar --jogo <loteria> --concurso <numero>
 
 Por exemplo, se quiser consultar o concurso 708 da Lotofácil, você irá digitar
 
-    gval-consultar lotofacil 708
+    gval.py consultar --jogo lotofacil --concurso 708
 
 que será retornado:
 
-    Consulta de Resultado
-    ---------------------
-    * Loteria: Lotofacil
-    * Concurso: 708
-    * Números: 01 02 03 04 05 06 09 11 14 16 19 21 22 24 25
+    Resultado da Lotofacil 708
+    --------------------------
+    Números: 01 02 03 04 05 06 09 11 14 16 19 21 22 24 25
+
+para saber mais sobre o comando, digite
+
+    gval.py consultar --help
 
 Futuramente, mais informações serão exibidas, como a premiação e os ganhadores
 por estado/município.
