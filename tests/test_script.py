@@ -110,3 +110,16 @@ class TestScript:
         saida_esperada = self.script.formatar_resultado('Lotofacil', 600,
                                     [1,3,5,6,8,9,10,11,16,17,18,19,22,23,25])
         self.saida.readlines() |should| equal_to(saida_esperada)
+
+    def test_script__conferir(self):
+        "gval.py conferir -j <loteria> -c <num> -a <aposta>"
+
+        raise unittest.SkipTest("Função formatar conferência não implementada")
+
+        error_code = self.script.cmd_conferir('quina', [805],
+                                              [(13, 23, 45, 47, 78)])
+        error_code |should| equal_to(0)
+
+        saida_esperada = self.script.formatar_conferencia('quina',
+                                                          [(805, 1, [13], 0.0)])
+        self.saida.readlines() |should| equal_to(saida_esperada)
