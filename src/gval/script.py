@@ -110,4 +110,4 @@ class Script(object):
 
     def formatar_resultado(self, loteria, concurso, resultado):
         return ["Resultado da %s %d\n" % (loteria, concurso),
-                "Números: %s\n" % ' '.join("%02d" % n for n in resultado)]
+                "  Números: %s\n" % ' '.join("%02d" % n for n in resultado)]

@@ -92,13 +92,13 @@ class TestScript:
 
         #########################################
         ### Resultado da {loteria} {concurso} ###
-        ### Números: {resultado}              ###
+        ###   Números: {resultado}            ###
         #########################################
 
         resultado = self.script.formatar_resultado("Quina", 805,
                                                    [13, 22, 41, 42, 71])
         resultado |should| contain("Resultado da Quina 805\n")
-        resultado |should| contain("Números: 13 22 41 42 71\n")
+        resultado |should| contain("  Números: 13 22 41 42 71\n")
 
     def test_script__consultar(self):
         "gval.py consultar -j <loteria> -c <num>"
