@@ -109,8 +109,5 @@ class Script(object):
         return (ret_method, tuple(ret_args))
 
     def formatar_resultado(self, loteria, concurso, resultado):
-        cabecalho = "Resultado da %s %d\n" % (loteria, concurso)
-
-        return [cabecalho,
-                '-' * (len(cabecalho) - 1) + '\n',
+        return ["Resultado da %s %d\n" % (loteria, concurso),
                 "Números: %s\n" % ' '.join("%02d" % n for n in resultado)]

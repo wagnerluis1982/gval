@@ -36,7 +36,6 @@ Consultando um resultado:
 
     $ gval.py consultar --jogo lotofacil --concurso 708
     Resultado da Lotofacil 708
-    --------------------------
     Números: 01 02 03 04 05 06 09 11 14 16 19 21 22 24 25
 
 Para saber mais sobre o comando, digite:
