@@ -47,6 +47,9 @@ class Conferencia(object):
                                          self.aposta.numeros)
         self.quantidade = len(self.acertados)
 
+    def to_array(self):
+        return (self.aposta.concurso, self.quantidade, self.acertados, self.premio)
+
     def get_aposta(self):
         return self.__aposta
 

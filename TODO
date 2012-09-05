@@ -1,27 +1,24 @@
 A fazer
 -------
 
-- Script: #executar deve imprimir na tela erros retornados por #avaliar,
-  juntamente com um usage.
+- Projetar um arquivo de configurações
 - Script: migrar algumas checagens em #cmd_consultar para #avaliar
 - Reprojetar script:
   * Nome: gval.py
   * Comandos:
-    - consultar
+    - consultar [PRONTO]
       ├─ jogo:     --jogo       -j
       └─ concurso: --concurso   -c
-    - conferir
+    - conferir [PRONTO]
       ├─ jogo:     --jogo       -j
       ├─ concurso: --concurso   -c
       └─ aposta:   --aposta     -a
          └─ lotomania: --espelho   -e
     - gerar (futuramente)
       └─ jogo:     --jogo       -j
-- Projetar um arquivo de configurações
-- Definir testes para consulta sem argumentos (que retorna o último resultado)
-- Fazer o último resultado ser cacheável
-  * Acredito que para isso, consultar() deve armazenar a data da última
-    consulta, de forma que o cache seja apenas temporário.
-- Fazer o script de consulta notificar ao usuário o fato, quando for feita
-  consulta ao último resultado.
+- Reimplementar consulta ao último resultado com o novo script.
+    * Fazer o último resultado ser cacheável
+      - Acredito que para isso, consultar() deve armazenar a data da última
+        consulta, de forma que o cache seja apenas temporário.
+    * Notificar ao usuário de que o resultado é o último disponível.
 - Decorator para classes e métodos abstratos (NÃO PRIORITÁRIO)

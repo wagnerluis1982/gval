@@ -100,6 +100,26 @@ class TestScript:
         resultado |should| contain("Resultado da Quina 805\n")
         resultado |should| contain("  Números: 13 22 41 42 71\n")
 
+    def test_formatar_conferencia(self):
+        "#formatar_conferencia retorna a conferência formatada das apostas"
+
+        # A conferência formatada deve ficar +/- assim:
+
+        ##################################################
+        ### Conferência da {loteria} {concursos}       ###
+        ###   {p} apostas premiadas (em {n} conferidas ###
+        ###   Premiação total: R$ {premio}             ###
+        ##################################################
+
+        conferencia = self.script.formatar_conferencia("Quina",
+                                               [(805, 1, [13], 0.0),
+                                                (805, 2, [13, 71], 0.0),
+                                                (805, 2, [13, 41, 71], 33.13),
+                                                (805, 3, [13, 22, 41], 33.13)])
+        conferencia |should| contain("Conferência da Quina 805\n")
+        conferencia |should| contain("  2 apostas premiadas (em 4 conferidas)\n")
+        conferencia |should| contain("  Premiação total: R$ 66,26\n")
+
     def test_script__consultar(self):
         "gval.py consultar -j <loteria> -c <num>"
 
@@ -113,12 +133,12 @@ class TestScript:
     def test_script__conferir(self):
         "gval.py conferir -j <loteria> -c <num> -a <aposta>"
 
-        raise unittest.SkipTest("Função formatar conferência não implementada")
-
         error_code = self.script.cmd_conferir('quina', [805],
-                                              [(13, 23, 45, 47, 78)])
+                                              [(13, 23, 45, 47, 78),
+                                               (13, 23, 41, 71, 78)])
         error_code |should| equal_to(0)
 
-        saida_esperada = self.script.formatar_conferencia('quina',
-                                                          [(805, 1, [13], 0.0)])
+        saida_esperada = self.script.formatar_conferencia("Quina",
+                                              [(805, 1, [13], 0.0),
+                                               (805, 3, [13, 41, 71], 33.13)])
         self.saida.readlines() |should| equal_to(saida_esperada)

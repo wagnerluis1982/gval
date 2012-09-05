@@ -3,6 +3,9 @@ import gval.loteria
 import gval.util
 import argparse
 import sys
+import locale
+
+locale.resetlocale()
 
 LOTERIAS = {
    'lotofacil': gval.loteria.Lotofacil,
@@ -58,8 +61,24 @@ class Script(object):
 
         return 0
 
-    def cmd_conferir(self):
-        pass
+    def cmd_conferir(self, loteria, concursos, numeros):
+        saida = self.saida
+
+        klass = LOTERIAS[loteria]
+        lote = klass()
+        apostas = [gval.loteria.Aposta(c, n) for c in concursos
+                                             for n in numeros]
+        conferidos = []
+        for apo in apostas:
+            confere = lote.conferir(apo)
+            assert isinstance(confere, gval.loteria.Conferencia)
+
+            conferidos.append(confere.to_array())
+
+        saida.write(''.join(self.formatar_conferencia(klass.__name__,
+                                                      conferidos)))
+
+        return 0
 
     def executar(self, *argv):
         avaliacao = self.avaliar(*argv)
@@ -111,3 +130,26 @@ class Script(object):
     def formatar_resultado(self, loteria, concurso, resultado):
         return ["Resultado da %s %d\n" % (loteria, concurso),
                 "  Números: %s\n" % ' '.join("%02d" % n for n in resultado)]
+
+    def formatar_conferencia(self, loteria, dados):
+        concursos = sorted(set(d[0] for d in dados))
+        primeiro = concursos[0]
+        ultimo   = concursos[-1]
+
+        s_concursos = [str(num) for num in concursos]
+        if len(concursos) > 2:
+            if concursos == range(primeiro, ultimo + 1):
+                txt_concursos = "%d a %d" % (primeiro, ultimo)
+            else:
+                txt_concursos = ", ".join(s_concursos[:-1]) + " e %d" % ultimo
+        else:
+            txt_concursos = " e ".join(s_concursos)
+
+        premiadas = [p for p in dados if p[3] > 0]
+        premiacao = locale.format("%.2f", sum(v[3] for v in premiadas),
+                                  grouping=True)
+
+        return ["Conferência da %s %s\n" % (loteria, txt_concursos),
+                "  %d apostas premiadas (em %d conferidas)\n" % (len(premiadas),
+                                                                 len(dados)),
+                "  Premiação total: R$ %s\n" % premiacao]

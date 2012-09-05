@@ -16,7 +16,7 @@ def find_packages():
 
 setup(
     name = "GVAL",
-    version = "0.0.3",
+    version = "0.0.4",
     author = "Wagner Macedo",
     author_email = "wagnerluis1982@gmail.com",
     description = "Gerador e Verificador de Apostas da Loteria (do Brasil)",
@@ -26,7 +26,7 @@ setup(
     packages=find_packages(),
     scripts=["scripts/gval.py"],
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 3 - Alpha",
         "Environment :: Console",
         "Intended Audience :: Developers",
         "Intended Audience :: End Users/Desktop",
