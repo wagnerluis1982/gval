@@ -149,7 +149,10 @@ class Script(object):
         premiacao = locale.format("%.2f", sum(v[3] for v in premiadas),
                                   grouping=True)
 
+        msg_premiadas = ("  %d aposta{0} premiada{0}"
+                         " (em %d conferida{1})\n").format('s' * (len(premiadas) > 1),
+                                                           's' * (len(dados) > 1))
+
         return ["Conferência da %s %s\n" % (loteria, txt_concursos),
-                "  %d apostas premiadas (em %d conferidas)\n" % (len(premiadas),
-                                                                 len(dados)),
+                msg_premiadas % (len(premiadas), len(dados)),
                 "  Premiação total: R$ %s\n" % premiacao]

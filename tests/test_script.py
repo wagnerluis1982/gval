@@ -120,6 +120,20 @@ class TestScript:
         conferencia |should| contain("  2 apostas premiadas (em 4 conferidas)\n")
         conferencia |should| contain("  Premiação total: R$ 66,26\n")
 
+        conferencia = self.script.formatar_conferencia("Quina",
+                                               [(805, 1, [13], 0.0),
+                                                (805, 2, [13, 71], 0.0),
+                                                (805, 3, [13, 22, 41], 33.13)])
+        conferencia |should| contain("Conferência da Quina 805\n")
+        conferencia |should| contain("  1 aposta premiada (em 3 conferidas)\n")
+        conferencia |should| contain("  Premiação total: R$ 33,13\n")
+
+        conferencia = self.script.formatar_conferencia("Quina",
+                                               [(805, 3, [13, 22, 41], 33.13)])
+        conferencia |should| contain("Conferência da Quina 805\n")
+        conferencia |should| contain("  1 aposta premiada (em 1 conferida)\n")
+        conferencia |should| contain("  Premiação total: R$ 33,13\n")
+
     def test_script__consultar(self):
         "gval.py consultar -j <loteria> -c <num>"
 
