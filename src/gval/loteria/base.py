@@ -181,15 +181,21 @@ class Loteria(object):
     def consultar(self, concurso=None):
         url = self.__url_consulta(concurso)
 
-        if concurso is not None:
-            content = self.cacher.obter(url)
-            if content is None:
-                content = self.downloader.download(url)
-                self.cacher.guardar(url, content)
+        content = self.cacher.obter(url)
+        if content is not None:
+            return self._obter_resultado(content)
         else:
             content = self.downloader.download(url)
 
-        return self._obter_resultado(content)
+            try:
+                resultado = self._obter_resultado(content)
+            except ValueError:
+                raise LoteriaException("%s %d não disponível" %
+                                                    (self.__class__.__name__,
+                                                     concurso))
+            else:
+                self.cacher.guardar(url, content)
+                return resultado
 
     def conferir(self, aposta):
         conferencia = Conferencia()
