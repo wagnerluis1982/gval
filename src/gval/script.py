@@ -55,7 +55,7 @@ class Script(object):
             saida.write(''.join(self.formatar_resultado(klass.__name__,
                                                         result.concurso,
                                                         result.numeros)))
-        except ValueError:
+        except gval.loteria.LoteriaException:
             msg = "concurso %d da %s não encontrado"
             psr_consultar.error(msg % (concurso, loteria))
 
@@ -69,14 +69,21 @@ class Script(object):
         apostas = [gval.loteria.Aposta(c, n) for c in concursos
                                              for n in numeros]
         conferidos = []
+        erros = set()
         for apo in apostas:
-            confere = lote.conferir(apo)
-            assert isinstance(confere, gval.loteria.Conferencia)
+            try:
+                confere = lote.conferir(apo)
+                assert isinstance(confere, gval.loteria.Conferencia)
 
-            conferidos.append(confere.to_array())
+                conferidos.append(confere.to_array())
+            except gval.loteria.LoteriaException:
+                erros.add(apo.concurso)
 
         saida.write(''.join(self.formatar_conferencia(klass.__name__,
                                                       conferidos)))
+        # TODO: Melhorar as informações de erros
+        if erros:
+            saida.write("Concursos não disponíveis: %s\n" % list(erros))
 
         return 0
 

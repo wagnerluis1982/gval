@@ -1,19 +1,21 @@
 A fazer
 -------
 
+- Apesar de ser prático, é difícil de manter as funções #cmd_* e #formatar_*
+  juntas. Assim, fica como tarefa, colocar as saídas todas nas #cmd_*.
 - Projetar um arquivo de configurações
 - Script: migrar algumas checagens em #cmd_consultar para #avaliar
 - Reprojetar script:
   * Nome: gval.py
   * Comandos:
     - consultar [PRONTO]
-      ├─ jogo:     --jogo       -j
-      └─ concurso: --concurso   -c
-    - conferir [PRONTO]
-      ├─ jogo:     --jogo       -j
-      ├─ concurso: --concurso   -c
-      └─ aposta:   --aposta     -a
-         └─ lotomania: --espelho   -e
+      ├─ [OK] jogo:     --jogo       -j
+      └─ [OK] concurso: --concurso   -c
+    - conferir
+      ├─ [OK] jogo:     --jogo       -j
+      ├─ [OK] concurso: --concurso   -c
+      └─ [OK] aposta:   --aposta     -a
+         └─ [FALTA] lotomania: --espelho   -e
     - gerar (futuramente)
       └─ jogo:     --jogo       -j
 - Reimplementar consulta ao último resultado com o novo script.
