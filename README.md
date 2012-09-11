@@ -33,13 +33,13 @@ Uso
 
 ###Consultando um resultado
 
-    $ gval.py consultar --jogo lotofacil --concurso 708
+    $ gval consultar --jogo lotofacil --concurso 708
     Resultado da Lotofacil 708
       Números: 01 02 03 04 05 06 09 11 14 16 19 21 22 24 25
 
 Para saber mais sobre o comando, digite:
 
-    $ gval.py consultar --help
+    $ gval consultar --help
 
 Futuramente, mais informações serão exibidas, como a premiação e os ganhadores
 por estado/município.
@@ -49,14 +49,14 @@ por estado/município.
 Na conferência de resultados, é possível conferir mais de um concurso e apostas
 de um tipo de jogo. No próximo exemplo é conferido apenas uma aposta.
 
-    $ gval.py conferir --jogo quina --concurso 805 --aposta "13 22 42 55 59"
+    $ gval conferir --jogo quina --concurso 805 --aposta "13 22 42 55 59"
     Conferência da Quina 805
       1 apostas premiadas (em 1 conferidas)
       Premiação total: R$ 33,13
 
 já no próximo, são conferidas duas apostas
 
-    $ gval.py conferir --jogo quina --concurso 805 --concurso 806 --aposta "13 22 42 55 59"
+    $ gval conferir --jogo quina --concurso 805 --concurso 806 --aposta "13 22 42 55 59"
     Conferência da Quina 805 e 806
       1 apostas premiadas (em 2 conferidas)
       Premiação total: R$ 33,13
@@ -64,7 +64,7 @@ já no próximo, são conferidas duas apostas
 Para a digitação ficar mais confortável, o comando oferece opções curtas. Assim,
 o exemplo acima pode ser reescrito como
 
-    gval.py conferir -j quina -c 805 -c 806 -a "13 22 42 55 59"
+    gval conferir -j quina -c 805 -c 806 -a "13 22 42 55 59"
 
 A conferência cruza os concursos e as apostas, de forma que que se for informado
 3 concursos e 2 apostas, serão conferidas 6 apostas.

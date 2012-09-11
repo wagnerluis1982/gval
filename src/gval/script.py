@@ -163,3 +163,17 @@ class Script(object):
         return ["Conferência da %s %s\n" % (loteria, txt_concursos),
                 msg_premiadas % (len(premiadas), len(dados)),
                 "  Premiação total: R$ %s\n" % premiacao]
+
+
+def main(args=sys.argv):
+    # As linhas abaixo mudam o nome do script se este estiver no path. Assim, um
+    # script que esteja em /usr/bin por exemplo, vai ser exibido no help do GVAL
+    # apenas como gval, não /usr/bin/gval.
+    import os
+    if os.path.dirname(args[0]) in sys.path:
+        args[0] = os.path.basename(args[0])
+
+    Script().executar(*args)
+
+if __name__ == "__main__":
+    main()

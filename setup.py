@@ -1,5 +1,5 @@
 import os
-from distutils.core import setup
+from setuptools import setup
 
 PACKAGE_DIR = 'src'
 
@@ -16,15 +16,18 @@ def find_packages():
 
 setup(
     name = "GVAL",
-    version = "0.0.5",
+    version = "0.0.5-1",
     author = "Wagner Macedo",
     author_email = "wagnerluis1982@gmail.com",
     description = "Gerador e Verificador de Apostas da Loteria (do Brasil)",
+    long_description = open("README.md").read(),
     license = "GPL",
     url = "https://github.com/wagnerluis1982/gval",
-    package_dir={'': PACKAGE_DIR},
-    packages=find_packages(),
-    scripts=["scripts/gval.py"],
+    package_dir = {'': PACKAGE_DIR},
+    packages = find_packages(),
+    entry_points = {
+        "console_scripts": ["gval = gval.script:main"],
+    },
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Environment :: Console",
