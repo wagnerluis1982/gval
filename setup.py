@@ -1,3 +1,4 @@
+import codecs
 import os
 from setuptools import setup
 
@@ -20,7 +21,7 @@ setup(
     author = "Wagner Macedo",
     author_email = "wagnerluis1982@gmail.com",
     description = "Gerador e Verificador de Apostas da Loteria (do Brasil)",
-    long_description = open("README.md").read(),
+    long_description = codecs.open("README.md", 'r', encoding='utf-8').read(),
     license = "GPL",
     url = "https://github.com/wagnerluis1982/gval",
     package_dir = {'': PACKAGE_DIR},
