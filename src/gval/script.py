@@ -5,7 +5,7 @@ import argparse
 import sys
 import locale
 
-locale.setlocale(locale.LC_ALL, "")
+locale.setlocale(locale.LC_NUMERIC, "")
 
 LOTERIAS = {
    'lotofacil': gval.loteria.Lotofacil,
@@ -33,9 +33,9 @@ class T(object):
         if LOTERIAS.has_key(nome):
             return nome
 
-        msg = ("\n"
-               "    O jogo '%s' não existe ou ainda não foi implementado\n"
-               "    IMPLEMENTADOS: {%s}")
+        msg = (u"\n"
+               u"    O jogo '%s' não existe ou ainda não foi implementado\n"
+               u"    IMPLEMENTADOS: {%s}")
         loterias = ", ".join(sorted(LOTERIAS.keys()))
         raise argparse.ArgumentTypeError(msg % (nome, loterias))
 
@@ -56,7 +56,7 @@ class Script(object):
                                                         result.concurso,
                                                         result.numeros)))
         except gval.loteria.LoteriaException:
-            msg = "concurso %d da %s não encontrado"
+            msg = u"concurso %d da %s não encontrado"
             psr_consultar.error(msg % (concurso, loteria))
 
         return 0
@@ -83,7 +83,7 @@ class Script(object):
                                                       conferidos)))
         # TODO: Melhorar as informações de erros
         if erros:
-            saida.write("Concursos não disponíveis: %s\n" % list(erros))
+            saida.write(u"Concursos não disponíveis: %s\n" % list(erros))
 
         return 0
 
@@ -98,12 +98,12 @@ class Script(object):
 
         # Argumentos comuns para "jogo"
         args_jogo = ("-j", "--jogo")
-        kwargs_jogo = {"help": "nome da loteria", "required": True,
+        kwargs_jogo = {"help": u"nome da loteria", "required": True,
                        "type": T.jogo}
 
         # Argumentos comuns para "concurso"
         args_concurso = ("-c", "--concurso")
-        kwargs_concurso = {"help": "número do concurso", "required": True,
+        kwargs_concurso = {"help": u"número do concurso", "required": True,
                            "type": int}
 
         # Comando "consultar"
@@ -119,8 +119,8 @@ class Script(object):
         psr_conferir.add_argument(*args_concurso, action="append",
                                   **kwargs_concurso)
         psr_conferir.add_argument("-a", "--aposta", required=True,
-                                  help=("aposta para conferir "
-                                        "(ex: '01 07 11 13 29')"),
+                                  help=(u"aposta para conferir "
+                                        u"(ex: '01 07 11 13 29')"),
                                   action="append", type=T.aposta)
 
         # Análise das informações
@@ -135,8 +135,8 @@ class Script(object):
         return (ret_method, tuple(ret_args))
 
     def formatar_resultado(self, loteria, concurso, resultado):
-        return ["Resultado da %s %d\n" % (loteria, concurso),
-                "  Números: %s\n" % ' '.join("%02d" % n for n in resultado)]
+        return [u"Resultado da %s %d\n" % (loteria, concurso),
+                u"  Números: %s\n" % ' '.join("%02d" % n for n in resultado)]
 
     def formatar_conferencia(self, loteria, dados):
         concursos = sorted(set(d[0] for d in dados))
@@ -156,13 +156,13 @@ class Script(object):
         premiacao = locale.format("%.2f", sum(v[3] for v in premiadas),
                                   grouping=True)
 
-        msg_premiadas = ("  %d aposta{0} premiada{0}"
-                         " (em %d conferida{1})\n").format('s' * (len(premiadas) > 1),
-                                                           's' * (len(dados) > 1))
+        msg_premiadas = (u"  %d aposta{0} premiada{0}"
+                         u" (em %d conferida{1})\n").format('s' * (len(premiadas) > 1),
+                                                            's' * (len(dados) > 1))
 
-        return ["Conferência da %s %s\n" % (loteria, txt_concursos),
+        return [u"Conferência da %s %s\n" % (loteria, txt_concursos),
                 msg_premiadas % (len(premiadas), len(dados)),
-                "  Premiação total: R$ %s\n" % premiacao]
+                u"  Premiação total: R$ %s\n" % premiacao]
 
 
 def main(args=sys.argv):
