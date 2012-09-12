@@ -5,7 +5,7 @@ import argparse
 import sys
 import locale
 
-locale.resetlocale()
+locale.setlocale(locale.LC_ALL, "")
 
 LOTERIAS = {
    'lotofacil': gval.loteria.Lotofacil,

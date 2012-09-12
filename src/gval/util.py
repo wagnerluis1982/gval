@@ -104,7 +104,7 @@ class Cacher(object):
         self._cachedir = cfg.get_cache_dir('paginas')
 
     def _secure_path(self, name):
-        return os.path.join(self._cachedir, re.sub('[:/]', '_', name))
+        return os.path.join(self._cachedir, re.sub('[:/?]', '_', name))
 
     def guardar(self, filename, content):
         # Grava os dados no arquivo

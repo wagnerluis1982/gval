@@ -232,7 +232,7 @@ class Loteria(object):
         return resultado
 
     def __url_consulta(self, concurso=None):
-        fmt_url = os.path.join(self.url.BASE, self.url.script)
+        fmt_url = "%s/%s" % (self.url.BASE, self.url.script)
         if concurso is not None:
             fmt_url += self.url.params
 
