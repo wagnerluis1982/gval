@@ -83,15 +83,15 @@ class TestScript:
         (lambda: s.avaliar('gval.py', 'falar')) |should| throw(script.ScriptException)
 
     def test_script__consultar(self):
-        "gval.py consultar -j <loteria> -c <num>"
+        "gval consultar -j <loteria> -c <num>"
 
         error_code = self.script.cmd_consultar('quina', 805)
         error_code |should| equal_to(0)
         self.out |should| contain(u"Resultado da Quina 805\n")
         self.out |should| contain(u"  Números: 13 22 41 42 71\n")
 
-    def test_script__conferir__simples(self):
-        "gval.py conferir -j <loteria> -c <num> -a <aposta>"
+    def test_script__conferir__1_simples(self):
+        "gval conferir -j <loteria> -c <num> -a <aposta>"
 
         error_code = self.script.cmd_conferir('quina', [805],
                                               [(13, 23, 41, 71, 78)])
@@ -101,11 +101,41 @@ class TestScript:
         self.out |should| contain(u"  Premiação total: R$ 33,13\n")
 
     def test_script__conferir__2_concursos(self):
-        "gval.py conferir -j <loteria> -c <num> -c <num> -a <aposta>"
+        "gval conferir -j <loteria> -c <num> -c <num> -a <aposta>"
 
-        error_code = self.script.cmd_conferir('quina', [805, 807],
+        error_code = self.script.cmd_conferir('quina', [805, 1763],
                                               [(13, 23, 41, 71, 78)])
         error_code |should| equal_to(0)
-        self.out |should| contain(u"Conferência da Quina 805 e 807\n")
+        self.out |should| contain(u"Conferência da Quina 805 e 1763\n")
         self.out |should| contain(u"  1 aposta premiada (em 2 conferidas)\n")
         self.out |should| contain(u"  Premiação total: R$ 33,13\n")
+
+    def test_script__conferir__3_concursos(self):
+        "gval conferir -j <loteria> -c <num> -c <num> -c <num> -a <aposta>"
+
+        # 3 concursos aleatórios
+        error_code = self.script.cmd_conferir('quina', [805, 807, 1763],
+                                              [(13, 23, 41, 71, 78)])
+        error_code |should| equal_to(0)
+        self.out |should| contain(u"Conferência da Quina 805, 807 e 1763\n")
+        self.out |should| contain(u"  1 aposta premiada (em 3 conferidas)\n")
+        self.out |should| contain(u"  Premiação total: R$ 33,13\n")
+
+        # 3 concursos consecutivos
+        error_code = self.script.cmd_conferir('quina', [805, 806, 807],
+                                              [(13, 23, 41, 71, 78)])
+        error_code |should| equal_to(0)
+        self.out |should| contain(u"Conferência da Quina 805 a 807\n")
+        self.out |should| contain(u"  1 aposta premiada (em 3 conferidas)\n")
+        self.out |should| contain(u"  Premiação total: R$ 33,13\n")
+
+    def test_script__conferir__2_concursos_2_apostas(self):
+        "gval conferir -j <loteria> -c <num> -c <num> -a <aposta> -a <aposta>"
+
+        error_code = self.script.cmd_conferir('quina', [805, 1763],
+                                              [(13, 23, 41, 71, 78),
+                                               (3, 9, 20, 24, 35, 80)])
+        error_code |should| equal_to(0)
+        self.out |should| contain(u"Conferência da Quina 805 e 1763\n")
+        self.out |should| contain(u"  2 apostas premiadas (em 4 conferidas)\n")
+        self.out |should| contain(u"  Premiação total: R$ 70,38\n")
