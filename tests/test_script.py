@@ -5,6 +5,7 @@ from should_dsl import should, should_not
 from lib.gval.util import Config
 from lib.gval import script
 import unittest
+import os
 
 class Output(file):
     def __init__(self):
@@ -24,6 +25,7 @@ class TestScript:
     def setUp(self):
         self.out = Output()
         self.script = script.Script(out=self.out,
+                                    err=open(os.devnull),
                                     cfg=Config(test_stuff.CONFIG_DIR))
 
     def test_avaliar__consultar(self):

@@ -40,8 +40,9 @@ class T(object):
         raise argparse.ArgumentTypeError(msg % (nome, loterias))
 
 class Script(object):
-    def __init__(self, out=None, cfg=None):
+    def __init__(self, out=None, err=None, cfg=None):
         self.out = out or sys.stdout
+        self.err = err or sys.stderr
         self.cfg = cfg or gval.util.Config()
 
     def cmd_consultar(self, loteria, concurso):
@@ -79,7 +80,7 @@ class Script(object):
                                                       conferidos)))
         # TODO: Melhorar as informações de erros
         if erros:
-            self.out.write(u"Concursos não disponíveis: %s\n" % list(erros))
+            self.err.write(u"Concursos não disponíveis: %s\n" % list(erros))
 
         return 0
 
