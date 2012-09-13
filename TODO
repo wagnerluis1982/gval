@@ -1,8 +1,6 @@
 A fazer
 -------
 
-- Apesar de ser prático, é difícil de manter as funções #cmd_* e #formatar_*
-  juntas. Assim, fica como tarefa, colocar as saídas todas nas #cmd_*.
 - Projetar um arquivo de configurações
 - Script: migrar algumas checagens em #cmd_consultar para #avaliar
 - Reprojetar script:

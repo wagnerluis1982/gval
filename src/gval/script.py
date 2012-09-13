@@ -80,8 +80,31 @@ class Script(object):
             except gval.loteria.LoteriaException:
                 erros.add(apo.concurso)
 
-        self.out.write(''.join(self.formatar_conferencia(klass.__name__,
-                                                      conferidos)))
+        concursos = sorted(set(d[0] for d in conferidos))
+        primeiro = concursos[0]
+        ultimo   = concursos[-1]
+
+        s_concursos = lambda: [str(num) for num in concursos]
+        if len(concursos) > 2:
+            if concursos == range(primeiro, ultimo + 1):
+                txt_concursos = "%d a %d" % (primeiro, ultimo)
+            else:
+                txt_concursos = ", ".join(s_concursos()[:-1]) + " e %d" % ultimo
+        else:
+            txt_concursos = " e ".join(s_concursos())
+
+        premiadas = [p for p in conferidos if p[3] > 0]
+        premiacao = locale.format("%.2f", sum(v[3] for v in premiadas),
+                                  grouping=True)
+
+        msg_premiadas = (u"  %d aposta{0} premiada{0}"
+                         u" (em %d conferida{1})\n").format('s' * (len(premiadas) > 1),
+                                                            's' * (len(conferidos) > 1))
+
+        self.out.write(u"Conferência da %s %s\n" % (klass.__name__, txt_concursos))
+        self.out.write(msg_premiadas % (len(premiadas), len(conferidos)))
+        self.out.write(u"  Premiação total: R$ %s\n" % premiacao)
+
         # TODO: Melhorar as informações de erros
         if erros:
             self.err.write(u"Concursos não disponíveis: %s\n" % list(erros))
@@ -134,32 +157,6 @@ class Script(object):
             ret_args.append(args.aposta)
 
         return (ret_method, tuple(ret_args))
-
-    def formatar_conferencia(self, loteria, dados):
-        concursos = sorted(set(d[0] for d in dados))
-        primeiro = concursos[0]
-        ultimo   = concursos[-1]
-
-        s_concursos = [str(num) for num in concursos]
-        if len(concursos) > 2:
-            if concursos == range(primeiro, ultimo + 1):
-                txt_concursos = "%d a %d" % (primeiro, ultimo)
-            else:
-                txt_concursos = ", ".join(s_concursos[:-1]) + " e %d" % ultimo
-        else:
-            txt_concursos = " e ".join(s_concursos)
-
-        premiadas = [p for p in dados if p[3] > 0]
-        premiacao = locale.format("%.2f", sum(v[3] for v in premiadas),
-                                  grouping=True)
-
-        msg_premiadas = (u"  %d aposta{0} premiada{0}"
-                         u" (em %d conferida{1})\n").format('s' * (len(premiadas) > 1),
-                                                            's' * (len(dados) > 1))
-
-        return [u"Conferência da %s %s\n" % (loteria, txt_concursos),
-                msg_premiadas % (len(premiadas), len(dados)),
-                u"  Premiação total: R$ %s\n" % premiacao]
 
 
 def main(args=sys.argv):
