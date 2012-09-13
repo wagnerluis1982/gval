@@ -6,20 +6,15 @@ from lib.gval.util import Config
 from lib.gval import script
 import unittest
 import os
+from UserList import UserList
 
-class Output(file):
-    def __init__(self):
-        self.mensagem = []
-
-    def readlines(self):
-        return self.mensagem
-
-    def write(self, msg):
-        assert isinstance(msg, basestring)
-        self.mensagem.extend(msg.splitlines(True))
+class Output(UserList):
+    def write(self, message):
+        assert isinstance(message, basestring)
+        self.data.extend(message.splitlines(True))
 
     def clear(self):
-        self.mensagem = []
+        self.data = []
 
 class TestScript:
     def setUp(self):
@@ -131,7 +126,7 @@ class TestScript:
             u"Resultado da Lotofacil 600\n",
             u"  Números: 01 03 05 06 08 09 10 11 16 17 18 19 22 23 25\n",
         ]
-        self.out.readlines() |should| equal_to(saida_esperada)
+        self.out |should| equal_to(saida_esperada)
 
     def test_script__conferir(self):
         "gval.py conferir -j <loteria> -c <num> -a <aposta>"
@@ -144,4 +139,4 @@ class TestScript:
         saida_esperada = self.script.formatar_conferencia("Quina",
                                               [(805, 1, [13], 0.0),
                                                (805, 3, [13, 41, 71], 33.13)])
-        self.out.readlines() |should| equal_to(saida_esperada)
+        self.out |should| equal_to(saida_esperada)
