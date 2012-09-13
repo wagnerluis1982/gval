@@ -40,19 +40,17 @@ class T(object):
         raise argparse.ArgumentTypeError(msg % (nome, loterias))
 
 class Script(object):
-    def __init__(self, saida=None, cfg=None):
-        self.saida = saida or sys.stdout
+    def __init__(self, out=None, cfg=None):
+        self.out = out or sys.stdout
         self.cfg = cfg or gval.util.Config()
 
     def cmd_consultar(self, loteria, concurso):
-        saida = self.saida
-
         klass = LOTERIAS[loteria]
         try:
             result = klass().consultar(concurso)
             assert isinstance(result, gval.loteria.Resultado)
 
-            saida.write(''.join(self.formatar_resultado(klass.__name__,
+            self.out.write(''.join(self.formatar_resultado(klass.__name__,
                                                         result.concurso,
                                                         result.numeros)))
         except gval.loteria.LoteriaException:
@@ -62,8 +60,6 @@ class Script(object):
         return 0
 
     def cmd_conferir(self, loteria, concursos, numeros):
-        saida = self.saida
-
         klass = LOTERIAS[loteria]
         lote = klass()
         apostas = [gval.loteria.Aposta(c, n) for c in concursos
@@ -79,11 +75,11 @@ class Script(object):
             except gval.loteria.LoteriaException:
                 erros.add(apo.concurso)
 
-        saida.write(''.join(self.formatar_conferencia(klass.__name__,
+        self.out.write(''.join(self.formatar_conferencia(klass.__name__,
                                                       conferidos)))
         # TODO: Melhorar as informações de erros
         if erros:
-            saida.write(u"Concursos não disponíveis: %s\n" % list(erros))
+            self.out.write(u"Concursos não disponíveis: %s\n" % list(erros))
 
         return 0
 

@@ -6,7 +6,7 @@ from lib.gval.util import Config
 from lib.gval import script
 import unittest
 
-class Saida(file):
+class Output(file):
     def __init__(self):
         self.mensagem = []
 
@@ -22,8 +22,8 @@ class Saida(file):
 
 class TestScript:
     def setUp(self):
-        self.saida = Saida()
-        self.script = script.Script(saida=self.saida,
+        self.out = Output()
+        self.script = script.Script(out=self.out,
                                     cfg=Config(test_stuff.CONFIG_DIR))
 
     def test_avaliar__consultar(self):
@@ -142,7 +142,7 @@ class TestScript:
 
         saida_esperada = self.script.formatar_resultado('Lotofacil', 600,
                                     [1,3,5,6,8,9,10,11,16,17,18,19,22,23,25])
-        self.saida.readlines() |should| equal_to(saida_esperada)
+        self.out.readlines() |should| equal_to(saida_esperada)
 
     def test_script__conferir(self):
         "gval.py conferir -j <loteria> -c <num> -a <aposta>"
@@ -155,4 +155,4 @@ class TestScript:
         saida_esperada = self.script.formatar_conferencia("Quina",
                                               [(805, 1, [13], 0.0),
                                                (805, 3, [13, 41, 71], 33.13)])
-        self.saida.readlines() |should| equal_to(saida_esperada)
+        self.out.readlines() |should| equal_to(saida_esperada)
