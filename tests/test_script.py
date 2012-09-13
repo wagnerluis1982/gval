@@ -119,14 +119,10 @@ class TestScript:
     def test_script__consultar(self):
         "gval.py consultar -j <loteria> -c <num>"
 
-        error_code = self.script.cmd_consultar('lotofacil', 600)
+        error_code = self.script.cmd_consultar('quina', 805)
         error_code |should| equal_to(0)
-
-        saida_esperada = [
-            u"Resultado da Lotofacil 600\n",
-            u"  Números: 01 03 05 06 08 09 10 11 16 17 18 19 22 23 25\n",
-        ]
-        self.out |should| equal_to(saida_esperada)
+        self.out |should| contain(u"Resultado da Quina 805\n")
+        self.out |should| contain(u"  Números: 13 22 41 42 71\n")
 
     def test_script__conferir(self):
         "gval.py conferir -j <loteria> -c <num> -a <aposta>"
