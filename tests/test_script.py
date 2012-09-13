@@ -47,7 +47,7 @@ class TestScript:
         self.script.avaliar(*args) |should| equal_to(esperado)
 
     def test_avaliar__conferir(self):
-        "#avaliar comando conferir retorna (<method>, ('<jogo>', <num>, <aposta>))"
+        "#avaliar comando conferir retorna (<method>, ('<jogo>', [<num>,...], [<aposta>,...]))"
 
         # 1 concurso e 1 aposta
         args = 'gval.py', 'conferir', '--jogo', 'lotofacil', \
@@ -82,40 +82,6 @@ class TestScript:
         (lambda: s.avaliar('gval.py', 'miar')) |should| throw(script.ScriptException)
         (lambda: s.avaliar('gval.py', 'falar')) |should| throw(script.ScriptException)
 
-    def test_formatar_conferencia(self):
-        "#formatar_conferencia retorna a conferência formatada das apostas"
-
-        # A conferência formatada deve ficar +/- assim:
-
-        ##################################################
-        ### Conferência da {loteria} {concursos}       ###
-        ###   {p} apostas premiadas (em {n} conferidas ###
-        ###   Premiação total: R$ {premio}             ###
-        ##################################################
-
-        conferencia = self.script.formatar_conferencia("Quina",
-                                               [(805, 1, [13], 0.0),
-                                                (805, 2, [13, 71], 0.0),
-                                                (805, 2, [13, 41, 71], 33.13),
-                                                (805, 3, [13, 22, 41], 33.13)])
-        conferencia |should| contain(u"Conferência da Quina 805\n")
-        conferencia |should| contain(u"  2 apostas premiadas (em 4 conferidas)\n")
-        conferencia |should| contain(u"  Premiação total: R$ 66,26\n")
-
-        conferencia = self.script.formatar_conferencia("Quina",
-                                               [(805, 1, [13], 0.0),
-                                                (805, 2, [13, 71], 0.0),
-                                                (805, 3, [13, 22, 41], 33.13)])
-        conferencia |should| contain(u"Conferência da Quina 805\n")
-        conferencia |should| contain(u"  1 aposta premiada (em 3 conferidas)\n")
-        conferencia |should| contain(u"  Premiação total: R$ 33,13\n")
-
-        conferencia = self.script.formatar_conferencia("Quina",
-                                               [(805, 3, [13, 22, 41], 33.13)])
-        conferencia |should| contain(u"Conferência da Quina 805\n")
-        conferencia |should| contain(u"  1 aposta premiada (em 1 conferida)\n")
-        conferencia |should| contain(u"  Premiação total: R$ 33,13\n")
-
     def test_script__consultar(self):
         "gval.py consultar -j <loteria> -c <num>"
 
@@ -124,15 +90,22 @@ class TestScript:
         self.out |should| contain(u"Resultado da Quina 805\n")
         self.out |should| contain(u"  Números: 13 22 41 42 71\n")
 
-    def test_script__conferir(self):
+    def test_script__conferir__simples(self):
         "gval.py conferir -j <loteria> -c <num> -a <aposta>"
 
         error_code = self.script.cmd_conferir('quina', [805],
-                                              [(13, 23, 45, 47, 78),
-                                               (13, 23, 41, 71, 78)])
+                                              [(13, 23, 41, 71, 78)])
         error_code |should| equal_to(0)
+        self.out |should| contain(u"Conferência da Quina 805\n")
+        self.out |should| contain(u"  1 aposta premiada (em 1 conferida)\n")
+        self.out |should| contain(u"  Premiação total: R$ 33,13\n")
 
-        saida_esperada = self.script.formatar_conferencia("Quina",
-                                              [(805, 1, [13], 0.0),
-                                               (805, 3, [13, 41, 71], 33.13)])
-        self.out |should| equal_to(saida_esperada)
+    def test_script__conferir__2_concursos(self):
+        "gval.py conferir -j <loteria> -c <num> -c <num> -a <aposta>"
+
+        error_code = self.script.cmd_conferir('quina', [805, 807],
+                                              [(13, 23, 41, 71, 78)])
+        error_code |should| equal_to(0)
+        self.out |should| contain(u"Conferência da Quina 805 e 807\n")
+        self.out |should| contain(u"  1 aposta premiada (em 2 conferidas)\n")
+        self.out |should| contain(u"  Premiação total: R$ 33,13\n")
