@@ -87,21 +87,6 @@ class TestScript:
         (lambda: s.avaliar('gval.py', 'miar')) |should| throw(script.ScriptException)
         (lambda: s.avaliar('gval.py', 'falar')) |should| throw(script.ScriptException)
 
-    def test_formatar_resultado(self):
-        "#formatar_resultado retorna o resultado formatado"
-
-        # O resultado formatado deve ficar +/- assim:
-
-        #########################################
-        ### Resultado da {loteria} {concurso} ###
-        ###   Números: {resultado}            ###
-        #########################################
-
-        resultado = self.script.formatar_resultado("Quina", 805,
-                                                   [13, 22, 41, 42, 71])
-        resultado |should| contain(u"Resultado da Quina 805\n")
-        resultado |should| contain(u"  Números: 13 22 41 42 71\n")
-
     def test_formatar_conferencia(self):
         "#formatar_conferencia retorna a conferência formatada das apostas"
 
@@ -142,8 +127,10 @@ class TestScript:
         error_code = self.script.cmd_consultar('lotofacil', 600)
         error_code |should| equal_to(0)
 
-        saida_esperada = self.script.formatar_resultado('Lotofacil', 600,
-                                    [1,3,5,6,8,9,10,11,16,17,18,19,22,23,25])
+        saida_esperada = [
+            u"Resultado da Lotofacil 600\n",
+            u"  Números: 01 03 05 06 08 09 10 11 16 17 18 19 22 23 25\n",
+        ]
         self.out.readlines() |should| equal_to(saida_esperada)
 
     def test_script__conferir(self):

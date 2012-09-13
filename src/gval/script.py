@@ -47,13 +47,17 @@ class Script(object):
 
     def cmd_consultar(self, loteria, concurso):
         klass = LOTERIAS[loteria]
+
         try:
             result = klass().consultar(concurso)
             assert isinstance(result, gval.loteria.Resultado)
 
-            self.out.write(''.join(self.formatar_resultado(klass.__name__,
-                                                        result.concurso,
-                                                        result.numeros)))
+            self.out.write(u"Resultado da %s %d\n" % (klass.__name__,
+                                                      result.concurso))
+
+            resultado = ' '.join("%02d" % n for n in result.numeros)
+            self.out.write(u"  Números: %s\n" % resultado)
+
         except gval.loteria.LoteriaException:
             msg = u"concurso %d da %s não encontrado"
             psr_consultar.error(msg % (concurso, loteria))
@@ -130,10 +134,6 @@ class Script(object):
             ret_args.append(args.aposta)
 
         return (ret_method, tuple(ret_args))
-
-    def formatar_resultado(self, loteria, concurso, resultado):
-        return [u"Resultado da %s %d\n" % (loteria, concurso),
-                u"  Números: %s\n" % ' '.join("%02d" % n for n in resultado)]
 
     def formatar_conferencia(self, loteria, dados):
         concursos = sorted(set(d[0] for d in dados))
