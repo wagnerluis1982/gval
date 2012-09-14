@@ -45,6 +45,20 @@ class Script(object):
         self.err = err
         self.cfg = cfg or gval.util.Config()
 
+    def _msg_lista(self, numeros):
+        numeros = sorted(set(d[0] for d in numeros))
+        primeiro = numeros[0]
+        ultimo   = numeros[-1]
+
+        str_numeros = lambda: [str(num) for num in numeros]
+        if len(numeros) > 2:
+            if numeros == range(primeiro, ultimo + 1):
+                return "%d a %d" % (primeiro, ultimo)
+            else:
+                return ", ".join(str_numeros()[:-1]) + " e %d" % ultimo
+        else:
+            return " e ".join(str_numeros())
+
     def cmd_consultar(self, loteria, concurso):
         klass = LOTERIAS[loteria]
 
@@ -80,19 +94,6 @@ class Script(object):
             except gval.loteria.LoteriaException:
                 erros.add(apo.concurso)
 
-        concursos = sorted(set(d[0] for d in conferidos))
-        primeiro = concursos[0]
-        ultimo   = concursos[-1]
-
-        s_concursos = lambda: [str(num) for num in concursos]
-        if len(concursos) > 2:
-            if concursos == range(primeiro, ultimo + 1):
-                txt_concursos = "%d a %d" % (primeiro, ultimo)
-            else:
-                txt_concursos = ", ".join(s_concursos()[:-1]) + " e %d" % ultimo
-        else:
-            txt_concursos = " e ".join(s_concursos())
-
         premiadas = [p for p in conferidos if p[3] > 0]
         premiacao = locale.format("%.2f", sum(v[3] for v in premiadas),
                                   grouping=True)
@@ -101,7 +102,8 @@ class Script(object):
                          u" (em %d conferida{1})\n").format('s' * (len(premiadas) > 1),
                                                             's' * (len(conferidos) > 1))
 
-        self.out.write(u"Conferência da %s %s\n" % (klass.__name__, txt_concursos))
+        self.out.write(u"Conferência da %s %s\n" % (klass.__name__,
+                                                    self._msg_lista(conferidos)))
         self.out.write(msg_premiadas % (len(premiadas), len(conferidos)))
         self.out.write(u"  Premiação total: R$ %s\n" % premiacao)
 
