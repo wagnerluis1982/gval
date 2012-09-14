@@ -43,7 +43,7 @@ class Script(object):
     def __init__(self, out=sys.stdout, err=sys.stderr, cfg=None):
         self.out = out
         self.err = err
-        self.cfg = cfg or gval.util.Config()
+        self.cfg = cfg
 
     def _msg_lista(self, numeros):
         numeros = sorted(set(d[0] for d in numeros))
@@ -63,7 +63,7 @@ class Script(object):
         klass = LOTERIAS[loteria]
 
         try:
-            result = klass().consultar(concurso)
+            result = klass(self.cfg).consultar(concurso)
             assert isinstance(result, gval.loteria.Resultado)
 
             self.out.write(u"Resultado da %s %d\n" % (klass.__name__,
@@ -80,7 +80,7 @@ class Script(object):
 
     def cmd_conferir(self, loteria, concursos, numeros):
         klass = LOTERIAS[loteria]
-        lote = klass()
+        lote = klass(self.cfg)
 
         apostas = [gval.loteria.Aposta(c, n) for c in concursos
                                              for n in numeros]
