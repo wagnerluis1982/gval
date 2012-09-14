@@ -103,10 +103,17 @@ class Script(object):
             except gval.loteria.LoteriaException:
                 erros.add(apo.concurso)
 
+        msg_erro = "%s: concursos indisponíveis: %s\n"
+
+        # Não encontrar nenhum dos concursos pedidos caracteriza como erro.
+        # Assim, aqui uma mensagem de erro é exibida e o script é finalizado.
+        if len(conferidos) == 0:
+            self.err.write(msg_erro % ("ERRO", self._seq_to_str(erros)))
+            return 1
+
         # Informa ao usuário os concursos não disponíveis no momento
         if erros:
-            self.err.write(u"AVISO: concursos indisponíveis: %s\n\n" %
-                                                self._seq_to_str(list(erros)))
+            self.err.write(msg_erro % ("AVISO", self._seq_to_str(erros)))
 
         # Informa quais concursos foram conferidos
         self.out.write(u"Conferência da %s %s\n" % (klass.__name__,
