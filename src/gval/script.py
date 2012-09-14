@@ -81,6 +81,7 @@ class Script(object):
     def cmd_conferir(self, loteria, concursos, numeros):
         klass = LOTERIAS[loteria]
         lote = klass()
+
         apostas = [gval.loteria.Aposta(c, n) for c in concursos
                                              for n in numeros]
         conferidos = []
@@ -91,25 +92,26 @@ class Script(object):
                 assert isinstance(confere, gval.loteria.Conferencia)
 
                 conferidos.append(confere.to_array())
+
             except gval.loteria.LoteriaException:
                 erros.add(apo.concurso)
 
-        premiadas = [p for p in conferidos if p[3] > 0]
-        premiacao = locale.format("%.2f", sum(v[3] for v in premiadas),
-                                  grouping=True)
-
-        msg_premiadas = (u"  %d aposta{0} premiada{0}"
-                         u" (em %d conferida{1})\n").format('s' * (len(premiadas) > 1),
-                                                            's' * (len(conferidos) > 1))
-
-        self.out.write(u"Conferência da %s %s\n" % (klass.__name__,
-                                                    self._msg_lista(conferidos)))
-        self.out.write(msg_premiadas % (len(premiadas), len(conferidos)))
-        self.out.write(u"  Premiação total: R$ %s\n" % premiacao)
-
-        # TODO: Melhorar as informações de erros
         if erros:
-            self.err.write(u"Concursos não disponíveis: %s\n" % list(erros))
+            self.err.write(u"ATENÇÃO: concursos indisponíveis: %s\n\n" %
+                                                self._msg_lista(list(erros)))
+
+        premiadas = [p for p in conferidos if p[3] > 0]
+        msg_premiadas = (u"  %d aposta{0} premiada{0}"
+                u" (em %d conferida{1})\n").format('s' * (len(premiadas) > 1),
+                                                   's' * (len(conferidos) > 1))
+
+        self.out.write(u"Conferência da %s %s\n" %
+                                (klass.__name__, self._msg_lista(conferidos)))
+        self.out.write(msg_premiadas % (len(premiadas), len(conferidos)))
+
+        premiacao = locale.format("%.2f", sum(v[3] for v in premiadas),
+                                    grouping=True)
+        self.out.write(u"  Premiação total: R$ %s\n" % premiacao)
 
         return 0
 
