@@ -79,14 +79,14 @@ class Script(object):
             self.out.write(u"  Números: %s\n" % resultado)
 
         except gval.loteria.LoteriaException:
-            msg = u"concurso %d da %s não encontrado"
-            psr_consultar.error(msg % (concurso, loteria))
+            msg = u"ERRO: resultado da %s %d indisponível\n"
+            self.err.write(msg % (klass.__name__, concurso))
+            return 1
 
         return 0
 
     def cmd_conferir(self, loteria, concursos, numeros):
         klass = LOTERIAS[loteria]
-        lote = klass(self.cfg)
 
         # Realiza a conferência, guarda o retorno em conferidos, quando sucesso
         # e guarda os que não foram possíveis conferir em erros.
@@ -95,7 +95,7 @@ class Script(object):
         erros = set()
         for apo in apostas:
             try:
-                confere = lote.conferir(apo)
+                confere = klass(self.cfg).conferir(apo)
                 assert isinstance(confere, gval.loteria.Conferencia)
 
                 conferidos.append(confere.to_array())
@@ -128,10 +128,9 @@ class Script(object):
 
     def executar(self, *argv):
         avaliacao = self.avaliar(*argv)
-        avaliacao[0](*avaliacao[1])
+        exit(avaliacao[0](*avaliacao[1]))
 
     def avaliar(self, *argv):
-        global parser
         parser = argparse.ArgumentParser(prog=argv[0])
         subparsers = parser.add_subparsers(dest="comando")
 
@@ -146,13 +145,11 @@ class Script(object):
                            "type": int}
 
         # Comando "consultar"
-        global psr_consultar
         psr_consultar = subparsers.add_parser("consultar")
         psr_consultar.add_argument(*args_jogo, **kwargs_jogo)
         psr_consultar.add_argument(*args_concurso, **kwargs_concurso)
 
         # Comando "conferir"
-        global psr_conferir
         psr_conferir = subparsers.add_parser("conferir")
         psr_conferir.add_argument(*args_jogo, **kwargs_jogo)
         psr_conferir.add_argument(*args_concurso, action="append",
