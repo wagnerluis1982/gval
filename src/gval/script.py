@@ -45,21 +45,25 @@ class Script(object):
         self.err = err
         self.cfg = cfg
 
-    def _msg_lista(self, numeros):
-        assert isinstance(numeros, list)
+    def _seq_to_str(self, numbers):
+        assert isinstance(numbers, (list, set, tuple))
 
-        numeros = sorted(set(numeros))
-        primeiro = numeros[0]
-        ultimo   = numeros[-1]
+        numbers = sorted(set(numbers))
+        str_numbers = lambda: [str(num) for num in numbers]
+        primeiro = numbers[0]
+        ultimo   = numbers[-1]
 
-        str_numeros = lambda: [str(num) for num in numeros]
-        if len(numeros) > 2:
-            if numeros == range(primeiro, ultimo + 1):
-                return "%d a %d" % (primeiro, ultimo)
-            else:
-                return ", ".join(str_numeros()[:-1]) + " e %d" % ultimo
+        # No máximo 2 números
+        if len(numbers) <= 2:
+            return " e ".join(str_numbers())
+        # Mais de 2 números
         else:
-            return " e ".join(str_numeros())
+            # Sequência está dentro de uma faixa
+            if numbers == range(primeiro, ultimo + 1):
+                return "%d a %d" % (primeiro, ultimo)
+            # Sequência não consecutiva
+            else:
+                return ", ".join(str_numbers()[:-1]) + " e %d" % ultimo
 
     def cmd_consultar(self, loteria, concurso):
         klass = LOTERIAS[loteria]
@@ -100,10 +104,10 @@ class Script(object):
 
         if erros:
             self.err.write(u"ATENÇÃO: concursos indisponíveis: %s\n\n" %
-                                                self._msg_lista(list(erros)))
+                                                self._seq_to_str(list(erros)))
 
         self.out.write(u"Conferência da %s %s\n" % (klass.__name__,
-                                self._msg_lista([n[0] for n in conferidos])))
+                                self._seq_to_str([n[0] for n in conferidos])))
 
         premiadas = [p for p in conferidos if p[3] > 0]
         msg_premiadas = (u"  %d aposta{0} premiada{0} (em %d conferida{1})\n"
