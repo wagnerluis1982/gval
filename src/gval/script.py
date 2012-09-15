@@ -114,6 +114,7 @@ class Script(object):
         # Informa ao usuário os concursos não disponíveis no momento
         if erros:
             self.err.write(msg_erro % ("AVISO", self._seq_to_str(erros)))
+            self.err.write('\n')
 
         # Informa quais concursos foram conferidos
         self.out.write(u"Conferência da %s %s\n" % (klass.__name__,
