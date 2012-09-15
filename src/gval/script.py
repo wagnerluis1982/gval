@@ -107,7 +107,8 @@ class Script(object):
 
         # Não encontrar nenhum dos concursos pedidos caracteriza como erro.
         # Assim, aqui uma mensagem de erro é exibida e o script é finalizado.
-        if len(conferidos) == 0:
+        q_conferidos = len(conferidos)
+        if q_conferidos == 0:
             self.err.write(msg_erro % ("ERRO", self._seq_to_str(erros)))
             return 1
 
@@ -121,12 +122,14 @@ class Script(object):
                                 self._seq_to_str([n[0] for n in conferidos])))
 
         # Exibe quantas apostas foram premiadas e quantas foram conferidas
-        msg, premiadas = [], [p[3] for p in conferidos if p[3] > 0]
-        msg.append(u"  %d aposta{0} premiada{0}"
-                        .format('s' if len(premiadas) > 1 else ''))
-        msg.append(u"(em %d conferida{})\n"
-                        .format('s' if len(conferidos) > 1 else ''))
-        self.out.write(' '.join(msg) % (len(premiadas), len(conferidos)))
+        premiadas = [p[3] for p in conferidos if p[3] > 0]
+        q_premiadas = len(premiadas)
+        # Usando formatação para identificar plurais 
+        msg = u"  %s aposta{0} premiada{0} (em %d conferida{1})\n".format(
+                        *map(lambda n: 's' if (n > 1) else '', (q_premiadas,
+                                                                q_conferidos)))
+        self.out.write(msg % ("Nenhuma" if (q_premiadas == 0) else q_premiadas,
+                              q_conferidos))
 
         # Exibe a premiação total do usuário
         premiacao = locale.format("%.2f", sum(premiadas), grouping=True)
