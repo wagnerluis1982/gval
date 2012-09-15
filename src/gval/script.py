@@ -124,12 +124,15 @@ class Script(object):
         # Exibe quantas apostas foram premiadas e quantas foram conferidas
         premiadas = [p[3] for p in conferidos if p[3] > 0]
         q_premiadas = len(premiadas)
-        # Usando formatação para identificar plurais 
-        msg = u"  %s aposta{0} premiada{0} (em %d conferida{1})\n".format(
-                        *map(lambda n: 's' if (n > 1) else '', (q_premiadas,
-                                                                q_conferidos)))
-        self.out.write(msg % ("Nenhuma" if (q_premiadas == 0) else q_premiadas,
-                              q_conferidos))
+        msg_premiada = {
+                0: u"%s aposta premiada",   # singular
+                1: u"%s apostas premiadas", # plural
+            }[q_premiadas > 1] % (q_premiadas if q_premiadas > 0 else u"Nenhuma")
+        msg_conferida = {
+                0: u"(em %d conferida)",
+                1: u"(em %d conferidas)",
+            }[q_conferidos > 1] % q_conferidos
+        self.out.write(u"  %s %s\n" % (msg_premiada, msg_conferida))
 
         # Exibe a premiação total do usuário
         premiacao = locale.format("%.2f", sum(premiadas), grouping=True)

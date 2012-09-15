@@ -139,3 +139,13 @@ class TestScript:
         self.out |should| contain(u"Conferência da Quina 805 e 1763\n")
         self.out |should| contain(u"  2 apostas premiadas (em 4 conferidas)\n")
         self.out |should| contain(u"  Premiação total: R$ 70,38\n")
+
+    def test_script__conferir__nenhuma(self):
+        "gval conferir ... imprime \"Nenhuma aposta premiada\" quando 0"
+
+        error_code = self.script.cmd_conferir('quina', [805],
+                                              [(13, 23, 44, 71, 78)])
+        error_code |should| equal_to(0)
+        self.out |should| contain(u"Conferência da Quina 805\n")
+        self.out |should| contain(u"  Nenhuma aposta premiada (em 1 conferida)\n")
+        self.out |should| contain(u"  Premiação total: R$ 0,00\n")
