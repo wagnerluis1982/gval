@@ -2,23 +2,28 @@ A fazer
 -------
 
 - Projetar um arquivo de configurações
-- Script: migrar algumas checagens em #cmd_consultar para #avaliar
-- Reprojetar script:
-  * Nome: gval.py
-  * Comandos:
-    - consultar [PRONTO]
-      ├─ [OK] jogo:     --jogo       -j
-      └─ [OK] concurso: --concurso   -c
-    - conferir
-      ├─ [OK] jogo:     --jogo       -j
-      ├─ [OK] concurso: --concurso   -c
-      └─ [OK] aposta:   --aposta     -a
-         └─ [FALTA] lotomania: --espelho   -e
-    - gerar (futuramente)
-      └─ jogo:     --jogo       -j
+- Concentrar os testes de conferência e consulta apenas na classe Loteria
+    * Para isso, algumas alterações serão necessárias para dar mais
+      independência à Loteria.
+- Proteger entrada da conferência contra apostas com mais ou menos números.
+- Obter mais informações na consulta:
+    * Data do sorteio
+    * Data prevista para o próximo sorteio
+    * Premiação (faixa, no. de ganhadores, valor do prêmio)
+    * Ganhadores por Estado/Município
+- Usar um database (sqlite) para guardar resultados
+- Não permitir consultar um concurso indisponível 2 vezes seguidas. Assim,
+  evita-se requisições desnecessárias.
+    * NOTA 1: na verdade é bom definir um pequeno tempo antes de permitir nova
+      requisição.
+    * NOTA 2: melhor ainda é descobrir a provável data do próximo sorteio e não
+      permitir requisições até essa data.
+- Conferir lotomania: --espelho   -e
+- Comando gerar
+  └─ jogo: --jogo -j
 - Reimplementar consulta ao último resultado com o novo script.
     * Fazer o último resultado ser cacheável
-      - Acredito que para isso, consultar() deve armazenar a data da última
-        consulta, de forma que o cache seja apenas temporário.
+        - Acredito que para isso, consultar() deve armazenar a data da última
+          consulta, de forma que o cache seja apenas temporário.
     * Notificar ao usuário de que o resultado é o último disponível.
 - Decorator para classes e métodos abstratos (NÃO PRIORITÁRIO)
