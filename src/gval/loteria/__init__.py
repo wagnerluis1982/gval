@@ -135,7 +135,6 @@ class Loteria(object):
 
     def consultar(self, concurso=None):
         url = self._url_consulta(concurso)
-        print url
 
         content = self.cacher.obter(url)
         if content is not None:
