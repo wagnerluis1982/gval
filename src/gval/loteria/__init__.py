@@ -117,27 +117,21 @@ class Loteria(object):
         # Parâmetros para a loteria pedida
         params = yaml.load(open(os.path.join(os.path.dirname(__file__),
                         "params", "%s.yaml" % nome)))
+        # Atribuição dos parâmetros, preenchendo os campos necessários
+        self._set_parametros(params)
 
         # Url base. É necessário para consultar().
         self.url = self._url(loteria=nome,
                              script=params.get("url", {}).get("script"))
-
-        # Parser usado para _obter_resultado()
-        self.loteriaparser = getattr(gval.loteria.parser, params["parser"])
-
-        # Posicao dos itens no retorno do parser, usado para _obter_resultado().
-        posicao = params["posicao"]
-        posicao["concurso"] = 0 # até onde já visto, sempre é zero
-        nums = posicao["numeros"]
-        if len(nums) == 2:
-            posicao["numeros"] = xrange(nums[0], nums[1]+1)
-        self.posicao = posicao
 
         # Objeto responsável por gravar em cache
         self.cacher = gval.util.Cacher(cfg or gval.util.Config())
 
         # Objeto responsável pelos downloads
         self.downloader = gval.util.Downloader()
+
+        # Parser usado para _obter_resultado()
+        self.loteriaparser = getattr(gval.loteria.parser, params["parser"])
 
     def consultar(self, concurso=None):
         url = self._url_consulta(concurso)
@@ -179,13 +173,15 @@ class Loteria(object):
         parser = self.loteriaparser()
         parser.feed(html)
 
+        posicao = self.params["posicao"]
+
         result = Resultado()
         result.bruto = parser.dados
-        result.concurso = int(result.bruto[self.posicao["concurso"]])
-        result.numeros = [int(result.bruto[n]) for n in self.posicao["numeros"]]
+        result.concurso = int(result.bruto[posicao["concurso"]])
+        result.numeros = [int(result.bruto[n]) for n in posicao["numeros"]]
 
         result.premiacao = {}
-        for qnt, posicoes in self.posicao["premios"].iteritems():
+        for qnt, posicoes in posicao["premios"].iteritems():
             ganhadores = gval.util.Util.str_to_numeral(
                             result.bruto[posicoes[0]], int)
             premio = gval.util.Util.str_to_numeral(result.bruto[posicoes[1]])
@@ -193,6 +189,17 @@ class Loteria(object):
             result.premiacao[qnt] = (ganhadores, premio)
 
         return result
+
+    def _set_parametros(self, params):
+
+        posicao = params["posicao"]
+        posicao["concurso"] = posicao.get("concurso", 0)
+
+        nums = posicao["numeros"]
+        if len(nums) == 2:
+            posicao["numeros"] = xrange(nums[0], nums[1]+1)
+
+        self.params = params
 
     def _url(self, loteria, script=None,
                 params="?submeteu=sim&opcao=concurso&txtConcurso={concurso}"):
