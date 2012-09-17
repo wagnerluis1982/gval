@@ -1,0 +1,11 @@
+# lotofacil.yaml
+posicao:
+    numeros: [3, 17]
+    premios:
+        15: [18, 19]
+        14: [20, 21]
+        13: [22, 23]
+        12: [24, 25]
+        11: [26, 27]
+
+parser: LotofacilParser
