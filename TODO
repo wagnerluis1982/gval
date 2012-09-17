@@ -2,9 +2,6 @@ A fazer
 -------
 
 - Projetar um arquivo de configurações
-- Concentrar os testes de conferência e consulta apenas na classe Loteria
-    * Para isso, algumas alterações serão necessárias para dar mais
-      independência à Loteria.
 - Proteger entrada da conferência contra apostas com mais ou menos números.
 - Obter mais informações na consulta:
     * Data do sorteio

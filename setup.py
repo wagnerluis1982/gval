@@ -26,10 +26,11 @@ setup(
     url = "https://github.com/wagnerluis1982/gval",
     package_dir = {'': PACKAGE_DIR},
     packages = find_packages(),
+    install_requires = ["PyYAML"],
     entry_points = {
         "console_scripts": ["gval = gval.script:main"],
     },
-    classifiers=[
+    classifiers = [
         "Development Status :: 3 - Alpha",
         "Environment :: Console",
         "Intended Audience :: Developers",
