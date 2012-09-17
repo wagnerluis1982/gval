@@ -102,18 +102,6 @@ class Conferencia(object):
     premio = property(get_premio, set_premio)
 
 
-class Posicao(object):
-    # Os atributos numeros e premios são mandatórios
-
-    def __init__(self, concurso=0, numeros=None, premios=None):
-        if len(numeros) == 2:
-            numeros = xrange(numeros[0], numeros[1]+1)
-
-        self.concurso = concurso # int
-        self.numeros = numeros   # list(<int>,...) ou generator(<int>)
-        self.premios = premios   # dict(<int>: (<int>, <int>))
-
-
 class LoteriaException(Exception):
     pass
 
@@ -137,8 +125,13 @@ class Loteria(object):
         # Parser usado para _obter_resultado()
         self.loteriaparser = getattr(gval.loteria.parser, params["parser"])
 
-        # Instância da classe Posicao, usada para _obter_resultado().
-        self.posicao = Posicao(**params["posicao"])
+        # Posicao dos itens no retorno do parser, usado para _obter_resultado().
+        posicao = params["posicao"]
+        posicao["concurso"] = 0 # até onde já visto, sempre é zero
+        nums = posicao["numeros"]
+        if len(nums) == 2:
+            posicao["numeros"] = xrange(nums[0], nums[1]+1)
+        self.posicao = posicao
 
         # Objeto responsável por gravar em cache
         self.cacher = gval.util.Cacher(cfg or gval.util.Config())
@@ -186,20 +179,20 @@ class Loteria(object):
         parser = self.loteriaparser()
         parser.feed(html)
 
-        resultado = Resultado()
-        resultado.bruto = parser.dados
-        resultado.concurso = int(resultado.bruto[self.posicao.concurso])
-        resultado.numeros = [int(resultado.bruto[n]) for n in self.posicao.numeros]
+        result = Resultado()
+        result.bruto = parser.dados
+        result.concurso = int(result.bruto[self.posicao["concurso"]])
+        result.numeros = [int(result.bruto[n]) for n in self.posicao["numeros"]]
 
-        resultado.premiacao = {}
-        for qnt, posicoes in self.posicao.premios.iteritems():
+        result.premiacao = {}
+        for qnt, posicoes in self.posicao["premios"].iteritems():
             ganhadores = gval.util.Util.str_to_numeral(
-                            resultado.bruto[posicoes[0]], int)
-            premio = gval.util.Util.str_to_numeral(resultado.bruto[posicoes[1]])
+                            result.bruto[posicoes[0]], int)
+            premio = gval.util.Util.str_to_numeral(result.bruto[posicoes[1]])
 
-            resultado.premiacao[qnt] = (ganhadores, premio)
+            result.premiacao[qnt] = (ganhadores, premio)
 
-        return resultado
+        return result
 
     def _url(self, loteria, script=None,
                 params="?submeteu=sim&opcao=concurso&txtConcurso={concurso}"):
