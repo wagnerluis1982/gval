@@ -88,21 +88,6 @@ class Conferencia(object):
         assert premio is None or isinstance(premio, (int, long, float))
         self.__premio = premio
 
-    def del_aposta(self):
-        del self.__aposta
-
-    def del_resultado(self):
-        del self.__resultado
-
-    def del_quantidade(self):
-        del self.__quantidade
-
-    def del_acertados(self):
-        del self.__acertados
-
-    def del_premio(self):
-        del self.__premio
-
     def __eq__(self, other):
         assert isinstance(other, Conferencia)
         return self.__dict__ == other.__dict__
@@ -110,11 +95,11 @@ class Conferencia(object):
     def __repr__(self):
         return str(self.__dict__)
 
-    aposta = property(get_aposta, set_aposta, del_aposta)
-    resultado = property(get_resultado, set_resultado, del_resultado)
-    quantidade = property(get_quantidade, set_quantidade, del_quantidade)
-    acertados = property(get_acertados, set_acertados, del_acertados)
-    premio = property(get_premio, set_premio, del_premio)
+    aposta = property(get_aposta, set_aposta)
+    resultado = property(get_resultado, set_resultado)
+    quantidade = property(get_quantidade, set_quantidade)
+    acertados = property(get_acertados, set_acertados)
+    premio = property(get_premio, set_premio)
 
 
 class Posicao(object):
