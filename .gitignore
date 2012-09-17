@@ -1,5 +1,10 @@
 *.pyc
 
+# gerados por setup.py (sdist|bdist)
+build/
+dist/
+src/GVAL.egg-info/
+
 # usados pelo vim
 *.swp
 

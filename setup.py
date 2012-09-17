@@ -1,19 +1,12 @@
 import codecs
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
+
+# Removendo checagem do README
+from setuptools.command.sdist import sdist
+sdist.check_readme = lambda self: None
 
 PACKAGE_DIR = 'src'
-
-def find_packages():
-    packages = []
-
-    os.chdir(PACKAGE_DIR)
-    for root, dirs, files in os.walk('gval'):
-        if '__init__.py' in files:
-            packages.append(root.replace(os.sep, '.'))
-    os.chdir('..')
-
-    return packages
 
 setup(
     name = "GVAL",
@@ -25,7 +18,7 @@ setup(
     license = "GPL",
     url = "https://github.com/wagnerluis1982/gval",
     package_dir = {'': PACKAGE_DIR},
-    packages = find_packages(),
+    packages = find_packages(PACKAGE_DIR),
     install_requires = ["PyYAML"],
     entry_points = {
         "console_scripts": ["gval = gval.script:main"],
