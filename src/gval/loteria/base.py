@@ -2,8 +2,8 @@
 from collections import namedtuple
 import gval.util
 import os.path
-from gval.util import Util
 import gval.loteria.parser
+import yaml
 
 Aposta = namedtuple("Aposta", ["concurso", "numeros"])
 
@@ -43,8 +43,8 @@ class Conferencia(object):
         if self.resultado.concurso != self.aposta.concurso:
             raise RuntimeError("O concurso do resultado é diferente da aposta")
 
-        self.acertados = Util.intersecao(self.resultado.numeros,
-                                         self.aposta.numeros)
+        self.acertados = gval.util.Util.intersecao(self.resultado.numeros,
+                                                   self.aposta.numeros)
         self.quantidade = len(self.acertados)
 
     def to_array(self):
@@ -132,19 +132,24 @@ class URL(object):
         self.params = params    # Parâmetros do script. Raramente muda.
         self.loteria = loteria  # String usada em {loteria}.
 
+
 class Posicao(object):
     # Os atributos numeros e premios são mandatórios
 
     def __init__(self, concurso=0, numeros=None, premios=None):
+        if len(numeros) == 2:
+            numeros = xrange(numeros[0], numeros[1]+1)
+
         self.concurso = concurso # int
-        self.numeros = numeros   # list(<int>) ou generator(<int>)
+        self.numeros = numeros   # list(<int>,...) ou generator(<int>)
         self.premios = premios   # dict(<int>: (<int>, <int>))
+
 
 class LoteriaException(Exception):
     pass
 
+
 class Loteria(object):
-    # abstract class
 
     # Instância da classe URL. É necessário para consultar().
     url = None
@@ -156,7 +161,16 @@ class Loteria(object):
     # forma automática a partir de gval.loteria.parser.<subclassName>Parser.
     parser_class = None
 
-    def __init__(self, cfg=None):
+    def __init__(self, cfg=None, nome=None):
+        parser_name = None
+
+        # TODO: if temporário (será substituído por is None para gerar raise)
+        if nome is not None:
+           params = yaml.load(open(os.path.join(os.path.dirname(__file__),
+               "params", "%s.yaml" % nome)))
+           self.posicao = Posicao(**params["posicao"])
+           parser_name = params["parser"]
+
         # Verifica se os atributos essenciais estão valorados
         if None in (self.posicao.numeros, self.posicao.premios):
             raise LoteriaException("Atributos essenciais não valorados")
@@ -170,13 +184,13 @@ class Loteria(object):
 
         # Instancia url se preciso
         if self.url is None:
-            self.url = URL()
+            self.url = URL(loteria=nome)
 
         # Valores usados ao consultar() o resultado de um concurso
         self.url.loteria = self.url.loteria or self.__class__.__name__.lower()
         self.parser_class = (self.parser_class or
-                              getattr(gval.loteria.parser,
-                                      "%sParser" % self.__class__.__name__))
+                getattr(gval.loteria.parser,
+                    parser_name or "%sParser" % self.__class__.__name__))
 
     def consultar(self, concurso=None):
         url = self.__url_consulta(concurso)
@@ -224,8 +238,9 @@ class Loteria(object):
 
         resultado.premiacao = {}
         for qnt, posicoes in self.posicao.premios.iteritems():
-            ganhadores = Util.str_to_numeral(resultado.bruto[posicoes[0]], int)
-            premio = Util.str_to_numeral(resultado.bruto[posicoes[1]])
+            ganhadores = gval.util.Util.str_to_numeral(
+                            resultado.bruto[posicoes[0]], int)
+            premio = gval.util.Util.str_to_numeral(resultado.bruto[posicoes[1]])
 
             resultado.premiacao[qnt] = (ganhadores, premio)
 

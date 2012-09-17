@@ -1,0 +1,9 @@
+# quina.yaml
+posicao:
+    numeros: [21, 25]
+    premios:
+        5: [6, 7]
+        4: [8, 9]
+        3: [10, 11]
+
+parser: QuinaParser

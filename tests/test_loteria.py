@@ -2,8 +2,43 @@
 import test_stuff
 
 from should_dsl import should, should_not
-from lib.gval.loteria import Conferencia, Resultado, Aposta
+from lib.gval.loteria import Conferencia, Resultado, Aposta, Loteria
 from lib.gval.util import Config
+
+class TestLoteria:
+    cfg = Config(test_stuff.CONFIG_DIR)
+
+    def test_consultar__quina(self):
+        "#consultar retorna Resultado(<quina>)"
+
+        quina = Loteria(self.cfg, nome="quina")
+        r = quina.consultar(805)
+        r.concurso |should| equal_to(805)
+        r.numeros |should| equal_to([13, 22, 41, 42, 71])
+
+    def test_conferir__quina(self):
+        "#conferir retorna os acertos e o prêmio de uma aposta da Quina"
+
+        quina = Loteria(self.cfg, nome="quina")
+
+        aposta = Aposta(805, [13, 23, 45, 47, 78])
+        conferido = quina.conferir(aposta)
+        esperado = Conferencia(aposta,
+                        resultado=quina.consultar(aposta.concurso),
+                        quantidade=1,
+                        acertados=[13],
+                        premio=0.00)
+        conferido |should| equal_to(esperado)
+
+        aposta = Aposta(1763, [3, 9, 24, 33, 60])
+        conferido = quina.conferir(aposta)
+        esperado = Conferencia(aposta,
+                        resultado=quina.consultar(aposta.concurso),
+                        quantidade=5,
+                        acertados=[3, 9, 24, 33, 60],
+                        premio=143758.75)
+        conferido |should| equal_to(esperado)
+
 
 class TestConferencia:
     def setUp(self):
