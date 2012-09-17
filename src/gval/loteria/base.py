@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 import gval.util
 import os.path
 import gval.loteria.parser
@@ -116,22 +116,6 @@ class Conferencia(object):
     acertados = property(get_acertados, set_acertados, del_acertados)
     premio = property(get_premio, set_premio, del_premio)
 
-class URL(object):
-    # A constante BASE e os atributos script, params e loteria servem para
-    # construir a url de acesso aos resultados de cada loteria.
-    # Os valores dessa classe são os mais comuns. Cada subclasse de Loteria
-    # deve sobrescrever os atributos para se adequar à url que deva ser usada.
-
-    # Url comum a todas as loterias conhecidas
-    BASE = "http://www1.caixa.gov.br/loterias/loterias/{loteria}"
-
-    def __init__(self, script=None,
-                  params="?submeteu=sim&opcao=concurso&txtConcurso={concurso}",
-                  loteria=None):
-        self.script = script or "{loteria}_pesquisa_new.asp" # Nome do script
-        self.params = params    # Parâmetros do script. Raramente muda.
-        self.loteria = loteria  # String usada em {loteria}.
-
 
 class Posicao(object):
     # Os atributos numeros e premios são mandatórios
@@ -151,51 +135,35 @@ class LoteriaException(Exception):
 
 class Loteria(object):
 
-    # Instância da classe URL. É necessário para consultar().
-    url = None
-
-    # Instância da classe Posicao. É necessário para _obter_resultado().
-    posicao = None
-
-    # Classe do parser usada para _obter_resultado(). Normalmente é obtida de
-    # forma automática a partir de gval.loteria.parser.<subclassName>Parser.
-    parser_class = None
+    # Url comum a todas as loterias conhecidas
+    URL_COMUM = "http://www1.caixa.gov.br/loterias/loterias/{loteria}/"
 
     def __init__(self, nome, cfg=None):
-        parser_name = None
+        assert isinstance(nome, basestring)
 
-        # TODO: if temporário (será substituído por is None para gerar raise)
-        if nome is not None:
-           params = yaml.load(open(os.path.join(os.path.dirname(__file__),
-               "params", "%s.yaml" % nome)))
-           self.posicao = Posicao(**params["posicao"])
-           parser_name = params["parser"]
-           if params.get("url") is not None:
-               self.url = URL(loteria=nome, script=params["url"].get("script"))
+        # Parâmetros para a loteria pedida
+        params = yaml.load(open(os.path.join(os.path.dirname(__file__),
+                        "params", "%s.yaml" % nome)))
 
-        # Verifica se os atributos essenciais estão valorados
-        if None in (self.posicao.numeros, self.posicao.premios):
-            raise LoteriaException("Atributos essenciais não valorados")
+        # Url base. É necessário para consultar().
+        self.url = self._url(loteria=nome,
+                             script=params.get("url", {}).get("script"))
+
+        # Parser usado para _obter_resultado()
+        self.loteriaparser = getattr(gval.loteria.parser, params["parser"])
+
+        # Instância da classe Posicao, usada para _obter_resultado().
+        self.posicao = Posicao(**params["posicao"])
 
         # Objeto responsável por gravar em cache
-        cfg = cfg or gval.util.Config()
-        self.cacher = gval.util.Cacher(cfg)
+        self.cacher = gval.util.Cacher(cfg or gval.util.Config())
 
         # Objeto responsável pelos downloads
         self.downloader = gval.util.Downloader()
 
-        # Instancia url se preciso
-        if self.url is None:
-            self.url = URL(loteria=nome)
-
-        # Valores usados ao consultar() o resultado de um concurso
-        self.url.loteria = self.url.loteria or self.__class__.__name__.lower()
-        self.parser_class = (self.parser_class or
-                getattr(gval.loteria.parser,
-                    parser_name or "%sParser" % self.__class__.__name__))
-
     def consultar(self, concurso=None):
-        url = self.__url_consulta(concurso)
+        url = self._url_consulta(concurso)
+        print url
 
         content = self.cacher.obter(url)
         if content is not None:
@@ -230,7 +198,7 @@ class Loteria(object):
         return conferencia
 
     def _obter_resultado(self, html):
-        parser = self.parser_class()
+        parser = self.loteriaparser()
         parser.feed(html)
 
         resultado = Resultado()
@@ -248,10 +216,26 @@ class Loteria(object):
 
         return resultado
 
-    def __url_consulta(self, concurso=None):
-        fmt_url = "%s/%s" % (self.url.BASE, self.url.script)
-        if concurso is not None:
-            fmt_url += self.url.params
+    def _url(self, loteria, script=None,
+                params="?submeteu=sim&opcao=concurso&txtConcurso={concurso}"):
+        """Gera da URL_COMUM e os parâmetros a url base para consultar
 
-        return fmt_url.format(**{'loteria': self.url.loteria,
-                                 'concurso': concurso})
+        Parâmetros:
+            loteria - string usada no marcador {loteria} em URL_COMUM.
+            script  - nome do script de acesso.
+            params  - parâmetros do script, raramente muda.
+
+        Retorna: uma string que possa fazer formatação % com um numeral
+        """
+
+        script = script or "{loteria}_pesquisa_new.asp"
+
+        return OrderedDict([
+                ("base", (self.URL_COMUM + script).format(loteria=loteria)),
+                ("params", params)])
+
+    def _url_consulta(self, concurso=None):
+        if concurso is None:
+            return self.url["base"]
+        else:
+            return ''.join(self.url.values()).format(concurso=concurso)

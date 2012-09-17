@@ -7,12 +7,7 @@ import locale
 
 locale.setlocale(locale.LC_NUMERIC, "")
 
-LOTERIAS = {
-   'lotofacil': gval.loteria.Lotofacil,
-   'lotomania': gval.loteria.Lotomania,
-   'quina': gval.loteria.Quina,
-   'megasena': gval.loteria.MegaSena,
-}
+LOTERIAS = ('lotofacil', 'lotomania', 'quina', 'megasena')
 
 class ScriptException(Exception):
     pass
@@ -30,7 +25,7 @@ class T(object):
 
     @staticmethod
     def jogo(nome):
-        if LOTERIAS.has_key(nome):
+        if nome in LOTERIAS:
             return nome
 
         msg = (u"\n"
