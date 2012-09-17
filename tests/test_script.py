@@ -8,6 +8,7 @@ import unittest
 import os
 from UserList import UserList
 
+
 class Output(UserList):
     def write(self, message):
         assert isinstance(message, basestring)
@@ -15,6 +16,7 @@ class Output(UserList):
 
     def clear(self):
         self.data = []
+
 
 class TestScript:
     def setUp(self):
@@ -27,22 +29,22 @@ class TestScript:
         "#avaliar comando consultar retorna (<method>, ('<jogo>', <num>))"
 
         # chamada mais comum
-        args = 'gval.py', 'consultar', '--jogo', 'lotofacil', '--concurso', '600'
+        args = 'gval', 'consultar', '--jogo', 'lotofacil', '--concurso', '600'
         esperado = (self.script.cmd_consultar, ('lotofacil', 600))
         self.script.avaliar(*args) |should| equal_to(esperado)
 
         # chamada com sinal de =
-        args = 'gval.py', 'consultar', '--jogo=megasena', '--concurso', '605'
+        args = 'gval', 'consultar', '--jogo=megasena', '--concurso', '605'
         esperado = (self.script.cmd_consultar, ('megasena', 605))
         self.script.avaliar(*args) |should| equal_to(esperado)
 
         # chamada em outra ordem
-        args = 'gval.py', 'consultar', '--concurso=610', '--jogo', 'quina'
+        args = 'gval', 'consultar', '--concurso=610', '--jogo', 'quina'
         esperado = (self.script.cmd_consultar, ('quina', 610))
         self.script.avaliar(*args) |should| equal_to(esperado)
 
         # chamada com opções curtas
-        args = 'gval.py', 'consultar', '-j', 'lotomania', '-c', '600'
+        args = 'gval', 'consultar', '-j', 'lotomania', '-c', '600'
         esperado = (self.script.cmd_consultar, ('lotomania', 600))
         self.script.avaliar(*args) |should| equal_to(esperado)
 
@@ -76,11 +78,11 @@ class TestScript:
 
         raise unittest.SkipTest("Teste provavelmente obsoleto")
 
-        s = self.script
+        comando = lambda cmd: lambda: self.script.avaliar('gval', cmd)
 
-        (lambda: s.avaliar('gval.py', 'latir')) |should| throw(script.ScriptException)
-        (lambda: s.avaliar('gval.py', 'miar')) |should| throw(script.ScriptException)
-        (lambda: s.avaliar('gval.py', 'falar')) |should| throw(script.ScriptException)
+        comando('latir') |should| throw(script.ScriptException)
+        comando('miar') |should| throw(script.ScriptException)
+        comando('falar') |should| throw(script.ScriptException)
 
     def test_script__consultar(self):
         "gval consultar -j <loteria> -c <num>"

@@ -50,9 +50,10 @@ CONTEUDO_ENCODING = u"""<!DOCTYPE html>
 </html>
 """
 
+
 class ServidorDownload:
-    # Implementação de servidor http simples, que retorna o charset correto para
-    # os arquivos de testes da função download_pagina.
+    # Implementação de servidor http simples, que retorna o charset correto
+    # para os arquivos de testes da função download_pagina.
     endereco = ('127.0.0.1', 15707)
     url = "http://%s:%s/" % endereco
 
@@ -84,9 +85,10 @@ class ServidorDownload:
         self.servidor.shutdown()
         self.servidor.server_close()
 
+
 class DiretorioTemporario(UserString.UserString):
     # Classe para criar um diretório temporário
-    # A própria instância dessa classe retorna o caminho do diretório temporário.
+    # A própria instância da classe retorna o caminho do diretório temporário.
     # O destrutor da classe trata de remover o diretório, recursivamente.
     def __init__(self):
         UserString.UserString.__init__(self, tempfile.mkdtemp(prefix='gval'))

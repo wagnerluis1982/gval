@@ -2,6 +2,7 @@
 from should_dsl import should, should_not
 from lib.gval.loteria.parser import *
 
+
 class TestLoteriaParser:
     "LoteriaParser"
 
@@ -14,6 +15,7 @@ class TestLoteriaParser:
         parser.feed(html)
 
         parser.dados |should| equal_to(["texto fora das tags"])
+
 
 class TestQuinaParser:
     "QuinaParser"

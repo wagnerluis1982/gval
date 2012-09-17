@@ -1,16 +1,23 @@
 # -*- coding: utf-8 -*-
-import gval.loteria
-import gval.util
+from gval.loteria import (
+        Loteria,
+        LoteriaException,
+        Resultado,
+        Aposta,
+        Conferencia,
+    )
 import argparse
-import sys
 import locale
+import sys
 
 locale.setlocale(locale.LC_NUMERIC, "")
 
 LOTERIAS = ('lotofacil', 'lotomania', 'quina', 'megasena')
 
+
 class ScriptException(Exception):
     pass
+
 
 class T(object):
     """Classe de tipos para serem usadas com argparse
@@ -34,6 +41,7 @@ class T(object):
         loterias = ", ".join(sorted(LOTERIAS.keys()))
         raise argparse.ArgumentTypeError(msg % (nome, loterias))
 
+
 class Script(object):
     def __init__(self, out=sys.stdout, err=sys.stderr, cfg=None):
         self.out = out
@@ -46,7 +54,7 @@ class Script(object):
         numbers = sorted(set(numbers))
         str_numbers = lambda: [str(num) for num in numbers]
         primeiro = numbers[0]
-        ultimo   = numbers[-1]
+        ultimo = numbers[-1]
 
         # No máximo 2 números
         if len(numbers) <= 2:
@@ -62,8 +70,8 @@ class Script(object):
 
     def cmd_consultar(self, loteria, concurso):
         try:
-            result = gval.loteria.Loteria(loteria, self.cfg).consultar(concurso)
-            assert isinstance(result, gval.loteria.Resultado)
+            result = Loteria(loteria, self.cfg).consultar(concurso)
+            assert isinstance(result, Resultado)
 
             self.out.write(u"Resultado da %s %d\n" % (loteria.title(),
                                                       result.concurso))
@@ -71,7 +79,7 @@ class Script(object):
             resultado = ' '.join("%02d" % n for n in result.numeros)
             self.out.write(u"  Números: %s\n" % resultado)
 
-        except gval.loteria.LoteriaException:
+        except LoteriaException:
             msg = u"ERRO: resultado da %s %d indisponível\n"
             self.err.write(msg % (loteria.title(), concurso))
             return 1
@@ -81,17 +89,17 @@ class Script(object):
     def cmd_conferir(self, loteria, concursos, numeros):
         # Realiza a conferência, guarda o retorno em conferidos, quando sucesso
         # e guarda os que não foram possíveis conferir em erros.
-        apostas = [gval.loteria.Aposta(c, n) for c in concursos for n in numeros]
+        apostas = [Aposta(c, n) for c in concursos for n in numeros]
         conferidos = []
         erros = set()
         for apo in apostas:
             try:
-                confere = gval.loteria.Loteria(loteria, self.cfg).conferir(apo)
-                assert isinstance(confere, gval.loteria.Conferencia)
+                confere = Loteria(loteria, self.cfg).conferir(apo)
+                assert isinstance(confere, Conferencia)
 
                 conferidos.append(confere.to_array())
 
-            except gval.loteria.LoteriaException:
+            except LoteriaException:
                 erros.add(apo.concurso)
 
         msg_erro = "%s: concursos indisponíveis: %s\n"
@@ -114,11 +122,11 @@ class Script(object):
 
         # Exibe quantas apostas foram premiadas e quantas foram conferidas
         premiadas = [p[3] for p in conferidos if p[3] > 0]
-        q_premiadas = len(premiadas)
+        q_premia = len(premiadas)
         msg_premiada = {
-                0: u"%s aposta premiada",   # singular
-                1: u"%s apostas premiadas", # plural
-            }[q_premiadas > 1] % (q_premiadas if q_premiadas > 0 else u"Nenhuma")
+                0: u"%s aposta premiada",    # singular
+                1: u"%s apostas premiadas",  # plural
+            }[q_premia > 1] % (q_premia if q_premia > 0 else u"Nenhuma")
         msg_conferida = {
                 0: u"(em %d conferida)",
                 1: u"(em %d conferidas)",
@@ -177,9 +185,9 @@ class Script(object):
 
 
 def main(args=sys.argv):
-    # As linhas abaixo mudam o nome do script se este estiver no path. Assim, um
-    # script que esteja em /usr/bin por exemplo, vai ser exibido no help do GVAL
-    # apenas como gval, não /usr/bin/gval.
+    # As linhas abaixo mudam o nome do script se este estiver no path. Assim,
+    # um script que esteja em /usr/bin por exemplo, vai ser exibido no help do
+    # GVAL apenas como gval, não /usr/bin/gval.
     import os
     if os.path.dirname(args[0]) in sys.path:
         args[0] = os.path.basename(args[0])

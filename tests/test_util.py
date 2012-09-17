@@ -9,6 +9,7 @@ from should_dsl import should, should_not
 from lib.gval.util import Config, Downloader, Cacher, Util
 import os
 
+
 class TestConfig:
     def setUp(self):
         self._dirtemp = DiretorioTemporario()
@@ -61,6 +62,7 @@ class TestDownloader:
 
         download(url) |should| be_instance_of(str)
 
+
 class TestCacher:
     @classmethod
     def setUpClass(cls):
@@ -84,8 +86,8 @@ class TestCacher:
         os.path.exists(self.caminho) |should| be(True)
 
         # A função também pode ser chamada com os nomes dos argumentos
-        guardar(filename=self.arquivo+'1', content=self.conteudo)
-        os.path.exists(self.caminho+'1') |should| be(True)
+        guardar(filename=self.arquivo + '1', content=self.conteudo)
+        os.path.exists(self.caminho + '1') |should| be(True)
 
     def test_obter_do_cache(self):
         "#obter deve retornar o conteúdo de um arquivo em cache"
@@ -93,7 +95,8 @@ class TestCacher:
 
     def test_obter_nao_cache(self):
         "#obter deve retornar None para arquivos que não estejam em cache"
-        self.cacher.obter(self.arquivo+'9') |should| be(None)
+        self.cacher.obter(self.arquivo + '9') |should| be(None)
+
 
 class TestUtil:
     def test_intersecao(self):

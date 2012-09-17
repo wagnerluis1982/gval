@@ -6,13 +6,14 @@ import os
 import re
 import urllib2
 
+
 class Util(object):
     @staticmethod
     def intersecao(a, b):
         assert isinstance(a, (list, tuple, set))
         assert isinstance(b, (list, tuple, set))
 
-        return sorted( set(a).intersection(b) )
+        return sorted(set(a).intersection(b))
 
     @staticmethod
     def maketrans_unicode(frm, to, to_none=True):
@@ -45,8 +46,10 @@ class Util(object):
 
         return xtype(str_numero.translate(tabela))
 
+
 class ConfigException(Exception):
     pass
+
 
 class Config(object):
     def __init__(self, config_dir=None):
@@ -99,6 +102,7 @@ class Config(object):
             if e.errno != errno.EEXIST:
                 raise
 
+
 class Cacher(object):
     def __init__(self, cfg):
         self._cachedir = cfg.get_cache_dir('paginas')
@@ -126,6 +130,7 @@ class Cacher(object):
             f.close()
 
         return content
+
 
 class Downloader(object):
     def download(self, url):

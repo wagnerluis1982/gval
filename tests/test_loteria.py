@@ -5,6 +5,7 @@ from should_dsl import should, should_not
 from lib.gval.loteria import Conferencia, Resultado, Aposta, Loteria
 from lib.gval.util import Config
 
+
 class TestLoteria:
     cfg = Config(test_stuff.CONFIG_DIR)
 

@@ -7,6 +7,7 @@ import yaml
 
 Aposta = namedtuple("Aposta", ["concurso", "numeros"])
 
+
 class Resultado(object):
     concurso = None
     numeros = None
@@ -24,6 +25,7 @@ class Resultado(object):
 
     def __repr__(self):
         return str(self.__dict__)
+
 
 class Conferencia(object):
     def __init__(self, aposta=None, resultado=None, quantidade=None,
@@ -48,7 +50,8 @@ class Conferencia(object):
         self.quantidade = len(self.acertados)
 
     def to_array(self):
-        return (self.aposta.concurso, self.quantidade, self.acertados, self.premio)
+        return (self.aposta.concurso, self.quantidade, self.acertados,
+                self.premio)
 
     def get_aposta(self):
         return self.__aposta
@@ -196,7 +199,7 @@ class Loteria(object):
 
         nums = posicao["numeros"]
         if len(nums) == 2:
-            posicao["numeros"] = xrange(nums[0], nums[1]+1)
+            posicao["numeros"] = xrange(nums[0], nums[1] + 1)
 
         self.params = params
 

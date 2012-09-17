@@ -1,5 +1,6 @@
 from HTMLParser import HTMLParser
 
+
 class LoteriaParser(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
@@ -24,11 +25,14 @@ class LoteriaParser(HTMLParser):
         if self._capturar:
             self._dados.append(data)
 
+
 class LotofacilParser(LoteriaParser):
     pass
 
+
 class LotomaniaParser(LoteriaParser):
     pass
+
 
 class QuinaParser(LoteriaParser):
     def reset(self):
@@ -62,6 +66,7 @@ class QuinaParser(LoteriaParser):
 
         if self._capturar_numero:
             self._numeros.append(data)
+
 
 class MegaSenaParser(QuinaParser):
     pass
