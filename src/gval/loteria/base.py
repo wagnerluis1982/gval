@@ -125,10 +125,10 @@ class URL(object):
     # Url comum a todas as loterias conhecidas
     BASE = "http://www1.caixa.gov.br/loterias/loterias/{loteria}"
 
-    def __init__(self, script="{loteria}_pesquisa_new.asp",
+    def __init__(self, script=None,
                   params="?submeteu=sim&opcao=concurso&txtConcurso={concurso}",
                   loteria=None):
-        self.script = script    # Nome do script de acesso
+        self.script = script or "{loteria}_pesquisa_new.asp" # Nome do script
         self.params = params    # Parâmetros do script. Raramente muda.
         self.loteria = loteria  # String usada em {loteria}.
 
@@ -170,6 +170,8 @@ class Loteria(object):
                "params", "%s.yaml" % nome)))
            self.posicao = Posicao(**params["posicao"])
            parser_name = params["parser"]
+           if params.get("url") is not None:
+               self.url = URL(loteria=nome, script=params["url"].get("script"))
 
         # Verifica se os atributos essenciais estão valorados
         if None in (self.posicao.numeros, self.posicao.premios):
