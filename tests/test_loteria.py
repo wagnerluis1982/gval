@@ -39,6 +39,28 @@ class TestLoteria:
                         premio=143758.75)
         conferido |should| equal_to(esperado)
 
+    def test_consultar__megasena(self):
+        "#consultar retorna Resultado(<megasena>)"
+
+        sena = Loteria(self.cfg, nome="megasena")
+        r = sena.consultar(1379)
+        r.concurso |should| equal_to(1379)
+        r.numeros |should| equal_to([5, 12, 36, 45, 50, 58])
+
+    def test_conferir__megasena(self):
+        "#conferir retorna os acertos e o prêmio de uma aposta da Mega Sena"
+
+        sena = Loteria(self.cfg, nome="megasena")
+
+        aposta = Aposta(1379, [5, 12, 36, 45, 51, 55])
+        conferido = sena.conferir(aposta)
+        esperado = Conferencia(aposta,
+                        resultado=sena.consultar(aposta.concurso),
+                        quantidade=4,
+                        acertados=[5, 12, 36, 45],
+                        premio=399.06)
+        conferido |should| equal_to(esperado)
+
 
 class TestConferencia:
     def setUp(self):

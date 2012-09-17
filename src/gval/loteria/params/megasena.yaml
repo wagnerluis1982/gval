@@ -1,0 +1,9 @@
+# megasena.yaml
+posicao:
+    numeros: [28, 33]
+    premios:
+        6: [10, 11]
+        5: [12, 13]
+        4: [14, 15]
+
+parser: MegaSenaParser
