@@ -161,7 +161,7 @@ class Loteria(object):
     # forma automática a partir de gval.loteria.parser.<subclassName>Parser.
     parser_class = None
 
-    def __init__(self, cfg=None, nome=None):
+    def __init__(self, nome, cfg=None):
         parser_name = None
 
         # TODO: if temporário (será substituído por is None para gerar raise)

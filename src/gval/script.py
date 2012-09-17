@@ -66,13 +66,11 @@ class Script(object):
                 return ", ".join(str_numbers()[:-1]) + " e %d" % ultimo
 
     def cmd_consultar(self, loteria, concurso):
-        klass = LOTERIAS[loteria]
-
         try:
-            result = klass(self.cfg).consultar(concurso)
+            result = gval.loteria.Loteria(loteria, self.cfg).consultar(concurso)
             assert isinstance(result, gval.loteria.Resultado)
 
-            self.out.write(u"Resultado da %s %d\n" % (klass.__name__,
+            self.out.write(u"Resultado da %s %d\n" % (loteria.title(),
                                                       result.concurso))
 
             resultado = ' '.join("%02d" % n for n in result.numeros)
@@ -80,14 +78,12 @@ class Script(object):
 
         except gval.loteria.LoteriaException:
             msg = u"ERRO: resultado da %s %d indisponível\n"
-            self.err.write(msg % (klass.__name__, concurso))
+            self.err.write(msg % (loteria.title(), concurso))
             return 1
 
         return 0
 
     def cmd_conferir(self, loteria, concursos, numeros):
-        klass = LOTERIAS[loteria]
-
         # Realiza a conferência, guarda o retorno em conferidos, quando sucesso
         # e guarda os que não foram possíveis conferir em erros.
         apostas = [gval.loteria.Aposta(c, n) for c in concursos for n in numeros]
@@ -95,7 +91,7 @@ class Script(object):
         erros = set()
         for apo in apostas:
             try:
-                confere = klass(self.cfg).conferir(apo)
+                confere = gval.loteria.Loteria(loteria, self.cfg).conferir(apo)
                 assert isinstance(confere, gval.loteria.Conferencia)
 
                 conferidos.append(confere.to_array())
@@ -118,7 +114,7 @@ class Script(object):
             self.err.write('\n')
 
         # Informa quais concursos foram conferidos
-        self.out.write(u"Conferência da %s %s\n" % (klass.__name__,
+        self.out.write(u"Conferência da %s %s\n" % (loteria.title(),
                                 self._seq_to_str([n[0] for n in conferidos])))
 
         # Exibe quantas apostas foram premiadas e quantas foram conferidas

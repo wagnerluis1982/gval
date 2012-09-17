@@ -11,7 +11,7 @@ class TestLoteria:
     def test_consultar__quina(self):
         "#consultar retorna Resultado(<quina>)"
 
-        quina = Loteria(self.cfg, nome="quina")
+        quina = Loteria("quina", self.cfg)
         r = quina.consultar(805)
         r.concurso |should| equal_to(805)
         r.numeros |should| equal_to([13, 22, 41, 42, 71])
@@ -19,7 +19,7 @@ class TestLoteria:
     def test_conferir__quina(self):
         "#conferir retorna os acertos e o prêmio de uma aposta da Quina"
 
-        quina = Loteria(self.cfg, nome="quina")
+        quina = Loteria("quina", self.cfg)
 
         aposta = Aposta(805, [13, 23, 45, 47, 78])
         conferido = quina.conferir(aposta)
@@ -42,7 +42,7 @@ class TestLoteria:
     def test_consultar__megasena(self):
         "#consultar retorna Resultado(<megasena>)"
 
-        sena = Loteria(self.cfg, nome="megasena")
+        sena = Loteria("megasena", self.cfg)
         r = sena.consultar(1379)
         r.concurso |should| equal_to(1379)
         r.numeros |should| equal_to([5, 12, 36, 45, 50, 58])
@@ -50,7 +50,7 @@ class TestLoteria:
     def test_conferir__megasena(self):
         "#conferir retorna os acertos e o prêmio de uma aposta da Mega Sena"
 
-        sena = Loteria(self.cfg, nome="megasena")
+        sena = Loteria("megasena", self.cfg)
 
         aposta = Aposta(1379, [5, 12, 36, 45, 51, 55])
         conferido = sena.conferir(aposta)
@@ -64,7 +64,7 @@ class TestLoteria:
     def test_consultar__lotofacil(self):
         "#consultar retorna Resultado(<lotofacil>)"
 
-        lotofacil = Loteria(self.cfg, nome="lotofacil")
+        lotofacil = Loteria("lotofacil", self.cfg)
 
         r = lotofacil.consultar(600)
         r.concurso |should| equal_to(600)
@@ -77,7 +77,7 @@ class TestLoteria:
     def test_conferir__lotofacil(self):
         "#conferir retorna os acertos e o prêmio de uma aposta da Lotofácil"
 
-        lotofacil = Loteria(self.cfg, nome="lotofacil")
+        lotofacil = Loteria("lotofacil", self.cfg)
 
         aposta = Aposta(600, [2,4,5,6,7,9,10,11,15,17,18,19,20,21,24])
         conferido = lotofacil.conferir(aposta)
@@ -100,7 +100,7 @@ class TestLoteria:
     def test_consultar__lotomania(self):
         "#consultar retorna Resultado(<lotomania>)"
 
-        lotomania = Loteria(self.cfg, nome="lotomania")
+        lotomania = Loteria("lotomania", self.cfg)
         r = lotomania.consultar(914)
         r.concurso |should| equal_to(914)
         r.numeros |should| equal_to([1, 2, 9, 11, 15, 16, 27, 32, 39, 52, 57,
@@ -109,7 +109,7 @@ class TestLoteria:
     def test_conferir(self):
         "#conferir retorna os acertos e o prêmio de uma aposta da Lotomania"
 
-        lotomania = Loteria(self.cfg, nome="lotomania")
+        lotomania = Loteria("lotomania", self.cfg)
 
         aposta = Aposta(1112, [1,2,4,6,7,8,9,10,11,12,13,14,15,16,17,18,20,21,22,23])
         conferido = lotomania.conferir(aposta)
