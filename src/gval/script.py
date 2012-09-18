@@ -87,54 +87,50 @@ class Script(object):
         return 0
 
     def cmd_conferir(self, loteria, concursos, numeros):
-        # Realiza a conferência, guarda o retorno em conferidos, quando sucesso
-        # e guarda os que não foram possíveis conferir em erros.
-        apostas = [Aposta(c, n) for c in concursos for n in numeros]
-        conferidos = []
-        erros = set()
-        for apo in apostas:
-            try:
-                confere = Loteria(loteria, self.cfg).conferir(apo)
-                assert isinstance(confere, Conferencia)
+        try:
+            confe = Loteria(loteria, self.cfg).conferir([concursos, numeros])
+            assert isinstance(confe, dict)
 
-                conferidos.append(confere.to_array())
-
-            except LoteriaException:
-                erros.add(apo.concurso)
+        except LoteriaException, e:
+            self.err.write("ERRO: " + e.message)
+            return 1
 
         msg_erro = "%s: concursos indisponíveis: %s\n"
 
         # Não encontrar nenhum dos concursos pedidos caracteriza como erro.
         # Assim, aqui uma mensagem de erro é exibida e o script é finalizado.
-        q_conferidos = len(conferidos)
-        if q_conferidos == 0:
-            self.err.write(msg_erro % ("ERRO", self._seq_to_str(erros)))
+        if confe["erro"]:
+            self.err.write(msg_erro % ("ERRO",
+                                    self._seq_to_str(confe["indisponiveis"])))
             return 1
 
         # Informa ao usuário os concursos não disponíveis no momento
-        if erros:
-            self.err.write(msg_erro % ("AVISO", self._seq_to_str(erros)))
+        if len(confe["indisponiveis"]) > 0:
+            self.err.write(msg_erro % ("AVISO",
+                                    self._seq_to_str(confe["indisponiveis"])))
             self.err.write('\n')
 
         # Informa quais concursos foram conferidos
         self.out.write(u"Conferência da %s %s\n" % (loteria.title(),
-                                self._seq_to_str([n[0] for n in conferidos])))
+                self._seq_to_str(
+                        [c.aposta.concurso for c in confe["conferidas"]])))
 
         # Exibe quantas apostas foram premiadas e quantas foram conferidas
-        premiadas = [p[3] for p in conferidos if p[3] > 0]
-        q_premia = len(premiadas)
+        q_premiadas = len(confe["premiadas"])
+        q_conferidas = len(confe["conferidas"])
+        txt_quantidade = q_premiadas == 0 and u"Nenhuma" or q_premiadas
         msg_premiada = {
                 0: u"%s aposta premiada",    # singular
                 1: u"%s apostas premiadas",  # plural
-            }[q_premia > 1] % (q_premia if q_premia > 0 else u"Nenhuma")
+            }[q_premiadas > 1] % (txt_quantidade)
         msg_conferida = {
                 0: u"(em %d conferida)",
                 1: u"(em %d conferidas)",
-            }[q_conferidos > 1] % q_conferidos
+            }[q_conferidas > 1] % q_conferidas
         self.out.write(u"  %s %s\n" % (msg_premiada, msg_conferida))
 
         # Exibe a premiação total do usuário
-        premiacao = locale.format("%.2f", sum(premiadas), grouping=True)
+        premiacao = locale.format("%.2f", confe["premio"], grouping=True)
         self.out.write(u"  Premiação total: R$ %s\n" % premiacao)
 
         return 0

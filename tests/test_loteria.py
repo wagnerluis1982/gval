@@ -92,7 +92,7 @@ class TestLoteria:
         r.numeros |should| equal_to([1, 2, 9, 11, 15, 16, 27, 32, 39, 52, 57,
                                      59, 63, 64, 69, 73, 75, 76, 78, 93])
 
-    def test_conferir(self):
+    def test_conferir__lotomania(self):
         "#conferir retorna os acertos e o prêmio de uma aposta da Lotomania"
 
         lotomania = Loteria("lotomania", cfg)
@@ -108,6 +108,28 @@ class TestLoteria:
         conferido.quantidade |should| equal_to(0)
         conferido.acertados |should| equal_to([])
         conferido.premio |should| equal_to(104985.56)
+
+    def test_conferir__varias(self):
+        "#conferir realiza a conferência de várias apostas de uma loteria"
+
+        # escolhido quina porque precisa usa menos números
+        loteria = Loteria("quina", cfg)
+
+        cnf = loteria.conferir([
+                [805, 1763],
+                [(13, 23, 41, 71, 78), (3, 9, 20, 24, 35, 80)]
+            ])
+
+        _805_1 = loteria.conferir(Aposta(805, (13, 23, 41, 71, 78)))
+        _805_2 = loteria.conferir(Aposta(805, (3, 9, 20, 24, 35, 80)))
+        _1763_1 = loteria.conferir(Aposta(1763, (13, 23, 41, 71, 78)))
+        _1763_2 = loteria.conferir(Aposta(1763, (3, 9, 20, 24, 35, 80)))
+
+        cnf["conferidas"] |should| equal_to([_805_1, _805_2, _1763_1, _1763_2])
+        cnf["premiadas"] |should| equal_to([_805_1, _1763_2])
+        cnf["disponiveis"] |should| equal_to(set([805, 1763]))
+        cnf["indisponiveis"] |should| equal_to(set([]))
+        cnf["premio"] |should| equal_to(70.38)
 
 
 class TestConferencia:

@@ -156,11 +156,49 @@ class Loteria(object):
         if isinstance(arg, Aposta):
             return self._conferir_uma(arg)
 
+        elif isinstance(arg, list):
+            return self._conferir_varias(arg)
+
+        else:
+            raise LoteriaException(u"Argumento inválido")
+
     def _conferir_uma(self, aposta):
         resultado = self.consultar(aposta.concurso)
         conferencia = Conferencia(aposta, resultado)
 
         return conferencia
+
+    def _conferir_varias(self, apostas):
+        # Realiza a conferência, guarda o retorno em conferidas, quando sucesso
+        # e guarda os que não foram possíveis conferir em indisponiveis.
+        apostas = [Aposta(c, n) for c in apostas[0] for n in apostas[1]]
+        conferidas = []  # lista das conferencias realizadas com sucesso
+        premiadas = []   # lista das conferencias premiadas
+        disponiveis = set()    # concursos conferidos
+        indisponiveis = set()  # concursos que não foram possíveis de conferir
+        for apo in apostas:
+            try:
+                cnf = self._conferir_uma(apo)
+                assert isinstance(cnf, Conferencia)
+
+                conferidas.append(cnf)
+                disponiveis.add(apo.concurso)
+
+                if cnf.premio > 0:
+                    premiadas.append(cnf)
+
+            except LoteriaException:
+                indisponiveis.add(apo.concurso)
+
+        # Marca que indica que nenhum concurso foi possível conferir
+        erro = len(conferidas) == 0
+
+        # Premiação total do usuário
+        premio = sum([p.premio for p in premiadas])
+
+        return {"conferidas": conferidas, "disponiveis": disponiveis,
+                "indisponiveis": indisponiveis, "premiadas": premiadas,
+                "premio": premio, "erro": erro}
 
     def _obter_resultado(self, html):
         parser = self.loteriaparser()
