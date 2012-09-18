@@ -5,14 +5,14 @@ from should_dsl import should, should_not
 from lib.gval.loteria import Conferencia, Resultado, Aposta, Loteria
 from lib.gval.util import Config
 
+cfg = Config(test_stuff.CONFIG_DIR)
+
 
 class TestLoteria:
-    cfg = Config(test_stuff.CONFIG_DIR)
-
     def test_consultar__quina(self):
         "#consultar retorna Resultado(<quina>)"
 
-        quina = Loteria("quina", self.cfg)
+        quina = Loteria("quina", cfg)
         r = quina.consultar(805)
         r.concurso |should| equal_to(805)
         r.numeros |should| equal_to([13, 22, 41, 42, 71])
@@ -20,7 +20,7 @@ class TestLoteria:
     def test_conferir__quina(self):
         "#conferir retorna os acertos e o prêmio de uma aposta da Quina"
 
-        quina = Loteria("quina", self.cfg)
+        quina = Loteria("quina", cfg)
 
         aposta = Aposta(805, [13, 23, 45, 47, 78])
         conferido = quina.conferir(aposta)
@@ -37,7 +37,7 @@ class TestLoteria:
     def test_consultar__megasena(self):
         "#consultar retorna Resultado(<megasena>)"
 
-        sena = Loteria("megasena", self.cfg)
+        sena = Loteria("megasena", cfg)
         r = sena.consultar(1379)
         r.concurso |should| equal_to(1379)
         r.numeros |should| equal_to([5, 12, 36, 45, 50, 58])
@@ -45,7 +45,7 @@ class TestLoteria:
     def test_conferir__megasena(self):
         "#conferir retorna os acertos e o prêmio de uma aposta da Mega Sena"
 
-        sena = Loteria("megasena", self.cfg)
+        sena = Loteria("megasena", cfg)
 
         aposta = Aposta(1379, [5, 12, 36, 45, 51, 55])
         conferido = sena.conferir(aposta)
@@ -56,7 +56,7 @@ class TestLoteria:
     def test_consultar__lotofacil(self):
         "#consultar retorna Resultado(<lotofacil>)"
 
-        lotofacil = Loteria("lotofacil", self.cfg)
+        lotofacil = Loteria("lotofacil", cfg)
 
         r = lotofacil.consultar(600)
         r.concurso |should| equal_to(600)
@@ -69,7 +69,7 @@ class TestLoteria:
     def test_conferir__lotofacil(self):
         "#conferir retorna os acertos e o prêmio de uma aposta da Lotofácil"
 
-        lotofacil = Loteria("lotofacil", self.cfg)
+        lotofacil = Loteria("lotofacil", cfg)
 
         aposta = Aposta(600, [2,4,5,6,7,9,10,11,15,17,18,19,20,21,24])
         conferido = lotofacil.conferir(aposta)
@@ -86,7 +86,7 @@ class TestLoteria:
     def test_consultar__lotomania(self):
         "#consultar retorna Resultado(<lotomania>)"
 
-        lotomania = Loteria("lotomania", self.cfg)
+        lotomania = Loteria("lotomania", cfg)
         r = lotomania.consultar(914)
         r.concurso |should| equal_to(914)
         r.numeros |should| equal_to([1, 2, 9, 11, 15, 16, 27, 32, 39, 52, 57,
@@ -95,7 +95,7 @@ class TestLoteria:
     def test_conferir(self):
         "#conferir retorna os acertos e o prêmio de uma aposta da Lotomania"
 
-        lotomania = Loteria("lotomania", self.cfg)
+        lotomania = Loteria("lotomania", cfg)
 
         aposta = Aposta(1112, [1,2,4,6,7,8,9,10,11,12,13,14,15,16,17,18,20,21,22,23])
         conferido = lotomania.conferir(aposta)
@@ -110,48 +110,23 @@ class TestLoteria:
         conferido.premio |should| equal_to(104985.56)
 
 
-import unittest
-
-
-@unittest.SkipTest
 class TestConferencia:
-    def setUp(self):
-        self.conferencia = Conferencia()
+    def test_acertos_premio(self):
+        "verifica os acertos e premiacao"
 
-    def test_calcula_acertos(self):
-        "#calcula_acertos verifica os números acertados e a quantidade destes"
+        aposta = Aposta(805, [13, 23, 41, 47, 71])
+        resultado = Loteria("quina", cfg).consultar(805)
+        confere = Conferencia(aposta, resultado)
 
-        c = self.conferencia
+        confere.acertados |should| equal_to([13, 41, 71])
+        confere.quantidade |should| equal_to(3)
+        confere.premio |should| equal_to(33.13)
 
-        c.aposta = Aposta(805, [13, 23, 45, 47, 78])
-        c.resultado = Resultado(805, [13, 22, 41, 42, 71])
-        c.calcula_acertos()
+    def test_runtimeerror_concursos_diferentes(self):
+        "lança RuntimeError se os concursos são diferentes"
 
-        c.acertados |should| equal_to([13])
-        c.quantidade |should| equal_to(1)
+        aposta = Aposta(805, [13, 23, 41, 47, 71])
+        resultado = Resultado(900, [17, 26, 34, 52, 77])
+        confere = lambda: Conferencia(aposta, resultado)
 
-    def test_calcula_acertos_erro_None(self):
-        "#calcula_acertos lança RuntimeError se o resultado ou aposta é nulo"
-
-        c = self.conferencia
-
-        c.aposta = None
-        c.resultado = Resultado(805, [13, 22, 41, 42, 71])
-        c.calcula_acertos |should| throw(RuntimeError)
-
-        c.aposta = Aposta(805, [13, 23, 45, 47, 78])
-        c.resultado = None
-        c.calcula_acertos |should| throw(RuntimeError)
-
-        c.aposta = None
-        c.resultado = None
-        c.calcula_acertos |should| throw(RuntimeError)
-
-    def test_calcula_acertos_erro_concurso(self):
-        "#calcula_acertos lança RuntimeError se os concursos são diferentes"
-
-        c = self.conferencia
-
-        c.aposta = Aposta(805, [13, 23, 45, 47, 78])
-        c.resultado = Resultado(900, [13, 22, 41, 42, 71])
-        c.calcula_acertos |should| throw(RuntimeError)
+        confere |should| throw(RuntimeError)
