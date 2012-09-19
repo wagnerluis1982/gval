@@ -53,43 +53,41 @@ class ConfigException(Exception):
 
 class Config(object):
     def __init__(self, config_dir=None):
-        # Atributo de instância
+        # Diretório de config vem do parâmetro passado ou do padrão do sistema
+        self._cfg_dir = config_dir or self._default_dir()
+
+        # Diretório de cache. Definido ao usar get_cache_dir
         self._cache_dir = None
 
-        # Usa o diretório passado se não nulo
-        if config_dir is not None:
-            self._config_dir = config_dir
-
+    def _default_dir(self):
         # Define o diretório de configuração de acordo com o SO
         # Por enquanto é suportado os sistemas Posix e Windows (NT)
+        if os.name == 'posix':
+            prefixo = '.'
+            profile_dir = os.environ.get("HOME")
+
+        elif os.name == 'nt':
+            prefixo = '_'
+            profile_dir = os.environ.get("APPDATA")
+
+        # Se nenhum SO for detectado, lança uma exceção
         else:
-            if os.name == 'posix':
-                prefixo = '.'
-                profile_dir = os.environ.get("HOME")
+            raise ConfigException("Impossível detectar caminho do diretório de"
+                                  "configuração.")
 
-            elif os.name == 'nt':
-                prefixo = '_'
-                profile_dir = os.environ.get("APPDATA")
-
-            # Se nenhum SO for detectado, lança uma exceção
-            else:
-                raise ConfigException("Impossível de detectar local do "
-                                      "diretório de configuração.")
-
-            self._config_dir = os.path.join(profile_dir,
-                                            "{0}gval".format(prefixo))
+        return os.path.join(profile_dir, prefixo + "gval")
 
     def get_config_dir(self, *subdirs):
-        cfg_dir = os.path.join(self._config_dir, *subdirs)
+        cfg_dir = os.path.join(self._cfg_dir, *subdirs)
         self.makedirs(cfg_dir)
+
         return cfg_dir
-    config_dir = property(fget=get_config_dir)
 
     def get_cache_dir(self, *subdirs):
-        self._cache_dir = self._cache_dir or os.path.join(self._config_dir,
-                                                          'cache')
-        return self.get_config_dir(self._cache_dir, *subdirs)
-    cache_dir = property(fget=get_cache_dir)
+        if self._cache_dir is None:
+            self._cache_dir = self.get_config_dir("cache", *subdirs)
+
+        return self._cache_dir
 
     def makedirs(self, caminho):
         """Versão própria do makedirs()
@@ -102,13 +100,16 @@ class Config(object):
             if e.errno != errno.EEXIST:
                 raise
 
+    config_dir = property(get_config_dir)
+    cache_dir = property(get_cache_dir)
+
 
 class Cacher(object):
     def __init__(self, cfg):
-        self._cachedir = cfg.get_cache_dir('paginas')
+        self._cache_dir = cfg.get_cache_dir('paginas')
 
     def _secure_path(self, name):
-        return os.path.join(self._cachedir, re.sub('[:/?]', '_', name))
+        return os.path.join(self._cache_dir, re.sub('[:/?]', '_', name))
 
     def guardar(self, filename, content):
         # Grava os dados no arquivo
