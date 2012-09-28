@@ -171,7 +171,9 @@ class Loteria(object):
     def _conferir_varias(self, apostas):
         # Realiza a conferência, guarda o retorno em conferidas, quando sucesso
         # e guarda os que não foram possíveis conferir em indisponiveis.
-        apostas = [Aposta(c, n) for c in apostas[0] for n in apostas[1]]
+        concursos = set(apostas[0])
+        numeros = apostas[1]
+        apostas = [Aposta(c, n) for c in sorted(concursos) for n in numeros]
         conferidas = []  # lista das conferencias realizadas com sucesso
         premiadas = []   # lista das conferencias premiadas
         disponiveis = set()    # concursos conferidos
@@ -188,7 +190,8 @@ class Loteria(object):
                     premiadas.append(cnf)
 
             except LoteriaException:
-                indisponiveis.add(apo.concurso)
+                indisponiveis.update(concursos - disponiveis)
+                break
 
         # Marca que indica que nenhum concurso foi possível conferir
         erro = len(conferidas) == 0
