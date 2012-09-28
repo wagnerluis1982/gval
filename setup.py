@@ -10,7 +10,7 @@ PACKAGE_DIR = 'src'
 
 setup(
     name = "GVAL",
-    version = "0.0.6",
+    version = "0.1.0",
     author = "Wagner Macedo",
     author_email = "wagnerluis1982@gmail.com",
     description = "Gerador e Verificador de Apostas da Loteria (do Brasil)",
