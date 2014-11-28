@@ -4,8 +4,8 @@ Gerador e Verificador de Apostas da Loteria
 ATENÇÃO
 -------
 
-Sistema em versão Alpha, nem todas as funcionalidades estão estáveis ou
-disponíveis, bem como poderão haver mudanças na API.
+Esse projeto foi **descontinuado**, em favor do novíssimo `sorte.py`. Confira em
+<https://github.com/wagnerluis1982/sorte.py>.
 
 Sobre
 -----
